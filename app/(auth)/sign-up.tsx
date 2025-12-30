@@ -2,13 +2,16 @@ import { useSignUp } from "@clerk/clerk-expo";
 import { Link, useRouter } from "expo-router";
 import * as React from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function SignUpScreen() {
   const { isLoaded, signUp, setActive } = useSignUp();
+  const { createUser } = useAuth();
   const router = useRouter();
 
   const [emailAddress, setEmailAddress] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [username, setUsername] = React.useState("");
   const [pendingVerification, setPendingVerification] = React.useState(false);
   const [code, setCode] = React.useState("");
 
@@ -52,6 +55,15 @@ export default function SignUpScreen() {
       // and redirect the user
       if (signUpAttempt.status === "complete") {
         await setActive({ session: signUpAttempt.createdSessionId });
+        console.log(signUpAttempt.createdUserId);
+        console.log(emailAddress);
+        console.log(username);
+        try {
+          const data = await createUser(username, emailAddress);
+          console.log("User created:", data);
+        } catch (error) {
+          console.error("Error creating user:", error);
+        }
         router.replace("/(tabs)");
       } else {
         // If the status is not complete, check why. User may need to
@@ -82,14 +94,20 @@ export default function SignUpScreen() {
   }
 
   return (
-    <View>
-      <>
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View>
         <Text>Sign up</Text>
         <TextInput
           autoCapitalize="none"
           value={emailAddress}
           placeholder="Enter email"
           onChangeText={(email) => setEmailAddress(email)}
+        />
+        <TextInput
+          autoCapitalize="none"
+          value={username}
+          placeholder="Enter username"
+          onChangeText={(username) => setUsername(username)}
         />
         <TextInput
           value={password}
@@ -106,7 +124,7 @@ export default function SignUpScreen() {
             <Text>Sign in</Text>
           </Link>
         </View>
-      </>
+      </View>
     </View>
   );
 }

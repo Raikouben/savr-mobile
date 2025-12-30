@@ -1,29 +1,24 @@
-import { useAuth } from "@clerk/clerk-expo";
+import { useAuth as useClerkAuth } from "@clerk/clerk-expo";
 import { useState } from "react";
 import { API_URL } from "@/constants/config";
 
-export const useTransactions = () => {
-  const { getToken } = useAuth();
+export const useAuth = () => {
+  const { getToken } = useClerkAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const createTransaction = async (transaction: {
-    amount: number;
-    category: string;
-    date: string;
-    description?: string;
-  }) => {
+  const createUser = async (username: string, email: string) => {
     setLoading(true);
     setError(null);
     try {
       const token = await getToken();
-      const response = await fetch(`${API_URL}/transactions`, {
+      const response = await fetch(`${API_URL}/auth/user`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(transaction),
+        body: JSON.stringify({ username, email }),
       });
 
       if (!response.ok) {
@@ -41,12 +36,12 @@ export const useTransactions = () => {
     }
   };
 
-  const getTransactions = async () => {
+  const getUser = async () => {
     setLoading(true);
     setError(null);
     try {
       const token = await getToken();
-      const response = await fetch(`${API_URL}/transactions`, {
+      const response = await fetch(`${API_URL}/auth/user`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -72,7 +67,7 @@ export const useTransactions = () => {
   return {
     loading,
     error,
-    getTransactions,
-    createTransaction,
+    createUser,
+    getUser,
   };
 };
