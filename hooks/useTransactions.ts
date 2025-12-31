@@ -1,6 +1,6 @@
 import { useAuth } from "@clerk/clerk-expo";
 import { useState } from "react";
-import { API_URL } from "@/constants/config";
+import { API_URL, budgetCategories } from "@/constants/config";
 
 export const useTransactions = () => {
   const { getToken } = useAuth();
