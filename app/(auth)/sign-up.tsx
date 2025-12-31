@@ -55,11 +55,13 @@ export default function SignUpScreen() {
       // and redirect the user
       if (signUpAttempt.status === "complete") {
         await setActive({ session: signUpAttempt.createdSessionId });
+        const trimmedUsername = username.trim();
+        const trimmedEmail = emailAddress.trim();
         console.log(signUpAttempt.createdUserId);
-        console.log(emailAddress);
-        console.log(username);
+        console.log(trimmedEmail);
+        console.log(trimmedUsername);
         try {
-          const data = await createUser(username, emailAddress);
+          const data = await createUser(trimmedUsername, trimmedEmail);
           console.log("User created:", data);
         } catch (error) {
           console.error("Error creating user:", error);
