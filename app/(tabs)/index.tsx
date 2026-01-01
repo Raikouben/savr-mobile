@@ -48,27 +48,5 @@ export default function Page() {
     fetchData();
   }, [clerkId]);
 
-  return (
-    <View>
-      <SignedIn>
-        <Text>Hello {user?.emailAddresses[0].emailAddress}</Text>
-        <SignOutButton />
-      </SignedIn>
-      <SignedOut>
-        <Link href="/(auth)/sign-in">
-          <Text>Sign in</Text>
-        </Link>
-        <Link href="/(auth)/sign-up">
-          <Text>Sign up</Text>
-        </Link>
-      </SignedOut>
-      <Text>
-        {loading
-          ? "Loading..."
-          : error
-          ? `Error: ${error}`
-          : `Budget Summary: ${JSON.stringify(budgetSummary)}`}
-      </Text>
-    </View>
-  );
+  return <ScrollView></ScrollView>;
 }

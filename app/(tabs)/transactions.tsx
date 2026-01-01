@@ -1,10 +1,10 @@
 import { View, Text } from "react-native";
 import React from "react";
 
-export default function analytics() {
+export default function transactions() {
   return (
     <View>
-      <Text>analytics</Text>
+      <Text>transaction</Text>
     </View>
   );
 }
