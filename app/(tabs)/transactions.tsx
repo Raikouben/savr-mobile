@@ -14,20 +14,20 @@ export default function transactions() {
   const [category, setCategory] = React.useState<string>("");
   const [modalVisible, setModalVisible] = React.useState<boolean>(false);
 
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      setLoading(true);
-      try {
-        const transactionsData = await getTransactions();
-        setTransactions(transactionsData);
-      } catch (error) {
-        setError("Failed to fetch transactions");
-        console.error("Failed to fetch transactions:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchTransactions = async () => {
+    setLoading(true);
+    try {
+      const transactionsData = await getTransactions();
+      setTransactions(transactionsData);
+    } catch (error) {
+      setError("Failed to fetch transactions");
+      console.error("Failed to fetch transactions:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchTransactions();
   }, []);
 
@@ -62,6 +62,7 @@ export default function transactions() {
           onClose={() => setModalVisible(false)}
           onSuccess={() => {
             setModalVisible(false);
+            fetchTransactions();
           }}
         />
       )}
