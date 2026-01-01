@@ -47,12 +47,12 @@ export const useBudget = () => {
     }
   };
 
-  const getBudget = async (budgetId: string) => {
+  const getBudget = async () => {
     setLoading(true);
     setError(null);
     try {
       const token = await getToken();
-      const response = await fetch(`${API_URL}/budgets/${budgetId}`, {
+      const response = await fetch(`${API_URL}/budgets/`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -75,26 +75,23 @@ export const useBudget = () => {
     }
   };
 
-  const updateBudget = async (
-    budgetId: string,
-    budget: {
-      housing: number;
-      utilities: number;
-      transportation: number;
-      food: number;
-      shopping: number;
-      health: number;
-      entertainment: number;
-      miscellaneous: number;
-      start_date: string;
-      end_date: string;
-    }
-  ) => {
+  const updateBudget = async (budget: {
+    housing: number;
+    utilities: number;
+    transportation: number;
+    food: number;
+    shopping: number;
+    health: number;
+    entertainment: number;
+    miscellaneous: number;
+    start_date: string;
+    end_date: string;
+  }) => {
     setLoading(true);
     setError(null);
     try {
       const token = await getToken();
-      const response = await fetch(`${API_URL}/budgets/${budgetId}`, {
+      const response = await fetch(`${API_URL}/budgets/`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
