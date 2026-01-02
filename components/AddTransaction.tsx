@@ -98,7 +98,7 @@ export default function AddTransaction({
             <DateTimePicker
               value={date}
               mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"}
+              display="default"
               onChange={handleDateChange}
             />
           )}
