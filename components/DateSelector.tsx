@@ -6,14 +6,12 @@ interface DateSelectorProps {
   date: Date | null;
   onDateChange: (date: Date | null) => void;
   label?: string;
-  defaultToToday?: boolean;
 }
 
 export default function DateSelector({
   date,
   onDateChange,
   label = "Select Date",
-  defaultToToday = false,
 }: DateSelectorProps) {
   const [showPicker, setShowPicker] = useState(false);
   const handleDateChange = (event: any, selectedDate: any) => {
@@ -26,7 +24,7 @@ export default function DateSelector({
     <View style={styles.container}>
       <TouchableOpacity onPress={() => setShowPicker(true)}>
         <Text>
-          {label}: {date ? date.toLocaleDateString() : "All Dates"}
+          {label}: {date ? date.toLocaleDateString() : "Not selected"}
         </Text>
       </TouchableOpacity>
       {showPicker && (

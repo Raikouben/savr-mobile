@@ -105,7 +105,6 @@ export default function AddTransaction({
           <DateSelector
             date={date}
             onDateChange={setDate}
-            defaultToToday={true}
           />
           <TextInput
             placeholder="Description (optional)"

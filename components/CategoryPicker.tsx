@@ -25,6 +25,7 @@ export default function CategoryPicker({
   return (
     <View style={styles.container}>
       <Picker selectedValue={selectedCategory} onValueChange={onCategoryChange}>
+        <Picker.Item label="Select Category" value="" />
         {categories.map((category) => (
           <Picker.Item
             key={category.value}
