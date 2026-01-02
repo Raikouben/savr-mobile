@@ -8,6 +8,8 @@ import {
   Platform,
 } from "react-native";
 import React, { useState } from "react";
+import DateSelector from "./DateSelector";
+import CategoryPicker from "./CategoryPicker";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useTransactions } from "@/hooks/useTransactions";
@@ -22,9 +24,9 @@ export default function AddTransaction({
 }) {
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState<Date | null>(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [category, setCategory] = useState("housing");
+  const [category, setCategory] = useState("");
   const [loading, setLoading] = useState(false);
   const { createTransaction } = useTransactions();
   const [submitting, setSubmitting] = useState(false);
@@ -37,6 +39,15 @@ export default function AddTransaction({
   };
 
   const handleSubmit = async () => {
+    if (!date) {
+      alert("Please select a date");
+      return;
+    }
+    if (!category) {
+      alert("Please select a category");
+      return;
+    }
+
     setSubmitting(true);
     try {
       await createTransaction({
@@ -49,7 +60,7 @@ export default function AddTransaction({
       setAmount("");
       setDescription("");
       setDate(new Date());
-      setCategory("housing");
+      setCategory("");
 
       onSuccess?.(); // Tell parent to refresh
       onClose();
@@ -91,33 +102,20 @@ export default function AddTransaction({
             value={amount}
             onChangeText={setAmount}
           />
-          <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-            <Text>Select Date: {date.toLocaleDateString()}</Text>
-          </TouchableOpacity>
-          {showDatePicker && (
-            <DateTimePicker
-              value={date}
-              mode="date"
-              display="default"
-              onChange={handleDateChange}
-            />
-          )}
+          <DateSelector
+            date={date}
+            onDateChange={setDate}
+            defaultToToday={true}
+          />
           <TextInput
             placeholder="Description (optional)"
             value={description}
             onChangeText={setDescription}
           />
-
-          <Picker selectedValue={category} onValueChange={setCategory}>
-            <Picker.Item label="Housing" value="housing" />
-            <Picker.Item label="Utilities" value="utilities" />
-            <Picker.Item label="Transportation" value="transportation" />
-            <Picker.Item label="Food" value="food" />
-            <Picker.Item label="Shopping" value="shopping" />
-            <Picker.Item label="Health" value="health" />
-            <Picker.Item label="Entertainment" value="entertainment" />
-            <Picker.Item label="Miscellaneous" value="miscellaneous" />
-          </Picker>
+          <CategoryPicker
+            selectedCategory={category}
+            onCategoryChange={setCategory}
+          />
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >

@@ -7,12 +7,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
 import { useState } from "react";
 import { useMemo } from "react";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import DateSelector from "../../components/DateSelector";
+import CategoryPicker from "../../components/CategoryPicker";
 
 export default function transactions() {
   const [transactions, setTransactions] = useState<any[] | null>(null);
   const { getTransactions } = useTransactions();
-  const [showDatePicker, setShowDatePicker] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [date, setDate] = useState<Date | null>(null);
@@ -35,13 +35,6 @@ export default function transactions() {
   const resetFilters = () => {
     setDate(null);
     setCategory("");
-  };
-
-  const handleDateChange = (event: any, selectedDate: any) => {
-    setShowDatePicker(false);
-    if (selectedDate) {
-      setDate(selectedDate);
-    }
   };
 
   const filteredTransactions = useMemo(() => {
@@ -71,28 +64,11 @@ export default function transactions() {
   return (
     <View>
       <Text>Transactions</Text>
-      <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-        <Text>Select Date: {date ? date.toLocaleDateString() : "All"}</Text>
-      </TouchableOpacity>
-      {showDatePicker && (
-        <DateTimePicker
-          value={date || new Date()}
-          mode="date"
-          display="default"
-          onChange={handleDateChange}
-        />
-      )}
-      <Picker selectedValue={category} onValueChange={setCategory}>
-        <Picker.Item label="All Categories" value="" />
-        <Picker.Item label="Housing" value="housing" />
-        <Picker.Item label="Utilities" value="utilities" />
-        <Picker.Item label="Transportation" value="transportation" />
-        <Picker.Item label="Food" value="food" />
-        <Picker.Item label="Shopping" value="shopping" />
-        <Picker.Item label="Health" value="health" />
-        <Picker.Item label="Entertainment" value="entertainment" />
-        <Picker.Item label="Miscellaneous" value="miscellaneous" />
-      </Picker>
+      <DateSelector date={date} onDateChange={setDate} />
+      <CategoryPicker
+        selectedCategory={category}
+        onCategoryChange={setCategory}
+      />
       <TouchableOpacity onPress={resetFilters}>
         <Text>Reset Filters</Text>
       </TouchableOpacity>
