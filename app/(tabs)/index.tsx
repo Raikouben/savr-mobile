@@ -1,6 +1,12 @@
 import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
 import { Link } from "expo-router";
-import { Text, View, ScrollView, ActivityIndicator } from "react-native";
+import {
+  Text,
+  View,
+  ScrollView,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
 import { use, useState } from "react";
 import { SignOutButton } from "../../components/SignOutButton";
 import { useEffect } from "react";
@@ -15,6 +21,7 @@ import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { budgetCategories } from "../../constants/config";
 import { Ionicons } from "@expo/vector-icons";
 import { categoryIcons } from "../../constants/config";
+import { AdviceModal } from "../../components/Advice";
 
 export default function Page() {
   const { user } = useUser();
@@ -29,6 +36,8 @@ export default function Page() {
   const [budgetSummary, setBudgetSummary] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { getBudgetAdvice } = useBudget();
+  const [adviceModalVisible, setAdviceModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -109,52 +118,63 @@ export default function Page() {
             </AnimatedCircularProgress>
 
             {budgetSummary && (
-              <View>
-                <Text>Budget by Category</Text>
+              <TouchableOpacity onPress={() => setAdviceModalVisible(true)}>
                 <View>
-                  {Object.entries(budgetSummary).map(
-                    ([category, data]: [string, any], index) => (
-                      <View key={category}>
-                        <Text>
-                          {category}{" "}
-                          <Ionicons
-                            name={
-                              categoryIcons[
-                                category as keyof typeof categoryIcons
-                              ] as any
+                  <Text>Budget by Category</Text>
+                  <View>
+                    {Object.entries(budgetSummary).map(
+                      ([category, data]: [string, any], index) => (
+                        <View key={category}>
+                          <Text>
+                            {category}{" "}
+                            <Ionicons
+                              name={
+                                categoryIcons[
+                                  category as keyof typeof categoryIcons
+                                ] as any
+                              }
+                              size={24}
+                              color="black"
+                            />
+                          </Text>
+                          <AnimatedCircularProgress
+                            size={100}
+                            width={8}
+                            fill={data.percentageUsed}
+                            tintColor={
+                              data.percentageUsed < 50
+                                ? "#4caf50"
+                                : data.percentageUsed < 75
+                                ? "#ffeb3b"
+                                : data.percentageUsed < 100
+                                ? "#ff9800"
+                                : "#e53935"
                             }
-                            size={24}
-                            color="black"
-                          />
-                        </Text>
-                        <AnimatedCircularProgress
-                          size={100}
-                          width={8}
-                          fill={data.percentageUsed}
-                          tintColor={
-                            data.percentageUsed < 50
-                              ? "#4caf50"
-                              : data.percentageUsed < 75
-                              ? "#ffeb3b"
-                              : data.percentageUsed < 100
-                              ? "#ff9800"
-                              : "#e53935"
-                          }
-                          backgroundColor="#e0e0e0"
-                        >
-                          {(fill: number) => (
-                            <Text>{`${Math.round(fill)}%`}</Text>
+                            backgroundColor="#e0e0e0"
+                          >
+                            {(fill: number) => (
+                              <Text>{`${Math.round(fill)}%`}</Text>
+                            )}
+                          </AnimatedCircularProgress>
+                          <Text>
+                            ${data.actualSpent.toFixed(0)} / $
+                            {Number(data.budgetAmount).toFixed(0)}
+                          </Text>
+                          {adviceModalVisible && (
+                            <AdviceModal
+                              visible={adviceModalVisible}
+                              onClose={() => setAdviceModalVisible(false)}
+                              category={category}
+                              budgetAmount={data.budgetAmount}
+                              actualSpent={data.actualSpent}
+                            />
                           )}
-                        </AnimatedCircularProgress>
-                        <Text>
-                          ${data.actualSpent.toFixed(0)} / $
-                          {Number(data.budgetAmount).toFixed(0)}
-                        </Text>
-                      </View>
-                    )
-                  )}
+                        </View>
+                      )
+                    )}
+                  </View>
                 </View>
-              </View>
+              </TouchableOpacity>
             )}
           </View>
         </>
