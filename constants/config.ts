@@ -13,4 +13,16 @@ export const budgetCategories = [
   "Health",
   "Entertainment",
   "Miscellaneous",
-];
+] as const;
+
+export const categoryIcons: Record<(typeof budgetCategories)[number], string> =
+  {
+    Housing: "home-outline",
+    Utilities: "flash-outline",
+    Transportation: "car-outline",
+    Food: "restaurant-outline",
+    Shopping: "cart-outline",
+    Health: "fitness-outline",
+    Entertainment: "musical-notes-outline",
+    Miscellaneous: "ellipsis-horizontal-circle-outline",
+  };

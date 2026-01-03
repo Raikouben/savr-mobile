@@ -9,24 +9,25 @@ export function calculateBudgetSummary(
 
   for (const category of budgetCategories) {
     const categoryKey = category.toLowerCase();
-    const budgetAmount = budget[categoryKey];
+    const budgetAmount = Number(budget[categoryKey]) || 0;
 
     let actualSpent = 0;
 
     for (const t of transactions) {
-      const matchesCategory = t.category === category;
+      const matchesCategory =
+        t.category?.toLowerCase() === category.toLowerCase();
 
       const withinDate =
         (!startDate || t.date >= startDate) && (!endDate || t.date <= endDate);
 
       if (matchesCategory && withinDate) {
-        actualSpent += t.amount;
+        actualSpent += Number(t.amount) || 0;
       }
     }
 
     const difference = budgetAmount - actualSpent;
     const percentageUsed =
-      budgetAmount > 0 ? (actualSpent / budgetAmount) * 100 : 0;
+      budgetAmount > 0 ? Math.min((actualSpent / budgetAmount) * 100, 100) : 0;
 
     summary[category] = {
       budgetAmount,

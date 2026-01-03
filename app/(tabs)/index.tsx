@@ -1,6 +1,6 @@
 import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
 import { Link } from "expo-router";
-import { Text, View, ScrollView } from "react-native";
+import { Text, View, ScrollView, ActivityIndicator } from "react-native";
 import { use, useState } from "react";
 import { SignOutButton } from "../../components/SignOutButton";
 import { useEffect } from "react";
@@ -12,6 +12,9 @@ import {
   calculateTotalBudgetComparison,
 } from "../../utils/calculation";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
+import { budgetCategories } from "../../constants/config";
+import { Ionicons } from "@expo/vector-icons";
+import { categoryIcons } from "../../constants/config";
 
 export default function Page() {
   const { user } = useUser();
@@ -62,36 +65,100 @@ export default function Page() {
   return (
     <ScrollView>
       <Text>Overall Budget</Text>
-      <Text>{`$${overview ? overview.totalSpent.toFixed(0) : "0.00"} / $${
-        overview ? overview.totalBudget.toFixed(0) : "0.00"
-      }`}</Text>
-      <AnimatedCircularProgress
-        size={200}
-        width={12}
-        fill={
-          overview && overview.totalBudget > 0
-            ? Math.min((overview.totalSpent / overview.totalBudget) * 100, 100)
-            : 0
-        }
-        tintColor={
-          overview && overview.totalBudget > 0
-            ? overview.totalSpent / overview.totalBudget < 0.5
-              ? "#4caf50"
-              : overview.totalSpent / overview.totalBudget < 0.75
-              ? "#ffeb3b"
-              : overview.totalSpent / overview.totalBudget < 1
-              ? "#ff9800"
-              : "#e53935"
-            : "#4caf50"
-        }
-        backgroundColor="white"
-      >
-        {(fill: number) => (
-          <Text style={{ color: "white", fontSize: 22 }}>{`${Math.round(
-            fill
-          )}%`}</Text>
-        )}
-      </AnimatedCircularProgress>
+      {loading && (
+        <View>
+          <ActivityIndicator size="large" />
+          <Text>Loading...</Text>
+        </View>
+      )}
+      {!loading && (
+        <>
+          <View>
+            <Text>{`$${overview ? overview.totalSpent.toFixed(0) : "0.00"} / $${
+              overview ? overview.totalBudget.toFixed(0) : "0.00"
+            }`}</Text>
+            <AnimatedCircularProgress
+              size={200}
+              width={12}
+              fill={
+                overview && overview.totalBudget > 0
+                  ? Math.min(
+                      (overview.totalSpent / overview.totalBudget) * 100,
+                      100
+                    )
+                  : 0
+              }
+              tintColor={
+                overview && overview.totalBudget > 0
+                  ? overview.totalSpent / overview.totalBudget < 0.5
+                    ? "#4caf50"
+                    : overview.totalSpent / overview.totalBudget < 0.75
+                    ? "#ffeb3b"
+                    : overview.totalSpent / overview.totalBudget < 1
+                    ? "#ff9800"
+                    : "#e53935"
+                  : "#4caf50"
+              }
+              backgroundColor="white"
+            >
+              {(fill: number) => (
+                <Text style={{ color: "black", fontSize: 22 }}>{`${Math.round(
+                  fill
+                )}%`}</Text>
+              )}
+            </AnimatedCircularProgress>
+
+            {budgetSummary && (
+              <View>
+                <Text>Budget by Category</Text>
+                <View>
+                  {Object.entries(budgetSummary).map(
+                    ([category, data]: [string, any], index) => (
+                      <View key={category}>
+                        <Text>
+                          {category}{" "}
+                          <Ionicons
+                            name={
+                              categoryIcons[
+                                category as keyof typeof categoryIcons
+                              ] as any
+                            }
+                            size={24}
+                            color="black"
+                          />
+                        </Text>
+                        <AnimatedCircularProgress
+                          size={100}
+                          width={8}
+                          fill={data.percentageUsed}
+                          tintColor={
+                            data.percentageUsed < 50
+                              ? "#4caf50"
+                              : data.percentageUsed < 75
+                              ? "#ffeb3b"
+                              : data.percentageUsed < 100
+                              ? "#ff9800"
+                              : "#e53935"
+                          }
+                          backgroundColor="#e0e0e0"
+                        >
+                          {(fill: number) => (
+                            <Text>{`${Math.round(fill)}%`}</Text>
+                          )}
+                        </AnimatedCircularProgress>
+                        <Text>
+                          ${data.actualSpent.toFixed(0)} / $
+                          {Number(data.budgetAmount).toFixed(0)}
+                        </Text>
+                      </View>
+                    )
+                  )}
+                </View>
+              </View>
+            )}
+          </View>
+        </>
+      )}
     </ScrollView>
   );
 }
