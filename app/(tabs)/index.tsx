@@ -8,6 +8,8 @@ import { useBudget } from "../../hooks/useBudget";
 import { useTransactions } from "../../hooks/useTransactions";
 import { useAuth } from "../../hooks/useAuth";
 import { calculateBudgetSummary } from "../../utils/calculation";
+import { CircularProgressbar } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 
 export default function Page() {
   const { user } = useUser();

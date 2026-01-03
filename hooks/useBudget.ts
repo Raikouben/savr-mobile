@@ -16,6 +16,7 @@ export const useBudget = () => {
     health: number;
     entertainment: number;
     miscellaneous: number;
+    total_budget: number;
     start_date: string;
     end_date: string;
   }) => {
@@ -84,6 +85,7 @@ export const useBudget = () => {
     health: number;
     entertainment: number;
     miscellaneous: number;
+    total_budget: number;
     start_date: string;
     end_date: string;
   }) => {

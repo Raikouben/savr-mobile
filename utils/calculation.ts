@@ -35,8 +35,38 @@ export function calculateBudgetSummary(
       percentageUsed,
     };
   }
-
   return summary;
+}
+
+export function calculateTotalBudgetComparison(
+  budget: any,
+  transactions: any[],
+  startDate?: string,
+  endDate?: string
+) {
+  // Get total budget (should be stored in budget.total_budget)
+  const totalBudget = budget.total_budget || 0;
+
+  // Calculate total spent from transactions in date range
+  let totalSpent = 0;
+  for (const tx of transactions) {
+    const withinDate =
+      (!startDate || tx.date >= startDate) && (!endDate || tx.date <= endDate);
+    
+    if (withinDate) {
+      totalSpent += tx.amount;
+    }
+  }
+
+  const remaining = totalBudget - totalSpent;
+  const percentageUsed = totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
+
+  return {
+    totalBudget,
+    totalSpent,
+    remaining,
+    percentageUsed,
+  };
 }
 
 export function aggregateByTimeRange(

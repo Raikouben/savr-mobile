@@ -8,7 +8,7 @@ import {
 import React from "react";
 import { useEffect } from "react";
 import { useFocusEffect } from "@react-navigation/native";
-import { LineChart } from "react-native-gifted-charts";
+import { LineChart, PieChart, BarChart } from "react-native-gifted-charts";
 import { useState } from "react";
 import { useTransactions } from "@/hooks/useTransactions";
 import { useMemo } from "react";
