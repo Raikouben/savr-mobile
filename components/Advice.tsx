@@ -25,16 +25,17 @@ export const AdviceModal = ({
   const { getBudgetAdvice } = useBudget();
   const [advice, setAdvice] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const fetchAdvice = async () => {
       setLoading(true);
       try {
-        const adviceText = await getBudgetAdvice(
+        const adviceData = await getBudgetAdvice(
           category,
           budgetAmount,
           actualSpent
         );
-        setAdvice(adviceText);
+        setAdvice(adviceData.advice || "No advice available.");
       } catch (error) {
         setAdvice("Error fetching advice.");
       }
@@ -45,7 +46,7 @@ export const AdviceModal = ({
     } else {
       setAdvice(null);
     }
-  }, [visible]);
+  }, [visible, category, budgetAmount, actualSpent]);
   return (
     <Modal>
       <View>
