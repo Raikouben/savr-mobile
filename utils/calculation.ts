@@ -45,16 +45,16 @@ export function calculateTotalBudgetComparison(
   endDate?: string
 ) {
   // Get total budget (should be stored in budget.total_budget)
-  const totalBudget = budget.total_budget || 0;
+  const totalBudget = Number(budget.total_budget) || 0;
 
   // Calculate total spent from transactions in date range
   let totalSpent = 0;
   for (const tx of transactions) {
     const withinDate =
       (!startDate || tx.date >= startDate) && (!endDate || tx.date <= endDate);
-    
+
     if (withinDate) {
-      totalSpent += tx.amount;
+      totalSpent += Number(tx.amount) || 0;
     }
   }
 

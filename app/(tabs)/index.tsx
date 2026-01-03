@@ -61,7 +61,10 @@ export default function Page() {
 
   return (
     <ScrollView>
-      <Text>HomeScreen</Text>
+      <Text>Overall Budget</Text>
+      <Text>{`$${overview ? overview.totalSpent.toFixed(0) : "0.00"} / $${
+        overview ? overview.totalBudget.toFixed(0) : "0.00"
+      }`}</Text>
       <AnimatedCircularProgress
         size={200}
         width={12}
