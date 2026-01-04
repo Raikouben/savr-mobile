@@ -4,28 +4,12 @@ import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useBudget } from "@/hooks/useBudget";
+import { useUserQuery } from "@/hooks/queries/authQuery";
+import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 
 export default function profile() {
-  const { updateUser } = useAuth();
-  const { getUser } = useAuth();
-  const { updateBudget } = useBudget();
-  const { getBudget } = useBudget();
-  const [user, setUser] = useState<any>(null);
-  const [budget, setBudget] = useState<any>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const userData = await getUser();
-        setUser(userData);
-        const budgetData = await getBudget();
-        setBudget(budgetData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchData();
-  }, []);
+  const { user, isLoading: userLoading } = useUserQuery();
+  const { budget, isLoading: budgetLoading } = useBudgetQuery();
 
   return (
     <View>

@@ -7,12 +7,11 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
-import { use, useState } from "react";
+import { useState, useMemo } from "react";
 import { SignOutButton } from "../../components/SignOutButton";
-import { useEffect } from "react";
-import { useBudget } from "../../hooks/useBudget";
-import { useTransactions } from "../../hooks/useTransactions";
-import { useAuth } from "../../hooks/useAuth";
+import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
+import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
+import { useUserQuery } from "@/hooks/queries/authQuery";
 import {
   calculateBudgetSummary,
   calculateTotalBudgetComparison,
@@ -24,19 +23,10 @@ import { categoryIcons } from "../../constants/config";
 import { AdviceModal } from "../../components/Advice";
 
 export default function Page() {
-  const { user } = useUser();
-  const clerkId = user?.id;
-  const { getUser } = useAuth();
-  const { getBudget } = useBudget();
-  const { getTransactions } = useTransactions();
-  const [neonUser, setNeonUser] = useState<any | null>(null);
-  const [budget, setBudget] = useState<number | null>(null);
-  const [overview, setOverview] = useState<any | null>(null);
-  const [transactions, setTransactions] = useState<any[] | null>(null);
-  const [budgetSummary, setBudgetSummary] = useState<any | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const { getBudgetAdvice } = useBudget();
+  const { budget, isLoading: budgetLoading } = useBudgetQuery();
+  const { transactions, isLoading: transactionsLoading } =
+    useTransactionQuery();
+
   const [adviceModalVisible, setAdviceModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<{
     category: string;
@@ -44,37 +34,17 @@ export default function Page() {
     actualSpent: number;
   } | null>(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        if (clerkId) {
-          const neonUser = await getUser();
-          setNeonUser(neonUser);
+  const loading = budgetLoading || transactionsLoading;
 
-          const budgetData = await getBudget();
-          setBudget(budgetData);
+  const budgetSummary = useMemo(() => {
+    if (!budget || !transactions) return null;
+    return calculateBudgetSummary(budget, transactions);
+  }, [budget, transactions]);
 
-          const transactionsData = await getTransactions();
-          setTransactions(transactionsData);
-
-          const summary = calculateBudgetSummary(budgetData, transactionsData);
-          setBudgetSummary(summary);
-
-          const totalBudgetComparison = calculateTotalBudgetComparison(
-            budgetData,
-            transactionsData
-          );
-          setOverview(totalBudgetComparison);
-        }
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [clerkId]);
+  const overview = useMemo(() => {
+    if (!budget || !transactions) return null;
+    return calculateTotalBudgetComparison(budget, transactions);
+  }, [budget, transactions]);
 
   return (
     <ScrollView>

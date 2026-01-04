@@ -9,28 +9,14 @@ import { useState } from "react";
 import { useMemo } from "react";
 import DateSelector from "../../components/DateSelector";
 import CategoryPicker from "../../components/CategoryPicker";
+import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
 
 export default function transactions() {
-  const [transactions, setTransactions] = useState<any[] | null>(null);
-  const { getTransactions } = useTransactions();
-  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [date, setDate] = useState<Date | null>(null);
   const [category, setCategory] = useState<string>("");
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-
-  const fetchTransactions = async () => {
-    setLoading(true);
-    try {
-      const transactionsData = await getTransactions();
-      setTransactions(transactionsData);
-    } catch (error) {
-      setError("Failed to fetch transactions");
-      console.error("Failed to fetch transactions:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { transactions, isLoading: loading } = useTransactionQuery();
 
   const resetFilters = () => {
     setDate(null);
@@ -44,22 +30,18 @@ export default function transactions() {
 
     if (date) {
       const selectedDate = date.toISOString().split("T")[0];
-      filtered = filtered.filter((tx) => {
+      filtered = filtered.filter((tx: any) => {
         const txDate = new Date(tx.date).toISOString().split("T")[0];
         return txDate === selectedDate;
       });
     }
 
     if (category) {
-      filtered = filtered.filter((tx) => tx.category === category);
+      filtered = filtered.filter((tx: any) => tx.category === category);
     }
 
     return filtered;
   }, [transactions, date, category]);
-
-  useEffect(() => {
-    fetchTransactions();
-  }, []);
 
   return (
     <View>
@@ -100,7 +82,6 @@ export default function transactions() {
           onClose={() => setModalVisible(false)}
           onSuccess={() => {
             setModalVisible(false);
-            fetchTransactions();
           }}
         />
       )}

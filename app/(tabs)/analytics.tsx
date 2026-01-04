@@ -14,11 +14,10 @@ import { useTransactions } from "@/hooks/useTransactions";
 import { useMemo } from "react";
 import CategoryPicker from "@/components/CategoryPicker";
 import { aggregateByTimeRange, formatChartLabel } from "@/utils/calculation";
+import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
+import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
 
 export default function analytics() {
-  const [transactions, setTransactions] = useState<any[] | null>(null);
-  const { getTransactions } = useTransactions();
-  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [timeRange, setTimeRange] = useState<"week" | "month" | "year">("week");
   const [category, setCategory] = useState<string>("");
@@ -27,25 +26,17 @@ export default function analytics() {
     new Date().getFullYear()
   );
   const [selectedWeek, setSelectedWeek] = useState<Date>(new Date());
+  const { budget, isLoading: budgetLoading } = useBudgetQuery();
+  const { transactions, isLoading: transactionsLoading } =
+    useTransactionQuery();
 
-  const fetchTransactions = async () => {
-    setLoading(true);
-    try {
-      const transactionsData = await getTransactions();
-      setTransactions(transactionsData);
-    } catch (error) {
-      setError("Failed to fetch transactions");
-      console.error("Failed to fetch transactions:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const loading = budgetLoading || transactionsLoading;
 
   const filteredTransactions = useMemo(() => {
     if (!transactions) return [];
 
     if (category) {
-      return transactions.filter((tx) => tx.category === category);
+      return transactions.filter((tx: any) => tx.category === category);
     }
 
     return transactions;
@@ -148,10 +139,6 @@ export default function analytics() {
     return false;
   };
 
-  useEffect(() => {
-    fetchTransactions();
-  }, []);
-
   useFocusEffect(
     React.useCallback(() => {
       setTimeRange("week");
@@ -159,7 +146,6 @@ export default function analytics() {
       setSelectedMonthYear(new Date());
       setSelectedYear(new Date().getFullYear());
       setCategory("");
-      fetchTransactions();
     }, [])
   );
 

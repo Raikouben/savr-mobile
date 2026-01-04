@@ -1,13 +1,31 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useBudget } from "../useBudget";
-import { use } from "react";
 
 export const useBudgetQuery = () => {
-  const { getBudget } = useBudget();
-  return useQuery({
+  const { getBudget, updateBudget, getBudgetAdvice } = useBudget();
+  const queryClient = useQueryClient();
+
+  const query = useQuery({
     queryKey: ["budget"],
     queryFn: getBudget,
   });
+
+  const updateMutation = useMutation({
+    mutationFn: updateBudget,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["budget"] });
+    },
+  });
+
+  return {
+    budget: query.data,
+    isLoading: query.isLoading,
+    error: query.error,
+    refetch: query.refetch,
+    updateBudget: updateMutation.mutateAsync,
+    isUpdating: updateMutation.isPending,
+    getBudgetAdvice,
+  };
 };
 
 export function useUpdateBudgetQuery() {
