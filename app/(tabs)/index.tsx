@@ -38,6 +38,11 @@ export default function Page() {
   const [error, setError] = useState<string | null>(null);
   const { getBudgetAdvice } = useBudget();
   const [adviceModalVisible, setAdviceModalVisible] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<{
+    category: string;
+    budgetAmount: number;
+    actualSpent: number;
+  } | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -118,13 +123,23 @@ export default function Page() {
             </AnimatedCircularProgress>
 
             {budgetSummary && (
-              <TouchableOpacity onPress={() => setAdviceModalVisible(true)}>
+              <View>
+                <Text>Budget by Category</Text>
                 <View>
-                  <Text>Budget by Category</Text>
-                  <View>
-                    {Object.entries(budgetSummary).map(
-                      ([category, data]: [string, any], index) => (
-                        <View key={category}>
+                  {Object.entries(budgetSummary).map(
+                    ([category, data]: [string, any], index) => (
+                      <TouchableOpacity
+                        key={category}
+                        onPress={() => {
+                          setSelectedCategory({
+                            category,
+                            budgetAmount: data.budgetAmount,
+                            actualSpent: data.actualSpent,
+                          });
+                          setAdviceModalVisible(true);
+                        }}
+                      >
+                        <View>
                           <Text>
                             {category}{" "}
                             <Ionicons
@@ -160,21 +175,24 @@ export default function Page() {
                             ${data.actualSpent.toFixed(0)} / $
                             {Number(data.budgetAmount).toFixed(0)}
                           </Text>
-                          {adviceModalVisible && (
-                            <AdviceModal
-                              visible={adviceModalVisible}
-                              onClose={() => setAdviceModalVisible(false)}
-                              category={category}
-                              budgetAmount={data.budgetAmount}
-                              actualSpent={data.actualSpent}
-                            />
-                          )}
                         </View>
-                      )
-                    )}
-                  </View>
+                      </TouchableOpacity>
+                    )
+                  )}
                 </View>
-              </TouchableOpacity>
+              </View>
+            )}
+            {selectedCategory && (
+              <AdviceModal
+                visible={adviceModalVisible}
+                onClose={() => {
+                  setAdviceModalVisible(false);
+                  setSelectedCategory(null);
+                }}
+                category={selectedCategory.category}
+                budgetAmount={selectedCategory.budgetAmount}
+                actualSpent={selectedCategory.actualSpent}
+              />
             )}
           </View>
         </>
