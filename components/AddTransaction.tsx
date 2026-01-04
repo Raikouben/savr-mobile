@@ -12,7 +12,7 @@ import DateSelector from "./DateSelector";
 import CategoryPicker from "./CategoryPicker";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useTransactions } from "@/hooks/useTransactions";
+import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
 export default function AddTransaction({
   visible,
   onClose,
@@ -28,7 +28,7 @@ export default function AddTransaction({
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [category, setCategory] = useState("");
   const [loading, setLoading] = useState(false);
-  const { createTransaction } = useTransactions();
+  const { createTransaction, isCreating } = useTransactionQuery();
   const [submitting, setSubmitting] = useState(false);
 
   const handleDateChange = (event: any, selectedDate: any) => {

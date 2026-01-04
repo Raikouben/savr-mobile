@@ -1,4 +1,10 @@
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import React from "react";
 import { useEffect } from "react";
 import { useTransactions } from "../../hooks/useTransactions";
@@ -40,26 +46,39 @@ export default function transactions() {
       filtered = filtered.filter((tx: any) => tx.category === category);
     }
 
-    return filtered;
+    return filtered.sort(
+      (a: any, b: any) =>
+        new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
   }, [transactions, date, category]);
 
   return (
     <View>
-      <Text>Transactions</Text>
-      <DateSelector date={date} onDateChange={setDate} />
-      <CategoryPicker
-        selectedCategory={category}
-        onCategoryChange={setCategory}
-      />
-      <TouchableOpacity onPress={resetFilters}>
-        <Text>Reset Filters</Text>
-      </TouchableOpacity>
       {loading && <Text>Loading...</Text>}
       {error && <Text>{error}</Text>}
       {transactions && (
         <FlatList
           data={filteredTransactions}
           keyExtractor={(item) => item.id.toString()}
+          ListHeaderComponent={
+            <View>
+              <Text>Transactions</Text>
+              <DateSelector date={date} onDateChange={setDate} />
+              <CategoryPicker
+                selectedCategory={category}
+                onCategoryChange={setCategory}
+              />
+              <TouchableOpacity onPress={resetFilters}>
+                <Text>Reset Filters</Text>
+              </TouchableOpacity>
+              <Ionicons
+                name="add-circle-outline"
+                size={32}
+                color="black"
+                onPress={() => setModalVisible(true)}
+              />
+            </View>
+          }
           renderItem={({ item }) => (
             <View>
               <Text>{item.category}</Text>
