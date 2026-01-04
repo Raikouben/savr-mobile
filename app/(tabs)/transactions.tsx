@@ -82,7 +82,7 @@ export default function transactions() {
           renderItem={({ item }) => (
             <View>
               <Text>{item.category}</Text>
-              <Text>${(parseFloat(item.amount) || 0).toFixed(2)}</Text>
+              <Text>£{(parseFloat(item.amount) || 0).toFixed(2)}</Text>
               <Text>{new Date(item.date).toLocaleDateString()}</Text>
               {item.description && <Text>{item.description}</Text>}
             </View>

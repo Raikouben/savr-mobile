@@ -58,7 +58,7 @@ export default function Page() {
       {!loading && (
         <>
           <View>
-            <Text>{`$${overview ? overview.totalSpent.toFixed(0) : "0.00"} / $${
+            <Text>{`£${overview ? overview.totalSpent.toFixed(0) : "0.00"} / £${
               overview ? overview.totalBudget.toFixed(0) : "0.00"
             }`}</Text>
             <AnimatedCircularProgress
@@ -142,7 +142,7 @@ export default function Page() {
                             )}
                           </AnimatedCircularProgress>
                           <Text>
-                            ${data.actualSpent.toFixed(0)} / $
+                            £{data.actualSpent.toFixed(0)} / £
                             {Number(data.budgetAmount).toFixed(0)}
                           </Text>
                         </View>
