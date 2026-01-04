@@ -4,6 +4,8 @@ import { Slot } from "expo-router";
 import SafeView from "../components/SafeView";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+const queryClient = new QueryClient();
 
 SplashScreen.preventAutoHideAsync();
 
@@ -25,8 +27,10 @@ function RootLayoutNav() {
 
 export default function RootLayout() {
   return (
-    <ClerkProvider tokenCache={tokenCache}>
-      <RootLayoutNav />
-    </ClerkProvider>
+    <QueryClientProvider client={queryClient}>
+      <ClerkProvider tokenCache={tokenCache}>
+        <RootLayoutNav />
+      </ClerkProvider>
+    </QueryClientProvider>
   );
 }
