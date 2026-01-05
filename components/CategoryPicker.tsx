@@ -11,10 +11,13 @@ const categories = [
   { label: "Housing", value: "housing" },
   { label: "Utilities", value: "utilities" },
   { label: "Transportation", value: "transportation" },
-  { label: "Food", value: "food" },
+  { label: "Groceries", value: "groceries" },
+  { label: "Eating Out", value: "eating_out" },
   { label: "Shopping", value: "shopping" },
   { label: "Health", value: "health" },
   { label: "Entertainment", value: "entertainment" },
+  { label: "Savings", value: "savings" },
+  { label: "Debt", value: "debt" },
   { label: "Miscellaneous", value: "miscellaneous" },
 ];
 

@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useBudget } from "../useBudget";
 
 export const useBudgetQuery = () => {
-  const { getBudget, updateBudget, getBudgetAdvice } = useBudget();
+  const { getBudget, updateBudget} = useBudget();
   const queryClient = useQueryClient();
 
   const query = useQuery({
@@ -24,7 +24,6 @@ export const useBudgetQuery = () => {
     refetch: query.refetch,
     updateBudget: updateMutation.mutateAsync,
     isUpdating: updateMutation.isPending,
-    getBudgetAdvice,
   };
 };
 
