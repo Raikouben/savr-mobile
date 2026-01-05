@@ -1,8 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useBudget } from "../useBudget";
+import { isClerkAPIResponseError } from "@clerk/clerk-expo";
 
 export const useBudgetQuery = () => {
-  const { getBudget, updateBudget} = useBudget();
+  const { getBudget, updateBudget, createBudget } = useBudget();
   const queryClient = useQueryClient();
 
   const query = useQuery({
@@ -10,6 +11,12 @@ export const useBudgetQuery = () => {
     queryFn: getBudget,
   });
 
+  const createMutation = useMutation({
+    mutationFn: createBudget,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["budget"] });
+    },
+  });
   const updateMutation = useMutation({
     mutationFn: updateBudget,
     onSuccess: () => {
@@ -22,18 +29,10 @@ export const useBudgetQuery = () => {
     isLoading: query.isLoading,
     error: query.error,
     refetch: query.refetch,
+    createBudget: createMutation.mutateAsync,
     updateBudget: updateMutation.mutateAsync,
     isUpdating: updateMutation.isPending,
+    isCreating: createMutation.isPending,
   };
 };
 
-export function useUpdateBudgetQuery() {
-  const { updateBudget } = useBudget();
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: updateBudget,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["budget"] });
-    },
-  });
-}

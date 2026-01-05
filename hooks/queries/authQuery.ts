@@ -27,13 +27,3 @@ export const useUserQuery = () => {
   };
 };
 
-export function useUpdateUserQuery() {
-  const { updateUser } = useAuth();
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: updateUser,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["auth"] });
-    },
-  });
-}

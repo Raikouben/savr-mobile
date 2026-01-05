@@ -28,13 +28,3 @@ export const useTransactionQuery = () => {
   };
 };
 
-export function useCreateTransactionQuery() {
-  const { createTransaction } = useTransactions();
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: createTransaction,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["transactions"] });
-    },
-  });
-}

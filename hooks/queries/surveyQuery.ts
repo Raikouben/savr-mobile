@@ -2,12 +2,20 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRecommender } from "../useRecommender";
 
 export const useSurveyQuery = () => {
-  const { getLifestyleAnswers, updateLifestyleAnswers } = useRecommender();
+  const { getLifestyleAnswers, updateLifestyleAnswers, postLifestyleAnswers } =
+    useRecommender();
   const queryClient = useQueryClient();
 
   const query = useQuery({
     queryKey: ["lifestyleSurvey"],
     queryFn: getLifestyleAnswers,
+  });
+
+  const createMutation = useMutation({
+    mutationFn: postLifestyleAnswers,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["lifestyleSurvey"] });
+    },
   });
 
   const updateMutation = useMutation({
@@ -21,7 +29,9 @@ export const useSurveyQuery = () => {
     isLoading: query.isLoading,
     error: query.error,
     refetch: query.refetch,
+    submitSurveyAnswers: createMutation.mutateAsync,
     updateSurveyAnswers: updateMutation.mutateAsync,
     isUpdating: updateMutation.isPending,
+    isSubmitting: createMutation.isPending,
   };
 };

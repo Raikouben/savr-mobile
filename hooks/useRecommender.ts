@@ -7,7 +7,7 @@ export const useRecommender = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  const postLifestyleAnswers = async (answers: number[]) => {
+  const postLifestyleAnswers = async (answers: { [key: string]: number }) => {
     setLoading(true);
     setError(null);
     try {
@@ -59,7 +59,7 @@ export const useRecommender = () => {
     }
   };
 
-  const updateLifestyleAnswers = async (answers: number[]) => {
+  const updateLifestyleAnswers = async (answers: { [key: string]: number }) => {
     setLoading(true);
     setError(null);
     try {
