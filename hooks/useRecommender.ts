@@ -6,7 +6,7 @@ export const useRecommender = () => {
   const { getToken } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   const postLifestyleAnswers = async (answers: { [key: string]: number }) => {
     setLoading(true);
     setError(null);

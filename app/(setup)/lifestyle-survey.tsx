@@ -121,85 +121,57 @@ interface LifestyleSurveyProps {}
 
 export default function LifestyleSurvey({}: LifestyleSurveyProps) {
   const router = useRouter();
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<{ [key: string]: number }>({});
   const { submitSurveyAnswers, isSubmitting } = useSurveyQuery();
 
-  const currentQuestion = lifestyleQuestions[currentIndex];
-  const isLastQuestion = currentIndex === lifestyleQuestions.length - 1;
-
-  const handleSelect = (value: number) => {
-    setAnswers({ ...answers, [currentQuestion.id]: value });
-  };
-
-  const handleNext = () => {
-    if (currentIndex < lifestyleQuestions.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    }
-  };
-
-  const handleBack = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-    }
+  const handleSelect = (questionId: string, value: number) => {
+    setAnswers({ ...answers, [questionId]: value });
   };
 
   const handleSubmit = async () => {
     try {
       await submitSurveyAnswers(answers);
       router.replace("/(tabs)");
-      setCurrentIndex(0);
       setAnswers({});
     } catch (error) {
       console.error("Error submitting survey:", error);
     }
   };
 
+  const allAnswered = lifestyleQuestions.every(
+    (q) => answers[q.id] !== undefined
+  );
+
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView>
         <View>
-          <Text>
-            Question {currentIndex + 1} of {lifestyleQuestions.length}
-          </Text>
-          <Text>{currentQuestion.question}</Text>
+          <Text>Lifestyle Survey</Text>
 
-          {currentQuestion.options.map((option) => (
-            <TouchableOpacity
-              key={option.value}
-              onPress={() => handleSelect(option.value)}
-            >
-              <Text>
-                {answers[currentQuestion.id] === option.value ? "✓ " : ""}
-                {option.label}
-              </Text>
-            </TouchableOpacity>
+          {lifestyleQuestions.map((question) => (
+            <View key={question.id}>
+              <Text>{question.question}</Text>
+
+              {question.options.map((option) => (
+                <TouchableOpacity
+                  key={option.value}
+                  onPress={() => handleSelect(question.id, option.value)}
+                >
+                  <Text>
+                    {answers[question.id] === option.value ? "✓ " : ""}
+                    {option.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
           ))}
 
-          <View>
-            <TouchableOpacity
-              onPress={handleBack}
-              disabled={currentIndex === 0}
-            >
-              <Text>Back</Text>
-            </TouchableOpacity>
-
-            {isLastQuestion ? (
-              <TouchableOpacity
-                onPress={handleSubmit}
-                disabled={!answers[currentQuestion.id] || isSubmitting}
-              >
-                <Text>{isSubmitting ? "Submitting..." : "Submit"}</Text>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                onPress={handleNext}
-                disabled={!answers[currentQuestion.id]}
-              >
-                <Text>Next</Text>
-              </TouchableOpacity>
-            )}
-          </View>
+          <TouchableOpacity
+            onPress={handleSubmit}
+            disabled={!allAnswered || isSubmitting}
+          >
+            <Text>{isSubmitting ? "Submitting..." : "Submit"}</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </View>
