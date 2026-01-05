@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useState, useMemo } from "react";
-import { SignOutButton } from "../../components/SignOutButton";
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
 import { useUserQuery } from "@/hooks/queries/authQuery";

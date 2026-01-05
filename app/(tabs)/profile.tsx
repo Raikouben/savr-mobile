@@ -7,18 +7,19 @@ import { useBudget } from "@/hooks/useBudget";
 import { useUserQuery } from "@/hooks/queries/authQuery";
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 import BudgetDisplay from "@/components/BudgetDisplay";
+import { SignOutButton } from "../../components/SignOutButton";
+import UserDisplay from "@/components/UserDisplay";
 
 export default function profile() {
-  const { user, isLoading: userLoading } = useUserQuery();
+  const { user, isLoading: userLoading, updateUser } = useUserQuery();
   const { budget, isLoading: budgetLoading } = useBudgetQuery();
 
   return (
     <ScrollView>
       <Text>profile</Text>
-
-      <Text>Username: {user.username}</Text>
-      <Text>Email: {user.email}</Text>
+      <UserDisplay />
       <BudgetDisplay />
+      <SignOutButton />
     </ScrollView>
   );
 }

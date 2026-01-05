@@ -64,7 +64,7 @@ export const useAuth = () => {
     }
   };
 
-  const updateUser = async () => {
+  const updateUser = async (userData: { username: string; email: string }) => {
     setLoading(true);
     setError(null);
     try {
@@ -75,7 +75,7 @@ export const useAuth = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({}),
+        body: JSON.stringify(userData),
       });
       if (!response.ok) {
         const errorText = await response.text();
