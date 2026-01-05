@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
 import { useSurveyQuery } from "@/hooks/queries/surveyQuery";
 
@@ -122,15 +122,41 @@ interface LifestyleSurveyProps {}
 export default function LifestyleSurvey({}: LifestyleSurveyProps) {
   const router = useRouter();
   const [answers, setAnswers] = useState<{ [key: string]: number }>({});
-  const { submitSurveyAnswers, isSubmitting } = useSurveyQuery();
+  const {
+    surveyAnswers,
+    isLoading,
+    submitSurveyAnswers,
+    updateSurveyAnswers,
+    isSubmitting,
+  } = useSurveyQuery();
+
+  const [hasExistingAnswers, setHasExistingAnswers] = useState(false);
+
+  useEffect(() => {
+    if (surveyAnswers) {
+      setAnswers(surveyAnswers);
+      setHasExistingAnswers(true);
+    }
+  }, [surveyAnswers]);
 
   const handleSelect = (questionId: string, value: number) => {
     setAnswers({ ...answers, [questionId]: value });
   };
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, backgroundColor: "white" }}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   const handleSubmit = async () => {
     try {
-      await submitSurveyAnswers(answers);
+      if (hasExistingAnswers) {
+        await updateSurveyAnswers(answers);
+      } else {
+        await submitSurveyAnswers(answers);
+      }
       router.replace("/(tabs)");
       setAnswers({});
     } catch (error) {
@@ -151,7 +177,6 @@ export default function LifestyleSurvey({}: LifestyleSurveyProps) {
           {lifestyleQuestions.map((question) => (
             <View key={question.id}>
               <Text>{question.question}</Text>
-
               {question.options.map((option) => (
                 <TouchableOpacity
                   key={option.value}
@@ -170,7 +195,15 @@ export default function LifestyleSurvey({}: LifestyleSurveyProps) {
             onPress={handleSubmit}
             disabled={!allAnswered || isSubmitting}
           >
-            <Text>{isSubmitting ? "Submitting..." : "Submit"}</Text>
+            <Text>
+              {isSubmitting
+                ? hasExistingAnswers
+                  ? "Updating..."
+                  : "Submitting..."
+                : hasExistingAnswers
+                ? "Update"
+                : "Submit"}
+            </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
