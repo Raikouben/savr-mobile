@@ -13,7 +13,7 @@ export default function Setup() {
     console.log("Budget found, redirecting to main app");
     return <Redirect href={"/(tabs)"} />; // Done with setup, go to main app
   }
-  
+
   console.log("In setup layout, no budget found");
   return <Stack screenOptions={{ headerShown: false }} />; // Stay in setup
 }

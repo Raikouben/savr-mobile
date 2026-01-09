@@ -27,9 +27,9 @@ function RootLayoutNav() {
 
   if (!isLoaded) return null;
 
-  if (!isSignedIn) {
-    return <Redirect href={"/(auth)/sign-in"} />;
-  }
+  // if (!isSignedIn) {
+  //   return <Redirect href={"/(auth)/sign-in"} />;
+  // }
 
   return (
     <SafeView>
