@@ -1,6 +1,6 @@
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { tokenCache } from "@clerk/clerk-expo/token-cache";
-import { Slot } from "expo-router";
+import { Redirect, Slot } from "expo-router";
 import SafeView from "../components/SafeView";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
@@ -14,9 +14,9 @@ const queryClient = new QueryClient();
 SplashScreen.preventAutoHideAsync();
 
 function RootLayoutNav() {
-  const { isLoaded } = useAuth();
+  const { isLoaded, isSignedIn } = useAuth();
   const { isLoading: userLoading } = useUserQuery();
-  const { isLoading: budgetLoading } = useBudgetQuery();
+  const { budget, isLoading: budgetLoading } = useBudgetQuery();
   const { isLoading: transactionsLoading } = useTransactionQuery();
 
   useEffect(() => {
@@ -24,6 +24,12 @@ function RootLayoutNav() {
       SplashScreen.hideAsync();
     }
   }, [isLoaded, userLoading, budgetLoading, transactionsLoading]);
+
+  if (!isLoaded) return null;
+
+  if (!isSignedIn) {
+    return <Redirect href={"/(auth)/sign-in"} />;
+  }
 
   return (
     <SafeView>
