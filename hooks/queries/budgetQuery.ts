@@ -9,6 +9,7 @@ export const useBudgetQuery = () => {
   const query = useQuery({
     queryKey: ["budget"],
     queryFn: getBudget,
+    retry: false, // Don't retry on 404 errors
   });
 
   const createMutation = useMutation({

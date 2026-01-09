@@ -63,7 +63,9 @@ export const useBudget = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-
+      if (response.status === 404) {
+        return null;
+      }
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(errorText);
