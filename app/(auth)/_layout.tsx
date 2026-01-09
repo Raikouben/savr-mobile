@@ -5,7 +5,7 @@ export default function AuthRoutesLayout() {
   const { isSignedIn } = useAuth();
 
   if (isSignedIn) {
-    return <Redirect href={"/(setup)/lifestyle-survey"} />;
+    return <Redirect href={"/(setup)/income-disclosure"} />;
   }
 
   return <Stack screenOptions={{ headerShown: false }} />;

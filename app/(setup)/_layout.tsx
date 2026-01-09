@@ -9,10 +9,11 @@ import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 export default function Setup() {
   const budget = useBudgetQuery();
 
-  if (budget) {
+  if (!budget) {
     console.log("Budget found, redirecting to main app");
     return <Redirect href={"/(tabs)"} />; // Done with setup, go to main app
   }
+  
   console.log("In setup layout, no budget found");
   return <Stack screenOptions={{ headerShown: false }} />; // Stay in setup
 }

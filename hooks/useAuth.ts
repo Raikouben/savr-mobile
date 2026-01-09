@@ -91,6 +91,32 @@ export const useAuth = () => {
       setLoading(false);
     }
   };
+  const updateUserIncome = async (income: number) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const token = await getToken();
+      const response = await fetch(`${API_URL}/auth/user/income`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ income }),
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText);
+      }
+      const data = await response.json();
+      return data;
+    } catch (err: any) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return {
     loading,
@@ -98,5 +124,6 @@ export const useAuth = () => {
     createUser,
     getUser,
     updateUser,
+    updateUserIncome,
   };
 };

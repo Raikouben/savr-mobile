@@ -117,9 +117,7 @@ const lifestyleQuestions = [
   },
 ];
 
-interface LifestyleSurveyProps {}
-
-export default function LifestyleSurvey({}: LifestyleSurveyProps) {
+export default function LifestyleSurvey() {
   const router = useRouter();
   const [answers, setAnswers] = useState<{ [key: string]: number }>({});
   const {
