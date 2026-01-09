@@ -9,7 +9,7 @@ import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 export default function Setup() {
   const { budget } = useBudgetQuery();
 
-  if (!budget) {
+  if (budget) {
     console.log("Budget found, redirecting to main app");
     return <Redirect href={"/(tabs)"} />;
   }

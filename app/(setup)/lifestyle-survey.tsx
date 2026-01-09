@@ -155,7 +155,7 @@ export default function LifestyleSurvey() {
       } else {
         await submitSurveyAnswers(answers);
       }
-      router.replace("/(tabs)");
+      router.replace("/(setup)/budget-selection");
       setAnswers({});
     } catch (error) {
       console.error("Error submitting survey:", error);
