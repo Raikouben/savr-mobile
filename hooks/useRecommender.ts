@@ -86,11 +86,40 @@ export const useRecommender = () => {
     }
   };
 
+  const getBudgetRecommendation = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const token = await getToken();
+      const response = await fetch(`${API_URL}/recommender/budget`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText);
+      }
+      const data = await response.json();
+      console.log("Budget Recommendation:", data);
+      return data;
+    } catch (err: any) {
+      console.error("Failed to get budget recommendation:", err);
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     loading,
     error,
     getLifestyleAnswers,
     postLifestyleAnswers,
     updateLifestyleAnswers,
+    getBudgetRecommendation,
   };
 };
