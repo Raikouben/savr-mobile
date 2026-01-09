@@ -7,13 +7,13 @@ import { useUserQuery } from "@/hooks/queries/authQuery";
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 
 export default function Setup() {
-  const budget = useBudgetQuery();
+  const { budget } = useBudgetQuery();
 
   if (!budget) {
     console.log("Budget found, redirecting to main app");
-    return <Redirect href={"/(tabs)"} />; // Done with setup, go to main app
+    return <Redirect href={"/(tabs)"} />;
   }
 
   console.log("In setup layout, no budget found");
-  return <Stack screenOptions={{ headerShown: false }} />; // Stay in setup
+  return <Stack screenOptions={{ headerShown: false }} />;
 }
