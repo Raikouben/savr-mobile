@@ -16,7 +16,7 @@ import CategoryPicker from "@/components/CategoryPicker";
 import { aggregateByTimeRange, formatChartLabel } from "@/utils/calculation";
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
-import { yAxisConfig } from "@/utils/analyticsHelper";
+import { yAxisConfig, categoriseSpending } from "@/utils/analyticsHelper";
 
 export default function analytics() {
   const [error, setError] = useState<string | null>(null);
@@ -27,6 +27,7 @@ export default function analytics() {
     new Date().getFullYear()
   );
   const [selectedWeek, setSelectedWeek] = useState<Date>(new Date());
+  const [pieData, setPieData] = useState<any[]>([]);
   const { budget, isLoading: budgetLoading } = useBudgetQuery();
   const { transactions, isLoading: transactionsLoading } =
     useTransactionQuery();
@@ -67,6 +68,28 @@ export default function analytics() {
     selectedYear,
     selectedWeek,
   ]);
+
+  const pieChartData = useMemo(() => {
+    const categoryTotals = categoriseSpending(filteredTransactions);
+    const colors = [
+      "#FF6B6B",
+      "#4A90E2",
+      "#2ECC71",
+      "#F39C12",
+      "#9B59B6",
+      "#E67E22",
+    ];
+
+    const pieData = Object.entries(categoryTotals).map(
+      ([category, amount], index) => ({
+        value: amount,
+        label: category,
+        color: colors[index % colors.length],
+      })
+    );
+    setPieData(pieData);
+    // return pieData;
+  }, [filteredTransactions]);
 
   const yAxisSettings = useMemo(() => {
     const maxValue =
@@ -211,40 +234,51 @@ export default function analytics() {
 
       {chartData.some((item) => item.value > 0) ? (
         <View>
-          <LineChart
-            data={chartData}
-            width={Dimensions.get("window").width - 60}
-            height={250}
-            spacing={
-              timeRange === "week" ? 55 : timeRange === "month" ? 10 : 30
-            }
-            initialSpacing={20}
-            color="transparent"
-            yAxisOffset={0}
-            yAxisLabelWidth={50}
-            thickness={3}
-            hideDataPoints={true}
-            disableScroll={true}
-            startFillColor="#4A90E2"
-            endFillColor="#E3F2FD"
-            startOpacity={0.9}
-            endOpacity={0.4}
-            areaChart
-            yAxisColor="#ddd"
-            xAxisColor="transparent"
-            yAxisTextStyle={{ color: "#666" }}
-            xAxisLabelTextStyle={{ color: "#666", fontSize: 10 }}
-            rulesColor="transparent"
-            rulesType="solid"
-            yAxisThickness={0}
-            xAxisThickness={0}
-            animateOnDataChange={true}
-            animationDuration={1000}
-            onDataChangeAnimationDuration={300}
-            maxValue={yAxisSettings.maxValue}
-            stepValue={yAxisSettings.stepValue}
-            noOfSections={6}
-          />
+          <View>
+            <LineChart
+              data={chartData}
+              width={Dimensions.get("window").width - 60}
+              height={250}
+              spacing={
+                timeRange === "week" ? 55 : timeRange === "month" ? 10 : 30
+              }
+              initialSpacing={20}
+              color="transparent"
+              yAxisOffset={0}
+              yAxisLabelWidth={50}
+              thickness={3}
+              hideDataPoints={true}
+              disableScroll={true}
+              startFillColor="#4A90E2"
+              endFillColor="#E3F2FD"
+              startOpacity={0.9}
+              endOpacity={0.4}
+              areaChart
+              yAxisColor="#ddd"
+              xAxisColor="transparent"
+              yAxisTextStyle={{ color: "#666" }}
+              xAxisLabelTextStyle={{ color: "#666", fontSize: 10 }}
+              rulesColor="transparent"
+              rulesType="solid"
+              yAxisThickness={0}
+              xAxisThickness={0}
+              animateOnDataChange={true}
+              animationDuration={1000}
+              onDataChangeAnimationDuration={300}
+              maxValue={yAxisSettings.maxValue}
+              stepValue={yAxisSettings.stepValue}
+              noOfSections={6}
+            />
+          </View>
+          <View>
+            <PieChart
+              data={pieData}
+              donut
+              focusOnPress
+              textSize={12}
+              showText={true}
+            />
+          </View>
         </View>
       ) : (
         <Text>No data to display</Text>

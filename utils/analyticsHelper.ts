@@ -1,3 +1,4 @@
+import { budgetCategories } from "@/constants/config";
 export function aggregateByTimeRange(
   transactions: any[],
   range: "week" | "month" | "year",
@@ -124,4 +125,22 @@ export function yAxisConfig(maxValue: number) {
     maxValue: Math.ceil(maxValue / stepValue) * stepValue,
     stepValue: stepValue,
   };
+}
+
+export function categoriseSpending(transactions: any[]): {
+  [category: string]: number;
+} {
+  const categoryTotals: { [category: string]: number } = {};
+
+  for (const tx of transactions) {
+    const capitaliseCategory =
+      tx.category.charAt(0).toUpperCase() + tx.category.slice(1).toLowerCase();
+
+    if (!categoryTotals[capitaliseCategory]) {
+      categoryTotals[capitaliseCategory] = 0;
+    }
+    categoryTotals[capitaliseCategory] += Number(tx.amount);
+  }
+
+  return categoryTotals;
 }
