@@ -27,11 +27,15 @@ const categories = [
 
 export default function BudgetSelection() {
   const router = useRouter();
-  const { getBudgetRecommendation, loading: recommenderLoading } =
-    useRecommender();
+  const {
+    getBudgetRecommendation,
+    loading: recommenderLoading,
+    getRecommenderExplanation,
+  } = useRecommender();
   const { createBudget, loading: budgetLoading } = useBudget();
+  const [viewExplanation, setViewExplanation] = useState(false);
   const { user } = useUserQuery();
-
+  const [explanation, setExplanation] = useState<string | null>(null);
   const [recommendation, setRecommendation] = useState<any>(null);
   const [budgetValues, setBudgetValues] = useState<{ [key: string]: string }>(
     {}
@@ -43,6 +47,12 @@ export default function BudgetSelection() {
       try {
         const data = await getBudgetRecommendation();
         setRecommendation(data);
+        const explanationText = await getRecommenderExplanation(
+          parseFloat(user?.income || "0"),
+          data.budget,
+          data.meta
+        );
+        setExplanation(explanationText);
 
         if (data?.budget) {
           const budgetData = data.budget;
@@ -101,39 +111,48 @@ export default function BudgetSelection() {
 
   return (
     <ScrollView>
-      <View>
-        <Text>Budget Recommendation</Text>
-        <TouchableOpacity onPress={() => setIsEditing(!isEditing)}>
-          <Text>{isEditing ? "Done" : "Edit"}</Text>
-        </TouchableOpacity>
-      </View>
+      {viewExplanation && explanation ? (
+        <View>
+          <View>
+            <Text>Budget Recommendation</Text>
+            <TouchableOpacity onPress={() => setIsEditing(!isEditing)}>
+              <Text>{isEditing ? "Done" : "Edit"}</Text>
+            </TouchableOpacity>
+          </View>
 
-      <Text>Total: £{calculateTotal().toFixed(2)}</Text>
-      {user?.income && (
-        <Text>Income: £{parseFloat(user.income)}</Text>
-      )}
+          <Text>Total: £{calculateTotal().toFixed(2)}</Text>
+          {user?.income && <Text>Income: £{parseFloat(user.income)}</Text>}
 
-      {categories.map((category) => (
-        <View key={category}>
-          <Text>{category}</Text>
-          {isEditing ? (
-            <TextInput
-              value={budgetValues[category]}
-              onChangeText={(text) =>
-                setBudgetValues({ ...budgetValues, [category]: text })
-              }
-              keyboardType="decimal-pad"
-              placeholder="0"
-            />
-          ) : (
-            <Text>£{parseFloat(budgetValues[category] || "0")}</Text>
-          )}
+          {categories.map((category) => (
+            <View key={category}>
+              <Text>{category}</Text>
+              {isEditing ? (
+                <TextInput
+                  value={budgetValues[category]}
+                  onChangeText={(text) =>
+                    setBudgetValues({ ...budgetValues, [category]: text })
+                  }
+                  keyboardType="decimal-pad"
+                  placeholder="0"
+                />
+              ) : (
+                <Text>£{parseFloat(budgetValues[category] || "0")}</Text>
+              )}
+            </View>
+          ))}
+
+          <TouchableOpacity
+            onPress={handleAcceptBudget}
+            disabled={budgetLoading}
+          >
+            <Text>{budgetLoading ? "Creating..." : "Accept Budget"}</Text>
+          </TouchableOpacity>
         </View>
-      ))}
-
-      <TouchableOpacity onPress={handleAcceptBudget} disabled={budgetLoading}>
-        <Text>{budgetLoading ? "Creating..." : "Accept Budget"}</Text>
-      </TouchableOpacity>
+      ) : (
+        <View>
+          <Text>Budget Explanation</Text>
+        </View>
+      )}
     </ScrollView>
   );
 }

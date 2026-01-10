@@ -114,6 +114,37 @@ export const useRecommender = () => {
     }
   };
 
+  const getRecommenderExplanation = async (
+    income: number,
+    budget: { [key: string]: number },
+    meta: { [key: string]: any }
+  ) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const token = await getToken();
+      const response = await fetch(`${API_URL}/recommender/explanation`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ income, budget, meta }),
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText);
+      }
+      const data = await response.json();
+      return data.explanation;
+    } catch (err: any) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     loading,
     error,
@@ -121,5 +152,6 @@ export const useRecommender = () => {
     postLifestyleAnswers,
     updateLifestyleAnswers,
     getBudgetRecommendation,
+    getRecommenderExplanation,
   };
 };
