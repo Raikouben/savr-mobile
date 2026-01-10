@@ -64,6 +64,7 @@ export default function BudgetSelection() {
           setBudgetValues(values);
         }
       } catch (error) {
+        router.replace("/(setup)/income-disclosure");
         console.error("Error fetching budget recommendation:", error);
       }
     };

@@ -14,13 +14,19 @@ export default function IncomeDisclosure() {
   const { edit } = useLocalSearchParams();
 
   useEffect(() => {
+    if (user?.income != null && income === null) {
+      setIncome(user.income);
+    }
+  }, [user?.income]);
+
+  useEffect(() => {
     if (edit) {
       return;
     } else if (!isLoading && user?.income != null) {
       console.log("Income already set, redirecting to lifestyle survey");
       router.replace("/(setup)/lifestyle-survey");
     }
-  }, [isLoading, user?.income, router]);
+  }, [isLoading, edit]);
 
   if (isLoading) {
     return <Text>Loading...</Text>;
@@ -32,9 +38,9 @@ export default function IncomeDisclosure() {
   console.log("No income set, displaying income disclosure form");
   const handleSubmit = async () => {
     setSubmitting(true);
-    if (income == null) {
+    if (income == null || income <= 0) {
       setSubmitting(false);
-      alert("Please enter your income");
+      alert("Please enter a valid income greater than 0");
       return;
     }
     try {
@@ -57,7 +63,12 @@ export default function IncomeDisclosure() {
         autoCapitalize="none"
         value={income !== null ? income.toString() : ""}
         placeholder="Enter income"
-        onChangeText={(income) => setIncome(Number(income))}
+        onChangeText={(text) => {
+          const numValue = Number(text);
+          if (!isNaN(numValue)) {
+            setIncome(numValue);
+          }
+        }}
         keyboardType="numeric"
       />
       <Text onPress={handleSubmit} disabled={submitting}>
