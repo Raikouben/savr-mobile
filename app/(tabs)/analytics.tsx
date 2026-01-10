@@ -16,6 +16,7 @@ import CategoryPicker from "@/components/CategoryPicker";
 import { aggregateByTimeRange, formatChartLabel } from "@/utils/calculation";
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
+import { yAxisConfig } from "@/utils/analyticsHelper";
 
 export default function analytics() {
   const [error, setError] = useState<string | null>(null);
@@ -30,6 +31,14 @@ export default function analytics() {
   const { transactions, isLoading: transactionsLoading } =
     useTransactionQuery();
 
+  const resetFilters = () => {
+    setTimeRange("week");
+    setSelectedWeek(new Date());
+    setSelectedMonthYear(new Date());
+    setSelectedYear(new Date().getFullYear());
+    setCategory("");
+  };
+
   const loading = budgetLoading || transactionsLoading;
 
   const filteredTransactions = useMemo(() => {
@@ -38,7 +47,6 @@ export default function analytics() {
     if (category) {
       return transactions.filter((tx: any) => tx.category === category);
     }
-
     return transactions;
   }, [transactions, category]);
 
@@ -59,6 +67,14 @@ export default function analytics() {
     selectedYear,
     selectedWeek,
   ]);
+
+  const yAxisSettings = useMemo(() => {
+    const maxValue =
+      chartData.length > 0
+        ? Math.max(...chartData.map((item) => item.value))
+        : 0;
+    return yAxisConfig(maxValue);
+  }, [chartData]);
 
   const getTimeRangeLabel = () => {
     if (timeRange === "week") {
@@ -182,16 +198,18 @@ export default function analytics() {
         onCategoryChange={setCategory}
       />
 
-      {category && (
-        <TouchableOpacity onPress={() => setCategory("")}>
-          <Text>Clear Category Filter</Text>
-        </TouchableOpacity>
-      )}
+      <TouchableOpacity onPress={() => setCategory("")}>
+        <Text>Clear Category Filter</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={resetFilters}>
+        <Text>Reset Filters</Text>
+      </TouchableOpacity>
 
       {loading && <Text>Loading...</Text>}
       {error && <Text>{error}</Text>}
 
-      {chartData.length > 0 ? (
+      {chartData.some((item) => item.value > 0) ? (
         <View>
           <LineChart
             data={chartData}
@@ -209,10 +227,9 @@ export default function analytics() {
             disableScroll={true}
             startFillColor="#4A90E2"
             endFillColor="#E3F2FD"
-            startOpacity={0.4}
-            endOpacity={0.1}
+            startOpacity={0.9}
+            endOpacity={0.4}
             areaChart
-            curved
             yAxisColor="#ddd"
             xAxisColor="transparent"
             yAxisTextStyle={{ color: "#666" }}
@@ -221,6 +238,12 @@ export default function analytics() {
             rulesType="solid"
             yAxisThickness={0}
             xAxisThickness={0}
+            animateOnDataChange={true}
+            animationDuration={1000}
+            onDataChangeAnimationDuration={300}
+            maxValue={yAxisSettings.maxValue}
+            stepValue={yAxisSettings.stepValue}
+            noOfSections={6}
           />
         </View>
       ) : (
