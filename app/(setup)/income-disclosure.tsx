@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useUserQuery } from "@/hooks/queries/authQuery";
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 import { useState, useEffect } from "react";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
 import { View, TextInput, Text } from "react-native";
 
@@ -11,9 +11,12 @@ export default function IncomeDisclosure() {
   const [income, setIncome] = useState<number | null>(null);
   const { user, updateUserIncome, isLoading } = useUserQuery();
   const [submitting, setSubmitting] = useState(false);
+  const { edit } = useLocalSearchParams();
 
   useEffect(() => {
-    if (!isLoading && user?.income != null) {
+    if (edit) {
+      return;
+    } else if (!isLoading && user?.income != null) {
       console.log("Income already set, redirecting to lifestyle survey");
       router.replace("/(setup)/lifestyle-survey");
     }
@@ -25,10 +28,6 @@ export default function IncomeDisclosure() {
 
   console.log("User data:", JSON.stringify(user));
   console.log("User income:", user?.income);
-
-  if (user?.income != null) {
-    return null; // Redirect happening in useEffect
-  }
 
   console.log("No income set, displaying income disclosure form");
   const handleSubmit = async () => {

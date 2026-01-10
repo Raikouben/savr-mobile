@@ -24,11 +24,11 @@ export default function profile() {
       <UserDisplay />
       <BudgetDisplay />
       <TouchableOpacity
-        onPress={() => router.push("../(setup)/lifestyle-survey")}
+        onPress={() => router.push("../(setup)/income-disclosure?edit=true")}
       >
-        <Text>Updates to lifestyle </Text>
+        <Text>Updates to lifestyle</Text>
       </TouchableOpacity>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={async () => {
           try {
             const recommendation = await getBudgetRecommendation();
@@ -39,7 +39,7 @@ export default function profile() {
         }}
       >
         <Text>Get Budget Recommendation</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <SignOutButton />
     </ScrollView>
   );
