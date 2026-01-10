@@ -86,8 +86,8 @@ export default function analytics() {
   const pieChartData = useMemo(() => {
     return categoryData.map((item, index) => ({
       value: item.percentage,
-      text: `${item.percentage.toFixed(1)}%`,
-      color: colors[index % colors.length],
+      text: item.category,
+      color: item.color,
     }));
   }, [categoryData]);
 
@@ -95,7 +95,7 @@ export default function analytics() {
     return categoryData.map((item, index) => ({
       value: item.amount,
       label: item.category,
-      colors: colors[index % colors.length],
+      frontColor: item.color,
     }));
   }, [categoryData]);
 
@@ -299,11 +299,29 @@ export default function analytics() {
                     }}
                   />
                   <Text>
-                    {item.text}: £{item.value.toFixed(2)}
+                    {item.text}: {item.value.toFixed(2)}%
                   </Text>
                 </View>
               ))}
             </View>
+          </View>
+          <View>
+            <BarChart
+              data={barChartData}
+              width={Dimensions.get("window").width - 60}
+              height={250}
+              barWidth={30}
+              spacing={20}
+              yAxisThickness={0}
+              xAxisThickness={0}
+              yAxisLabelWidth={50}
+              yAxisTextStyle={{ color: "#666" }}
+              xAxisLabelTextStyle={{ color: "#666", fontSize: 10 }}
+              yAxisColor="transparent"
+              xAxisColor="transparent"
+              maxValue={yAxisSettings.maxValue}
+              stepValue={yAxisSettings.stepValue}
+            />
           </View>
         </View>
       ) : (

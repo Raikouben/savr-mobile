@@ -127,10 +127,20 @@ export function yAxisConfig(maxValue: number) {
   };
 }
 
+const colors = [
+  "#FF6B6B",
+  "#4A90E2",
+  "#2ECC71",
+  "#F39C12",
+  "#9B59B6",
+  "#E67E22",
+];
+
 type CategorisedSpending = {
   category: string;
   amount: number;
   percentage: number;
+  color?: string;
 };
 
 // export function categoriseSpending(transactions: any[]): {
@@ -151,29 +161,36 @@ type CategorisedSpending = {
 //   return categoryTotals;
 // }
 
-export function categoriseSpending(
-  transactions: any[]
-): CategorisedSpending[] {
+export function categoriseSpending(transactions: any[]): CategorisedSpending[] {
   const categoryTotals: { [category: string]: number } = {};
-  
+
   // Sum up amounts per category
   for (const tx of transactions) {
-    const normalizedCategory = 
+    const normalizedCategory =
       tx.category.charAt(0).toUpperCase() + tx.category.slice(1).toLowerCase();
-    
+
     if (!categoryTotals[normalizedCategory]) {
       categoryTotals[normalizedCategory] = 0;
     }
     categoryTotals[normalizedCategory] += Number(tx.amount);
   }
-  
+
   // Calculate total for percentages
-  const total = Object.values(categoryTotals).reduce((sum, val) => sum + val, 0);
-  
+  const total = Object.values(categoryTotals).reduce(
+    (sum, val) => sum + val,
+    0
+  );
+
   // Return array with category, amount, and percentage
   return Object.entries(categoryTotals).map(([category, amount]) => ({
     category,
     amount,
     percentage: total > 0 ? (amount / total) * 100 : 0,
+    color:
+      colors[
+        budgetCategories.findIndex(
+          (cat) => cat.toLowerCase() === category.toLowerCase()
+        ) % colors.length
+      ],
   }));
 }
