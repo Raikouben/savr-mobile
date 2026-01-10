@@ -111,7 +111,7 @@ export default function BudgetSelection() {
 
   return (
     <ScrollView>
-      {viewExplanation && explanation ? (
+      {!viewExplanation && explanation ? (
         <View>
           <View>
             <Text>Budget Recommendation</Text>
@@ -151,8 +151,12 @@ export default function BudgetSelection() {
       ) : (
         <View>
           <Text>Budget Explanation</Text>
+          <Text>{explanation}</Text>
         </View>
       )}
+      <TouchableOpacity onPress={() => setViewExplanation(!viewExplanation)}>
+        <Text>{viewExplanation ? "View Budget" : "View Explanation"}</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
