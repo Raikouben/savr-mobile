@@ -127,20 +127,53 @@ export function yAxisConfig(maxValue: number) {
   };
 }
 
-export function categoriseSpending(transactions: any[]): {
-  [category: string]: number;
-} {
+type CategorisedSpending = {
+  category: string;
+  amount: number;
+  percentage: number;
+};
+
+// export function categoriseSpending(transactions: any[]): {
+//   [category: string]: number;
+// } {
+//   const categoryTotals: { [category: string]: number } = {};
+
+//   for (const tx of transactions) {
+//     const capitaliseCategory =
+//       tx.category.charAt(0).toUpperCase() + tx.category.slice(1).toLowerCase();
+
+//     if (!categoryTotals[capitaliseCategory]) {
+//       categoryTotals[capitaliseCategory] = 0;
+//     }
+//     categoryTotals[capitaliseCategory] += Number(tx.amount);
+//   }
+
+//   return categoryTotals;
+// }
+
+export function categoriseSpending(
+  transactions: any[]
+): CategorisedSpending[] {
   const categoryTotals: { [category: string]: number } = {};
-
+  
+  // Sum up amounts per category
   for (const tx of transactions) {
-    const capitaliseCategory =
+    const normalizedCategory = 
       tx.category.charAt(0).toUpperCase() + tx.category.slice(1).toLowerCase();
-
-    if (!categoryTotals[capitaliseCategory]) {
-      categoryTotals[capitaliseCategory] = 0;
+    
+    if (!categoryTotals[normalizedCategory]) {
+      categoryTotals[normalizedCategory] = 0;
     }
-    categoryTotals[capitaliseCategory] += Number(tx.amount);
+    categoryTotals[normalizedCategory] += Number(tx.amount);
   }
-
-  return categoryTotals;
+  
+  // Calculate total for percentages
+  const total = Object.values(categoryTotals).reduce((sum, val) => sum + val, 0);
+  
+  // Return array with category, amount, and percentage
+  return Object.entries(categoryTotals).map(([category, amount]) => ({
+    category,
+    amount,
+    percentage: total > 0 ? (amount / total) * 100 : 0,
+  }));
 }

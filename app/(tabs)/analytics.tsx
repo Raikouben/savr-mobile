@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   Dimensions,
   StyleSheet,
+  ScrollView,
 } from "react-native";
 import React from "react";
 import { useEffect } from "react";
@@ -27,7 +28,7 @@ export default function analytics() {
     new Date().getFullYear()
   );
   const [selectedWeek, setSelectedWeek] = useState<Date>(new Date());
-  const [pieData, setPieData] = useState<any[]>([]);
+  // const [pieData, setPieData] = useState<any[]>([]);
   const { budget, isLoading: budgetLoading } = useBudgetQuery();
   const { transactions, isLoading: transactionsLoading } =
     useTransactionQuery();
@@ -69,27 +70,34 @@ export default function analytics() {
     selectedWeek,
   ]);
 
-  const pieChartData = useMemo(() => {
-    const categoryTotals = categoriseSpending(filteredTransactions);
-    const colors = [
-      "#FF6B6B",
-      "#4A90E2",
-      "#2ECC71",
-      "#F39C12",
-      "#9B59B6",
-      "#E67E22",
-    ];
-
-    const pieData = Object.entries(categoryTotals).map(
-      ([category, amount], index) => ({
-        value: amount,
-        label: category,
-        color: colors[index % colors.length],
-      })
-    );
-    setPieData(pieData);
-    // return pieData;
+  const categoryData = useMemo(() => {
+    return categoriseSpending(filteredTransactions);
   }, [filteredTransactions]);
+
+  const colors = [
+    "#FF6B6B",
+    "#4A90E2",
+    "#2ECC71",
+    "#F39C12",
+    "#9B59B6",
+    "#E67E22",
+  ];
+
+  const pieChartData = useMemo(() => {
+    return categoryData.map((item, index) => ({
+      value: item.percentage,
+      text: `${item.percentage.toFixed(1)}%`,
+      color: colors[index % colors.length],
+    }));
+  }, [categoryData]);
+
+  const barChartData = useMemo(() => {
+    return categoryData.map((item, index) => ({
+      value: item.amount,
+      label: item.category,
+      colors: colors[index % colors.length],
+    }));
+  }, [categoryData]);
 
   const yAxisSettings = useMemo(() => {
     const maxValue =
@@ -189,7 +197,7 @@ export default function analytics() {
   );
 
   return (
-    <View>
+    <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
       <Text>Analytics</Text>
 
       <View>
@@ -272,17 +280,35 @@ export default function analytics() {
           </View>
           <View>
             <PieChart
-              data={pieData}
+              data={pieChartData}
               donut
               focusOnPress
-              textSize={12}
-              showText={true}
+              radius={100}
+              innerRadius={50}
             />
+            <View>
+              {pieChartData.map((item, index) => (
+                <View key={index}>
+                  <View
+                    style={{
+                      width: 16,
+                      height: 16,
+                      backgroundColor: item.color,
+                      marginRight: 8,
+                      borderRadius: 4,
+                    }}
+                  />
+                  <Text>
+                    {item.text}: £{item.value.toFixed(2)}
+                  </Text>
+                </View>
+              ))}
+            </View>
           </View>
         </View>
       ) : (
         <Text>No data to display</Text>
       )}
-    </View>
+    </ScrollView>
   );
 }
