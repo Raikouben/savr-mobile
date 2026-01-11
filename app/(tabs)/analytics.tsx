@@ -65,6 +65,62 @@ export default function analytics() {
     return transactions;
   }, [transactions, category]);
 
+  // Comparison period transactions
+  const compareLineChartTransactions = useMemo(() => {
+    if (!transactions || !comparisonMode) return [];
+
+    let startDate: Date, endDate: Date;
+
+    if (timeRange === "week") {
+      const weekDate = new Date(compareWeek);
+      const dayOfWeek = weekDate.getDay();
+      const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+      startDate = new Date(weekDate);
+      startDate.setDate(weekDate.getDate() - daysToMonday);
+      startDate.setHours(0, 0, 0, 0);
+
+      endDate = new Date(startDate);
+      endDate.setDate(startDate.getDate() + 6);
+      endDate.setHours(23, 59, 59, 999);
+    } else if (timeRange === "month") {
+      startDate = new Date(
+        compareMonthYear.getFullYear(),
+        compareMonthYear.getMonth(),
+        1
+      );
+      endDate = new Date(
+        compareMonthYear.getFullYear(),
+        compareMonthYear.getMonth() + 1,
+        0,
+        23,
+        59,
+        59,
+        999
+      );
+    } else {
+      startDate = new Date(compareYear, 0, 1);
+      endDate = new Date(compareYear, 11, 31, 23, 59, 59, 999);
+    }
+
+    const filtered = transactions.filter((tx: any) => {
+      const txDate = new Date(tx.date);
+      return txDate >= startDate && txDate <= endDate;
+    });
+
+    if (category) {
+      return filtered.filter((tx: any) => tx.category === category);
+    }
+    return filtered;
+  }, [
+    transactions,
+    comparisonMode,
+    timeRange,
+    compareWeek,
+    compareMonthYear,
+    compareYear,
+    category,
+  ]);
+
   const categoryChartTransactions = useMemo(() => {
     if (!transactions) return [];
     return transactions;
@@ -184,6 +240,61 @@ export default function analytics() {
   };
 
   //ADD STATISTICS FOR COMPARISON MODE?
+  const statistics = useMemo(() => {
+    const totalSpent = lineChartTransactions.reduce(
+      (sum: any, tx: any) => sum + Number(tx.amount),
+      0
+    );
+    const transactionCount = lineChartTransactions.length;
+    const averageTransaction =
+      transactionCount > 0 ? totalSpent / transactionCount : 0;
+
+    const categoryTotals: { [key: string]: number } = {};
+    lineChartTransactions.forEach((tx: any) => {
+      const cat = tx.category;
+      categoryTotals[cat] = (categoryTotals[cat] || 0) + Number(tx.amount);
+    });
+
+    const topCategoryEntry = Object.entries(categoryTotals).sort(
+      (a, b) => b[1] - a[1]
+    )[0];
+
+    const topCategory = topCategoryEntry
+      ? { category: topCategoryEntry[0], amount: topCategoryEntry[1] }
+      : null;
+
+    return { totalSpent, transactionCount, averageTransaction, topCategory };
+  }, [lineChartTransactions]);
+
+  // Calculate comparison statistics
+  const compareStatistics = useMemo(() => {
+    if (!comparisonMode) return null;
+
+    const totalSpent = compareLineChartTransactions.reduce(
+      (sum: any, tx: any) => sum + Number(tx.amount),
+      0
+    );
+    const transactionCount = compareLineChartTransactions.length;
+    const averageTransaction =
+      transactionCount > 0 ? totalSpent / transactionCount : 0;
+
+
+    const categoryTotals: { [key: string]: number } = {};
+    compareLineChartTransactions.forEach((tx: any) => {
+      const cat = tx.category;
+      categoryTotals[cat] = (categoryTotals[cat] || 0) + Number(tx.amount);
+    });
+
+    const topCategoryEntry = Object.entries(categoryTotals).sort(
+      (a, b) => b[1] - a[1]
+    )[0];
+
+    const topCategory = topCategoryEntry
+      ? { category: topCategoryEntry[0], amount: topCategoryEntry[1] }
+      : null;
+
+    return { totalSpent, transactionCount, averageTransaction, topCategory };
+  }, [comparisonMode, compareLineChartTransactions]);
 
   const navigatePrevious = () => {
     if (timeRange === "week") {
@@ -337,6 +448,131 @@ export default function analytics() {
       <TouchableOpacity onPress={resetFilters}>
         <Text>Reset Filters</Text>
       </TouchableOpacity>
+
+      <View>
+        <Text>Statistics</Text>
+        {comparisonMode && compareStatistics ? (
+          <View>
+            <View>
+              <Text>{getTimeRangeLabel()}</Text>
+              <View>
+                <View>
+                  <Text>Total Spent</Text>
+                  <Text>£{statistics.totalSpent.toFixed(2)}</Text>
+                </View>
+                <View>
+                  <Text>Transactions</Text>
+                  <Text>{statistics.transactionCount}</Text>
+                </View>
+                <View>
+                  <Text>Average</Text>
+                  <Text>£{statistics.averageTransaction.toFixed(2)}</Text>
+                </View>
+                {statistics.topCategory && (
+                  <View>
+                    <Text>Top Category</Text>
+                    <Text>
+                      {getCategoryDisplayName(statistics.topCategory.category)}
+                    </Text>
+                    <Text>£{statistics.topCategory.amount.toFixed(2)}</Text>
+                  </View>
+                )}
+              </View>
+            </View>
+
+            <View>
+              <Text>{getTimeRangeLabel(true)}</Text>
+              <View>
+                <View>
+                  <Text>Total Spent</Text>
+                  <Text>£{compareStatistics.totalSpent.toFixed(2)}</Text>
+                  <Text>
+                    {compareStatistics.totalSpent > statistics.totalSpent
+                      ? "up"
+                      : "down"}
+                    {Math.abs(
+                      ((statistics.totalSpent - compareStatistics.totalSpent) /
+                        compareStatistics.totalSpent) *
+                        100
+                    ).toFixed(1)}
+                    %
+                  </Text>
+                </View>
+                <View>
+                  <Text>Transactions</Text>
+                  <Text>{compareStatistics.transactionCount}</Text>
+                  <Text>
+                    {compareStatistics.transactionCount >
+                    statistics.transactionCount
+                      ? "↑"
+                      : "↓"}
+                    {Math.abs(
+                      statistics.transactionCount -
+                        compareStatistics.transactionCount
+                    )}
+                  </Text>
+                </View>
+                <View>
+                  <Text>Average</Text>
+                  <Text>
+                    £{compareStatistics.averageTransaction.toFixed(2)}
+                  </Text>
+                  <Text>
+                    {compareStatistics.averageTransaction >
+                    statistics.averageTransaction
+                      ? "up"
+                      : "down"}
+                    {Math.abs(
+                      ((statistics.averageTransaction -
+                        compareStatistics.averageTransaction) /
+                        compareStatistics.averageTransaction) *
+                        100
+                    ).toFixed(1)}
+                    %
+                  </Text>
+                </View>
+                {compareStatistics.topCategory && (
+                  <View>
+                    <Text>Top Category</Text>
+                    <Text>
+                      {getCategoryDisplayName(
+                        compareStatistics.topCategory.category
+                      )}
+                    </Text>
+                    <Text>
+                      £{compareStatistics.topCategory.amount.toFixed(2)}
+                    </Text>
+                  </View>
+                )}
+              </View>
+            </View>
+          </View>
+        ) : (
+          <View>
+            <View>
+              <Text>Total Spent</Text>
+              <Text>£{statistics.totalSpent.toFixed(2)}</Text>
+            </View>
+            <View>
+              <Text>Transactions</Text>
+              <Text>{statistics.transactionCount}</Text>
+            </View>
+            <View>
+              <Text>Average</Text>
+              <Text>£{statistics.averageTransaction.toFixed(2)}</Text>
+            </View>
+            {statistics.topCategory && (
+              <View>
+                <Text>Top Category</Text>
+                <Text>
+                  {getCategoryDisplayName(statistics.topCategory.category)}
+                </Text>
+                <Text>£{statistics.topCategory.amount.toFixed(2)}</Text>
+              </View>
+            )}
+          </View>
+        )}
+      </View>
 
       {loading && <Text>Loading...</Text>}
       {error && <Text>{error}</Text>}
