@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   Platform,
+  ScrollView,
 } from "react-native";
 import React, { useState } from "react";
 import DateSelector from "./DateSelector";
@@ -13,6 +14,7 @@ import CategoryPicker from "./CategoryPicker";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
+// import { ScrollView } from "react-native-reanimated/lib/typescript/Animated";
 type transaction = {
   amount: number;
   category: string;
@@ -35,7 +37,14 @@ export default function addBulkTransaction({
   //   const [category, setCategory] = useState("");
   const { createBulkTransactions, isCreatingBulk, isLoading, isCreating } =
     useTransactionQuery();
-  const [draftTransactions, setDraftTransactions] = useState<transaction[]>([]);
+  const [draftTransactions, setDraftTransactions] = useState<transaction[]>([
+    {
+      amount: 0,
+      category: "",
+      date: new Date(),
+      description: "",
+    },
+  ]);
 
   const addDraftTransaction = (tx: transaction) => {
     setDraftTransactions([...draftTransactions, tx]);
@@ -83,14 +92,35 @@ export default function addBulkTransaction({
       visible={visible}
       onRequestClose={onClose}
     >
-      <View>
-        <View>
-          <Text>Add Multiple Transactions</Text>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: "white",
+            padding: 20,
+            borderRadius: 10,
+            width: "90%",
+            maxWidth: 500,
+            height: "50%",
+          }}
+        >
+          <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 15 }}>
+            Add Multiple Transactions
+          </Text>
 
           {/* Scrollable list of transaction cards */}
-          <View style={{ flex: 1, marginBottom: 15 }}>
+          <ScrollView
+            style={{ flex: 1, marginBottom: 15 }}
+            showsVerticalScrollIndicator={true}
+          >
             {draftTransactions.map((tx, index) => (
-              <View key={index}>
+              <View key={index} style={{ marginBottom: 10 }}>
                 <View>
                   <Text>Transaction {index + 1}</Text>
                   <TouchableOpacity
@@ -100,6 +130,62 @@ export default function addBulkTransaction({
                   </TouchableOpacity>
                 </View>
 
+                <View>
+                  <View>
+                    <Text>Date</Text>
+                    <DateSelector
+                      date={tx.date}
+                      onDateChange={(newDate) =>
+                        updateDraftTransaction(index, {
+                          ...tx,
+                          date: newDate || new Date(),
+                        })
+                      }
+                    />
+                  </View>
+                  <View>
+                    <Text>Category</Text>
+                    <CategoryPicker
+                      selectedCategory={tx.category}
+                      onCategoryChange={(newCategory) =>
+                        updateDraftTransaction(index, {
+                          ...tx,
+                          category: newCategory,
+                        })
+                      }
+                    />
+                  </View>
+                </View>
+
+                <View style={{ flexDirection: "row", gap: 10 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text>Description</Text>
+                    <TextInput
+                      placeholder="Description"
+                      value={tx.description || ""}
+                      onChangeText={(text) =>
+                        updateDraftTransaction(index, {
+                          ...tx,
+                          description: text,
+                        })
+                      }
+                    />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text>Amount</Text>
+                    <TextInput
+                      placeholder="0.00"
+                      keyboardType="decimal-pad"
+                      value={tx.amount.toString()}
+                      onChangeText={(text) =>
+                        updateDraftTransaction(index, {
+                          ...tx,
+                          amount: parseFloat(text) || 0,
+                        })
+                      }
+                    />
+                  </View>
+                </View>
               </View>
             ))}
 
@@ -115,15 +201,34 @@ export default function addBulkTransaction({
             >
               <Text>+ Add Another Transaction</Text>
             </TouchableOpacity>
-          </View>
+          </ScrollView>
 
-          <View>
-            <TouchableOpacity onPress={onClose}>
-              <Text>Cancel</Text>
+          <View style={{ flexDirection: "row", gap: 10, marginTop: 10 }}>
+            <TouchableOpacity
+              onPress={onClose}
+              style={{
+                flex: 1,
+                padding: 12,
+                backgroundColor: "#e0e0e0",
+                borderRadius: 8,
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ fontSize: 14 }}>Cancel</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleSubmit} disabled={isCreatingBulk}>
-              <Text style={{ fontSize: 16, color: "white" }}>
-                {isCreatingBulk ? "Saving" : "Save All Transactions"}
+            <TouchableOpacity
+              onPress={handleSubmit}
+              disabled={isCreatingBulk}
+              style={{
+                flex: 1,
+                padding: 12,
+                backgroundColor: "#1a1a1a",
+                borderRadius: 8,
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ fontSize: 14, color: "white" }}>
+                {isCreatingBulk ? "Saving" : "Save All"}
               </Text>
             </TouchableOpacity>
           </View>
