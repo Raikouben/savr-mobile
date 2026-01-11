@@ -29,7 +29,19 @@ export default function analytics() {
     new Date().getFullYear()
   );
   const [selectedWeek, setSelectedWeek] = useState<Date>(new Date());
-  // const [pieData, setPieData] = useState<any[]>([]);
+
+  // Comparison mode states
+  const [comparisonMode, setComparisonMode] = useState(false);
+  const [compareMonthYear, setCompareMonthYear] = useState<Date>(
+    new Date(new Date().setMonth(new Date().getMonth() - 1))
+  );
+  const [compareYear, setCompareYear] = useState<number>(
+    new Date().getFullYear() - 1
+  );
+  const [compareWeek, setCompareWeek] = useState<Date>(
+    new Date(new Date().setDate(new Date().getDate() - 7))
+  );
+
   const { budget, isLoading: budgetLoading } = useBudgetQuery();
   const { transactions, isLoading: transactionsLoading } =
     useTransactionQuery();
@@ -40,10 +52,10 @@ export default function analytics() {
     setSelectedMonthYear(new Date());
     setSelectedYear(new Date().getFullYear());
     setCategory("");
+    setComparisonMode(false);
   };
 
   const loading = budgetLoading || transactionsLoading;
-
 
   const lineChartTransactions = useMemo(() => {
     if (!transactions) return [];
@@ -52,7 +64,6 @@ export default function analytics() {
     }
     return transactions;
   }, [transactions, category]);
-
 
   const categoryChartTransactions = useMemo(() => {
     if (!transactions) return [];
@@ -77,6 +88,28 @@ export default function analytics() {
     selectedWeek,
   ]);
 
+  // Comparison chart data
+  const compareChartData = useMemo(() => {
+    if (!comparisonMode) return [];
+
+    const data = aggregateByTimeRange(
+      lineChartTransactions,
+      timeRange,
+      timeRange === "month" ? compareMonthYear : undefined,
+      timeRange === "year" ? compareYear : undefined,
+      timeRange === "week" ? compareWeek : undefined
+    );
+    console.log("Comparison chart data:", data);
+    return data;
+  }, [
+    comparisonMode,
+    lineChartTransactions,
+    timeRange,
+    compareMonthYear,
+    compareYear,
+    compareWeek,
+  ]);
+
   const categoryData = useMemo(() => {
     return categoriseSpending(categoryChartTransactions);
   }, [categoryChartTransactions]);
@@ -98,12 +131,17 @@ export default function analytics() {
   }, [categoryData]);
 
   const lineChartYAxisSettings = useMemo(() => {
-    const maxValue =
+    const maxValue1 =
       chartData.length > 0
         ? Math.max(...chartData.map((item) => item.value))
         : 0;
+    const maxValue2 =
+      compareChartData.length > 0
+        ? Math.max(...compareChartData.map((item) => item.value))
+        : 0;
+    const maxValue = Math.max(maxValue1, maxValue2);
     return yAxisConfig(maxValue);
-  }, [chartData]);
+  }, [chartData, compareChartData]);
 
   const barChartYAxisSettings = useMemo(() => {
     const maxValue =
@@ -113,9 +151,13 @@ export default function analytics() {
     return yAxisConfig(maxValue);
   }, [barChartData]);
 
-  const getTimeRangeLabel = () => {
+  const getTimeRangeLabel = (isComparison = false) => {
+    const week = isComparison ? compareWeek : selectedWeek;
+    const monthYear = isComparison ? compareMonthYear : selectedMonthYear;
+    const year = isComparison ? compareYear : selectedYear;
+
     if (timeRange === "week") {
-      const weekDate = new Date(selectedWeek);
+      const weekDate = new Date(week);
       const dayOfWeek = weekDate.getDay();
       const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
       const monday = new Date(weekDate);
@@ -132,14 +174,16 @@ export default function analytics() {
         day: "numeric",
       })}`;
     } else if (timeRange === "month") {
-      return selectedMonthYear.toLocaleDateString("en-UK", {
+      return monthYear.toLocaleDateString("en-UK", {
         month: "long",
         year: "numeric",
       });
     } else {
-      return String(selectedYear);
+      return String(year);
     }
   };
+
+  //ADD STATISTICS FOR COMPARISON MODE?
 
   const navigatePrevious = () => {
     if (timeRange === "week") {
@@ -192,6 +236,34 @@ export default function analytics() {
     return false;
   };
 
+  const navigateComparePrevious = () => {
+    if (timeRange === "week") {
+      const newDate = new Date(compareWeek);
+      newDate.setDate(newDate.getDate() - 7);
+      setCompareWeek(newDate);
+    } else if (timeRange === "month") {
+      const newDate = new Date(compareMonthYear);
+      newDate.setMonth(newDate.getMonth() - 1);
+      setCompareMonthYear(newDate);
+    } else if (timeRange === "year") {
+      setCompareYear(compareYear - 1);
+    }
+  };
+
+  const navigateCompareNext = () => {
+    if (timeRange === "week") {
+      const newDate = new Date(compareWeek);
+      newDate.setDate(newDate.getDate() + 7);
+      setCompareWeek(newDate);
+    } else if (timeRange === "month") {
+      const newDate = new Date(compareMonthYear);
+      newDate.setMonth(newDate.getMonth() + 1);
+      setCompareMonthYear(newDate);
+    } else if (timeRange === "year") {
+      setCompareYear(compareYear + 1);
+    }
+  };
+
   useFocusEffect(
     React.useCallback(() => {
       setTimeRange("week");
@@ -230,6 +302,29 @@ export default function analytics() {
         </TouchableOpacity>
       </View>
 
+      <TouchableOpacity onPress={() => setComparisonMode(!comparisonMode)}>
+        <Text>
+          {comparisonMode ? "Comparison Mode: ON" : "Enable Comparison"}
+        </Text>
+      </TouchableOpacity>
+
+      {comparisonMode && (
+        <View>
+          <Text>Compare With:</Text>
+          <View>
+            <TouchableOpacity onPress={navigateComparePrevious}>
+              <Text>{"<"}</Text>
+            </TouchableOpacity>
+
+            <Text>{getTimeRangeLabel(true)}</Text>
+
+            <TouchableOpacity onPress={navigateCompareNext}>
+              <Text>{">"}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
       <CategoryPicker
         selectedCategory={category}
         onCategoryChange={setCategory}
@@ -250,6 +345,7 @@ export default function analytics() {
         <View>
           <LineChart
             data={chartData}
+            data2={comparisonMode ? compareChartData : undefined}
             width={Dimensions.get("window").width - 60}
             height={250}
             spacing={
@@ -257,6 +353,7 @@ export default function analytics() {
             }
             initialSpacing={20}
             color="transparent"
+            color2="transparent"
             yAxisOffset={0}
             yAxisLabelWidth={50}
             thickness={3}
@@ -264,8 +361,12 @@ export default function analytics() {
             disableScroll={true}
             startFillColor="#4A90E2"
             endFillColor="#E3F2FD"
+            startFillColor2="#FF6B6B"
+            endFillColor2="#FFE5E5"
             startOpacity={0.9}
             endOpacity={0.6}
+            startOpacity2={0.9}
+            endOpacity2={0.6}
             areaChart
             yAxisColor="#ddd"
             xAxisColor="transparent"
