@@ -1,4 +1,4 @@
-import { budgetCategories } from "@/constants/config";
+import { budgetCategories, getCategoryColor } from "@/constants/config";
 export function aggregateByTimeRange(
   transactions: any[],
   range: "week" | "month" | "year",
@@ -121,7 +121,7 @@ export function formatChartLabel(
 export function yAxisConfig(maxValue: number) {
   const numberOfSteps = 6;
 
-  const roundingBase = maxValue < 100 ? 10 : 100;
+  const roundingBase = maxValue < 500 ? 10 : 100;
   const stepValue =
     Math.ceil(maxValue / numberOfSteps / roundingBase) * roundingBase ||
     roundingBase;
@@ -131,15 +131,6 @@ export function yAxisConfig(maxValue: number) {
     stepValue: stepValue,
   };
 }
-
-const colors = [
-  "#FF6B6B",
-  "#4A90E2",
-  "#2ECC71",
-  "#F39C12",
-  "#9B59B6",
-  "#E67E22",
-];
 
 type CategorisedSpending = {
   category: string;
@@ -171,13 +162,12 @@ export function categoriseSpending(transactions: any[]): CategorisedSpending[] {
 
   // Sum up amounts per category
   for (const tx of transactions) {
-    const normalizedCategory =
-      tx.category.charAt(0).toUpperCase() + tx.category.slice(1).toLowerCase();
+    const category = tx.category;
 
-    if (!categoryTotals[normalizedCategory]) {
-      categoryTotals[normalizedCategory] = 0;
+    if (!categoryTotals[category]) {
+      categoryTotals[category] = 0;
     }
-    categoryTotals[normalizedCategory] += Number(tx.amount);
+    categoryTotals[category] += Number(tx.amount);
   }
 
   // Calculate total for percentages
@@ -191,11 +181,6 @@ export function categoriseSpending(transactions: any[]): CategorisedSpending[] {
     category,
     amount,
     percentage: total > 0 ? (amount / total) * 100 : 0,
-    color:
-      colors[
-        budgetCategories.findIndex(
-          (cat) => cat.toLowerCase() === category.toLowerCase()
-        ) % colors.length
-      ],
+    color: getCategoryColor(category),
   }));
 }

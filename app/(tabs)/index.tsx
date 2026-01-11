@@ -16,9 +16,12 @@ import {
   calculateTotalBudgetComparison,
 } from "../../utils/calculation";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
-import { budgetCategories } from "../../constants/config";
+import {
+  budgetCategories,
+  getCategoryIcon,
+  getCategoryDisplayName,
+} from "../../constants/config";
 import { Ionicons } from "@expo/vector-icons";
-import { categoryIcons } from "../../constants/config";
 import { AdviceModal } from "../../components/Advice";
 
 export default function Page() {
@@ -110,13 +113,9 @@ export default function Page() {
                       >
                         <View>
                           <Text>
-                            {category}{" "}
+                            {getCategoryDisplayName(category)}{" "}
                             <Ionicons
-                              name={
-                                categoryIcons[
-                                  category as keyof typeof categoryIcons
-                                ] as any
-                              }
+                              name={getCategoryIcon(category) as any}
                               size={24}
                               color="black"
                             />

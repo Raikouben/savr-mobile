@@ -1,4 +1,5 @@
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
+import { getCategoryDisplayName } from "@/constants/config";
 import { useState, useEffect } from "react";
 import {
   View,
@@ -92,7 +93,7 @@ export default function BudgetDisplay() {
           <Text>Total: £{calculateTotal().toFixed(2)}</Text>
           {categories.map((category) => (
             <View key={category}>
-              <Text>{category}</Text>
+              <Text>{getCategoryDisplayName(category)}</Text>
               <TextInput
                 placeholder="Amount"
                 keyboardType="decimal-pad"
@@ -113,7 +114,7 @@ export default function BudgetDisplay() {
           <Text>Total: £{budget.total_budget}</Text>
           {categories.map((category) => (
             <Text key={category}>
-              {category}: £{budget[category]}
+              {getCategoryDisplayName(category)}: £{budget[category]}
             </Text>
           ))}
         </View>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { getCategoryDisplayName } from "../../constants/config";
 import {
   View,
   Text,
@@ -126,7 +127,7 @@ export default function BudgetSelection() {
 
           {categories.map((category) => (
             <View key={category}>
-              <Text>{category}</Text>
+              <Text>{getCategoryDisplayName(category)}</Text>
               {isEditing ? (
                 <TextInput
                   value={budgetValues[category]}

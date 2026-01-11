@@ -1,4 +1,5 @@
 import { useBudget } from "@/hooks/useBudget";
+import { getCategoryDisplayName } from "@/constants/config";
 import {
   Modal,
   View,
@@ -50,7 +51,7 @@ export const AdviceModal = ({
   return (
     <Modal>
       <View>
-        <Text>Advice for {category}</Text>
+        <Text>Advice for {getCategoryDisplayName(category)}</Text>
         {loading ? <ActivityIndicator /> : <Text>{advice}</Text>}
         <TouchableOpacity onPress={onClose}>
           <Text>Close</Text>

@@ -18,6 +18,7 @@ import { aggregateByTimeRange, formatChartLabel } from "@/utils/calculation";
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
 import { yAxisConfig, categoriseSpending } from "@/utils/analyticsHelper";
+import { getCategoryDisplayName } from "@/constants/config";
 
 export default function analytics() {
   const [error, setError] = useState<string | null>(null);
@@ -74,15 +75,6 @@ export default function analytics() {
     return categoriseSpending(filteredTransactions);
   }, [filteredTransactions]);
 
-  const colors = [
-    "#FF6B6B",
-    "#4A90E2",
-    "#2ECC71",
-    "#F39C12",
-    "#9B59B6",
-    "#E67E22",
-  ];
-
   const pieChartData = useMemo(() => {
     return categoryData.map((item, index) => ({
       value: item.percentage,
@@ -99,13 +91,21 @@ export default function analytics() {
     }));
   }, [categoryData]);
 
-  const yAxisSettings = useMemo(() => {
+  const lineChartYAxisSettings = useMemo(() => {
     const maxValue =
       chartData.length > 0
         ? Math.max(...chartData.map((item) => item.value))
         : 0;
     return yAxisConfig(maxValue);
   }, [chartData]);
+
+  const barChartYAxisSettings = useMemo(() => {
+    const maxValue =
+      barChartData.length > 0
+        ? Math.max(...barChartData.map((item) => item.value))
+        : 0;
+    return yAxisConfig(maxValue);
+  }, [barChartData]);
 
   const getTimeRangeLabel = () => {
     if (timeRange === "week") {
@@ -260,7 +260,7 @@ export default function analytics() {
               startFillColor="#4A90E2"
               endFillColor="#E3F2FD"
               startOpacity={0.9}
-              endOpacity={0.4}
+              endOpacity={0.6}
               areaChart
               yAxisColor="#ddd"
               xAxisColor="transparent"
@@ -273,8 +273,8 @@ export default function analytics() {
               animateOnDataChange={true}
               animationDuration={1000}
               onDataChangeAnimationDuration={300}
-              maxValue={yAxisSettings.maxValue}
-              stepValue={yAxisSettings.stepValue}
+              maxValue={lineChartYAxisSettings.maxValue}
+              stepValue={lineChartYAxisSettings.stepValue}
               noOfSections={6}
             />
           </View>
@@ -299,7 +299,8 @@ export default function analytics() {
                     }}
                   />
                   <Text>
-                    {item.text}: {item.value.toFixed(2)}%
+                    {getCategoryDisplayName(item.text)}: {item.value.toFixed(2)}
+                    %
                   </Text>
                 </View>
               ))}
@@ -319,8 +320,8 @@ export default function analytics() {
               xAxisLabelTextStyle={{ color: "#666", fontSize: 10 }}
               yAxisColor="transparent"
               xAxisColor="transparent"
-              maxValue={yAxisSettings.maxValue}
-              stepValue={yAxisSettings.stepValue}
+              maxValue={barChartYAxisSettings.maxValue}
+              stepValue={barChartYAxisSettings.stepValue}
             />
           </View>
         </View>

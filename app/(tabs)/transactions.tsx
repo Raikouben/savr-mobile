@@ -17,6 +17,7 @@ import { useMemo } from "react";
 import DateSelector from "../../components/DateSelector";
 import CategoryPicker from "../../components/CategoryPicker";
 import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
+import { getCategoryDisplayName } from "@/constants/config";
 
 export default function transactions() {
   const [error, setError] = useState<string | null>(null);
@@ -87,7 +88,7 @@ export default function transactions() {
           }
           renderItem={({ item }) => (
             <View>
-              <Text>{item.category}</Text>
+              <Text>{getCategoryDisplayName(item.category)}</Text>
               <Text>£{(parseFloat(item.amount) || 0).toFixed(2)}</Text>
               <Text>{new Date(item.date).toLocaleDateString()}</Text>
               {item.description && <Text>{item.description}</Text>}
