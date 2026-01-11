@@ -44,18 +44,24 @@ export default function analytics() {
 
   const loading = budgetLoading || transactionsLoading;
 
-  const filteredTransactions = useMemo(() => {
-    if (!transactions) return [];
 
+  const lineChartTransactions = useMemo(() => {
+    if (!transactions) return [];
     if (category) {
       return transactions.filter((tx: any) => tx.category === category);
     }
     return transactions;
   }, [transactions, category]);
 
+
+  const categoryChartTransactions = useMemo(() => {
+    if (!transactions) return [];
+    return transactions;
+  }, [transactions]);
+
   const chartData = useMemo(() => {
     const data = aggregateByTimeRange(
-      filteredTransactions,
+      lineChartTransactions,
       timeRange,
       timeRange === "month" ? selectedMonthYear : undefined,
       timeRange === "year" ? selectedYear : undefined,
@@ -64,7 +70,7 @@ export default function analytics() {
     console.log("Final chart data:", data);
     return data;
   }, [
-    filteredTransactions,
+    lineChartTransactions,
     timeRange,
     selectedMonthYear,
     selectedYear,
@@ -72,8 +78,8 @@ export default function analytics() {
   ]);
 
   const categoryData = useMemo(() => {
-    return categoriseSpending(filteredTransactions);
-  }, [filteredTransactions]);
+    return categoriseSpending(categoryChartTransactions);
+  }, [categoryChartTransactions]);
 
   const pieChartData = useMemo(() => {
     return categoryData.map((item, index) => ({
@@ -242,43 +248,48 @@ export default function analytics() {
 
       {chartData.some((item) => item.value > 0) ? (
         <View>
-          <View>
-            <LineChart
-              data={chartData}
-              width={Dimensions.get("window").width - 60}
-              height={250}
-              spacing={
-                timeRange === "week" ? 55 : timeRange === "month" ? 10 : 30
-              }
-              initialSpacing={20}
-              color="transparent"
-              yAxisOffset={0}
-              yAxisLabelWidth={50}
-              thickness={3}
-              hideDataPoints={true}
-              disableScroll={true}
-              startFillColor="#4A90E2"
-              endFillColor="#E3F2FD"
-              startOpacity={0.9}
-              endOpacity={0.6}
-              areaChart
-              yAxisColor="#ddd"
-              xAxisColor="transparent"
-              yAxisTextStyle={{ color: "#666" }}
-              xAxisLabelTextStyle={{ color: "#666", fontSize: 10 }}
-              // rulesColor="transparent"
-              rulesLength={Dimensions.get("window").width - 60 - 16}
-              rulesType="dotted"
-              yAxisThickness={0}
-              xAxisThickness={0}
-              animateOnDataChange={true}
-              animationDuration={1000}
-              onDataChangeAnimationDuration={300}
-              maxValue={lineChartYAxisSettings.maxValue}
-              stepValue={lineChartYAxisSettings.stepValue}
-              noOfSections={6}
-            />
-          </View>
+          <LineChart
+            data={chartData}
+            width={Dimensions.get("window").width - 60}
+            height={250}
+            spacing={
+              timeRange === "week" ? 55 : timeRange === "month" ? 10 : 30
+            }
+            initialSpacing={20}
+            color="transparent"
+            yAxisOffset={0}
+            yAxisLabelWidth={50}
+            thickness={3}
+            hideDataPoints={true}
+            disableScroll={true}
+            startFillColor="#4A90E2"
+            endFillColor="#E3F2FD"
+            startOpacity={0.9}
+            endOpacity={0.6}
+            areaChart
+            yAxisColor="#ddd"
+            xAxisColor="transparent"
+            yAxisTextStyle={{ color: "#666" }}
+            xAxisLabelTextStyle={{ color: "#666", fontSize: 10 }}
+            // rulesColor="transparent"
+            rulesLength={Dimensions.get("window").width - 60 - 16}
+            rulesType="dotted"
+            yAxisThickness={0}
+            xAxisThickness={0}
+            animateOnDataChange={true}
+            animationDuration={1000}
+            onDataChangeAnimationDuration={300}
+            maxValue={lineChartYAxisSettings.maxValue}
+            stepValue={lineChartYAxisSettings.stepValue}
+            noOfSections={6}
+          />
+        </View>
+      ) : (
+        <Text>No line chart data to display</Text>
+      )}
+
+      {categoryData.length > 0 ? (
+        <View>
           <View>
             <PieChart
               data={pieChartData}
@@ -327,7 +338,7 @@ export default function analytics() {
           </View>
         </View>
       ) : (
-        <Text>No data to display</Text>
+        <Text>No category data to display</Text>
       )}
     </ScrollView>
   );
