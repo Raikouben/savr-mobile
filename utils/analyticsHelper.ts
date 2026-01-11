@@ -120,7 +120,12 @@ export function formatChartLabel(
 
 export function yAxisConfig(maxValue: number) {
   const numberOfSteps = 6;
-  const stepValue = Math.ceil(maxValue / numberOfSteps / 100) * 100 || 100;
+
+  const roundingBase = maxValue < 100 ? 10 : 100;
+  const stepValue =
+    Math.ceil(maxValue / numberOfSteps / roundingBase) * roundingBase ||
+    roundingBase;
+
   return {
     maxValue: Math.ceil(maxValue / stepValue) * stepValue,
     stepValue: stepValue,
