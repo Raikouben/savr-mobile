@@ -266,8 +266,9 @@ export default function analytics() {
               xAxisColor="transparent"
               yAxisTextStyle={{ color: "#666" }}
               xAxisLabelTextStyle={{ color: "#666", fontSize: 10 }}
-              rulesColor="transparent"
-              rulesType="solid"
+              // rulesColor="transparent"
+              rulesLength={Dimensions.get("window").width - 60 - 16}
+              rulesType="dotted"
               yAxisThickness={0}
               xAxisThickness={0}
               animateOnDataChange={true}
