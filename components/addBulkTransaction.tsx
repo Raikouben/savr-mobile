@@ -107,7 +107,7 @@ export default function addBulkTransaction({
             borderRadius: 10,
             width: "90%",
             maxWidth: 500,
-            height: "50%",
+            height: "55%",
           }}
         >
           <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 15 }}>

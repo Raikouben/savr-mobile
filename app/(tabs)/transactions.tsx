@@ -51,7 +51,7 @@ export default function transactions() {
 
     return filtered.sort(
       (a: any, b: any) =>
-        new Date(b.date).getTime() - new Date(a.date).getTime()
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     );
   }, [transactions, date, category]);
 
