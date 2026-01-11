@@ -13,6 +13,7 @@ import CategoryPicker from "./CategoryPicker";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
+import addBulkTransaction from "@/components/addBulkTransaction";
 export default function AddTransaction({
   visible,
   onClose,
@@ -30,7 +31,7 @@ export default function AddTransaction({
   const [loading, setLoading] = useState(false);
   const { createTransaction, isCreating } = useTransactionQuery();
   const [submitting, setSubmitting] = useState(false);
-
+  const [bulkMode, setBulkMode] = useState(false);
   const handleDateChange = (event: any, selectedDate: any) => {
     setShowDatePicker(false);
     if (selectedDate) {
@@ -96,34 +97,37 @@ export default function AddTransaction({
           }}
         >
           <Text>Add Transaction</Text>
-          <TextInput
-            placeholder="Amount"
-            keyboardType="decimal-pad"
-            value={amount}
-            onChangeText={setAmount}
-          />
-          <DateSelector
-            date={date}
-            onDateChange={setDate}
-          />
-          <TextInput
-            placeholder="Description (optional)"
-            value={description}
-            onChangeText={setDescription}
-          />
-          <CategoryPicker
-            selectedCategory={category}
-            onCategoryChange={setCategory}
-          />
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <TouchableOpacity onPress={handleSubmit}>
-              <Text>Add Transaction</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={onClose}>
-              <Text>Cancel</Text>
-            </TouchableOpacity>
+          <TouchableOpacity onPress={() => setBulkMode(!bulkMode)}>
+            <Text>{bulkMode ? "Switch to Single" : "Switch to Bulk"}</Text>
+          </TouchableOpacity>
+
+          <View>
+            <TextInput
+              placeholder="Amount"
+              keyboardType="decimal-pad"
+              value={amount}
+              onChangeText={setAmount}
+            />
+            <DateSelector date={date} onDateChange={setDate} />
+            <TextInput
+              placeholder="Description (optional)"
+              value={description}
+              onChangeText={setDescription}
+            />
+            <CategoryPicker
+              selectedCategory={category}
+              onCategoryChange={setCategory}
+            />
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <TouchableOpacity onPress={handleSubmit}>
+                <Text>Add Transaction</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={onClose}>
+                <Text>Cancel</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </View>

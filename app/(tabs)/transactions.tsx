@@ -9,6 +9,7 @@ import React from "react";
 import { useEffect } from "react";
 import { useTransactions } from "../../hooks/useTransactions";
 import AddTransaction from "../../components/AddTransaction";
+import addBulkTransaction from "@/components/addBulkTransaction";
 import { Ionicons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
 import { useState } from "react";
@@ -23,6 +24,7 @@ export default function transactions() {
   const [category, setCategory] = useState<string>("");
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const { transactions, isLoading: loading } = useTransactionQuery();
+  const [singleTransaction, setSingleTransaction] = useState(true);
 
   const resetFilters = () => {
     setDate(null);
