@@ -3,6 +3,7 @@ import { Link, useRouter } from "expo-router";
 import * as React from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useAuth } from "../../hooks/useAuth";
+import { useState } from "react";
 
 export default function SignUpScreen() {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -10,10 +11,14 @@ export default function SignUpScreen() {
   const router = useRouter();
 
   const [emailAddress, setEmailAddress] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [username, setUsername] = React.useState("");
-  const [pendingVerification, setPendingVerification] = React.useState(false);
-  const [code, setCode] = React.useState("");
+  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [pendingVerification, setPendingVerification] = useState(false);
+  const [code, setCode] = useState("");
+  const [signUpError, setSignUpError] = useState<string | null>(null);
+  const [verificationError, setVerificationError] = useState<string | null>(
+    null
+  );
 
   // Handle submission of sign-up form
   const onSignUpPress = async () => {
@@ -37,6 +42,9 @@ export default function SignUpScreen() {
     } catch (err) {
       // See https://clerk.com/docs/guides/development/custom-flows/error-handling
       // for more info on error handling
+      setSignUpError(
+        err instanceof Error ? err.message : "An unknown error occurred"
+      );
       console.error(JSON.stringify(err, null, 2));
     }
   };
@@ -70,11 +78,17 @@ export default function SignUpScreen() {
       } else {
         // If the status is not complete, check why. User may need to
         // complete further steps.
+        setVerificationError(
+          `Verification not complete. Status: ${signUpAttempt.status}`
+        );
         console.error(JSON.stringify(signUpAttempt, null, 2));
       }
     } catch (err) {
       // See https://clerk.com/docs/guides/development/custom-flows/error-handling
       // for more info on error handling
+      setVerificationError(
+        err instanceof Error ? err.message : "An unknown error occurred"
+      );
       console.error(JSON.stringify(err, null, 2));
     }
   };
@@ -83,6 +97,9 @@ export default function SignUpScreen() {
     return (
       <>
         <Text>Verify your email</Text>
+        {verificationError && (
+          <Text style={{ color: "red" }}>{verificationError}</Text>
+        )}
         <TextInput
           value={code}
           placeholder="Enter your verification code"
@@ -99,6 +116,7 @@ export default function SignUpScreen() {
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <View>
         <Text>Sign up</Text>
+        {signUpError && <Text style={{ color: "red" }}>{signUpError}</Text>}
         <TextInput
           autoCapitalize="none"
           value={emailAddress}
