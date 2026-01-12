@@ -8,6 +8,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useUserQuery } from "@/hooks/queries/authQuery";
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
+import { useColorScheme } from "react-native";
+import { PaperProvider } from "react-native-paper";
+import { oceanTheme } from "@/themes/oceanTheme";
 
 const queryClient = new QueryClient();
 
@@ -40,10 +43,12 @@ function RootLayoutNav() {
 
 export default function RootLayout() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ClerkProvider tokenCache={tokenCache}>
-        <RootLayoutNav />
-      </ClerkProvider>
-    </QueryClientProvider>
+    <PaperProvider>
+      <QueryClientProvider client={queryClient}>
+        <ClerkProvider tokenCache={tokenCache}>
+          <RootLayoutNav />
+        </ClerkProvider>
+      </QueryClientProvider>
+    </PaperProvider>
   );
 }
