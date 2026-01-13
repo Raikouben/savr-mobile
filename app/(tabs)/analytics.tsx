@@ -33,6 +33,7 @@ import {
   IconButton,
   ToggleButton,
   SegmentedButtons,
+  Surface,
 } from "react-native-paper";
 import CategoryFilter from "@/components/CategoryFilter";
 export default function analytics() {
@@ -410,181 +411,189 @@ export default function analytics() {
       showsVerticalScrollIndicator={false}
     >
       <Text variant="headlineLarge">Analytics</Text>
-
-      <SegmentedButtons
-        value={timeRange}
-        onValueChange={(value) =>
-          setTimeRange(value as "week" | "month" | "year")
-        }
-        buttons={[
-          { value: "week", label: "Week", icon: "calendar-week" },
-          { value: "month", label: "Month", icon: "calendar-month" },
-          { value: "year", label: "Year", icon: "calendar" },
-        ]}
-      />
-
-      <SegmentedButtons
-        value={comparisonMode ? "on" : "off"}
-        onValueChange={(value) => setComparisonMode(value === "on")}
-        buttons={[
-          { value: "off", label: "Enable Comparison" },
-          { value: "on", label: "Comparison Mode: ON" },
-        ]}
-      />
-
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
-        <IconButton icon="chevron-left" onPress={navigatePrevious} />
-        <Text variant="titleMedium">{getTimeRangeLabel()}</Text>
-        <IconButton
-          icon="chevron-right"
-          onPress={navigateNext}
-          disabled={!canNavigateNext()}
+      <Surface style={{ padding: 16, gap: 16, elevation: 4 }}>
+        <SegmentedButtons
+          value={timeRange}
+          onValueChange={(value) =>
+            setTimeRange(value as "week" | "month" | "year")
+          }
+          buttons={[
+            { value: "week", label: "Week", icon: "calendar-week" },
+            { value: "month", label: "Month", icon: "calendar-month" },
+            { value: "year", label: "Year", icon: "calendar" },
+          ]}
         />
-      </View>
 
-      <CategoryFilter
-        selectedCategory={category}
-        onCategoryChange={setCategory}
-      />
+        <SegmentedButtons
+          value={comparisonMode ? "on" : "off"}
+          onValueChange={(value) => setComparisonMode(value === "on")}
+          buttons={[
+            { value: "off", label: "Enable Comparison" },
+            { value: "on", label: "Comparison Mode: ON" },
+          ]}
+        />
 
-      {/* <Button mode="elevated" onPress={() => setCategory("")}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
+          <IconButton icon="chevron-left" onPress={navigatePrevious} />
+          <Text variant="titleMedium">{getTimeRangeLabel()}</Text>
+          <IconButton
+            icon="chevron-right"
+            onPress={navigateNext}
+            disabled={!canNavigateNext()}
+          />
+        </View>
+
+        <CategoryFilter
+          selectedCategory={category}
+          onCategoryChange={setCategory}
+        />
+
+        {/* <Button mode="elevated" onPress={() => setCategory("")}>
         <Text>Clear Category Filter</Text>
       </Button> */}
 
-      <Button mode="elevated" onPress={resetFilters}>
-        <Text>Reset Filters</Text>
-      </Button>
+        <Button mode="outlined" onPress={resetFilters}>
+          <Text>Reset Filters</Text>
+        </Button>
+      </Surface>
 
-      <View>
-        <Text>Statistics</Text>
-        {comparisonMode && compareStatistics ? (
-          <View>
+      {comparisonMode && compareStatistics ? (
+        <View
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+          }}
+        >
+          <Card style={{ marginBottom: 16, padding: 8 }}>
+            <Text>{getTimeRangeLabel()}</Text>
             <View>
-              <Text>{getTimeRangeLabel()}</Text>
               <View>
-                <View>
-                  <Text>Total Spent</Text>
-                  <Text>£{statistics.totalSpent.toFixed(2)}</Text>
-                </View>
-                <View>
-                  <Text>Transactions</Text>
-                  <Text>{statistics.transactionCount}</Text>
-                </View>
-                <View>
-                  <Text>Average</Text>
-                  <Text>£{statistics.averageTransaction.toFixed(2)}</Text>
-                </View>
-                {statistics.topCategory && (
-                  <View>
-                    <Text>Top Category</Text>
-                    <Text>
-                      {getCategoryDisplayName(statistics.topCategory.category)}
-                    </Text>
-                    <Text>£{statistics.topCategory.amount.toFixed(2)}</Text>
-                  </View>
-                )}
+                <Text>Total Spent</Text>
+                <Text>£{statistics.totalSpent.toFixed(2)}</Text>
               </View>
-            </View>
-
-            <View>
-              <Text>{getTimeRangeLabel(true)}</Text>
               <View>
+                <Text>Transactions</Text>
+                <Text>{statistics.transactionCount}</Text>
+              </View>
+              <View>
+                <Text>Average</Text>
+                <Text>£{statistics.averageTransaction.toFixed(2)}</Text>
+              </View>
+              {statistics.topCategory && (
                 <View>
-                  <Text>Total Spent</Text>
-                  <Text>£{compareStatistics.totalSpent.toFixed(2)}</Text>
+                  <Text>Top Category</Text>
                   <Text>
-                    {compareStatistics.totalSpent > statistics.totalSpent
-                      ? "up"
-                      : "down"}
-                    {Math.abs(
-                      ((statistics.totalSpent - compareStatistics.totalSpent) /
-                        compareStatistics.totalSpent) *
-                        100
-                    ).toFixed(1)}
-                    %
+                    {getCategoryDisplayName(statistics.topCategory.category)}
                   </Text>
+                  <Text>£{statistics.topCategory.amount.toFixed(2)}</Text>
                 </View>
-                <View>
-                  <Text>Transactions</Text>
-                  <Text>{compareStatistics.transactionCount}</Text>
+              )}
+            </View>
+          </Card>
+
+          <View>
+            <Text>{getTimeRangeLabel(true)}</Text>
+            <View>
+              <Card>
+                <Text>Total Spent</Text>
+                <Text>£{compareStatistics.totalSpent.toFixed(2)}</Text>
+                <Text>
+                  {compareStatistics.totalSpent > statistics.totalSpent
+                    ? "up"
+                    : "down"}
+                  {Math.abs(
+                    ((statistics.totalSpent - compareStatistics.totalSpent) /
+                      compareStatistics.totalSpent) *
+                      100
+                  ).toFixed(1)}
+                  %
+                </Text>
+              </Card>
+              <Card>
+                <Text>Transactions</Text>
+                <Text>{compareStatistics.transactionCount}</Text>
+                <Text>
+                  {compareStatistics.transactionCount >
+                  statistics.transactionCount
+                    ? "↑"
+                    : "↓"}
+                  {Math.abs(
+                    statistics.transactionCount -
+                      compareStatistics.transactionCount
+                  )}
+                </Text>
+              </Card>
+              <Card>
+                <Text>Average</Text>
+                <Text>£{compareStatistics.averageTransaction.toFixed(2)}</Text>
+                <Text>
+                  {compareStatistics.averageTransaction >
+                  statistics.averageTransaction
+                    ? "up"
+                    : "down"}
+                  {Math.abs(
+                    ((statistics.averageTransaction -
+                      compareStatistics.averageTransaction) /
+                      compareStatistics.averageTransaction) *
+                      100
+                  ).toFixed(1)}
+                  %
+                </Text>
+              </Card>
+              {compareStatistics.topCategory && (
+                <Card>
+                  <Text>Top Category</Text>
                   <Text>
-                    {compareStatistics.transactionCount >
-                    statistics.transactionCount
-                      ? "↑"
-                      : "↓"}
-                    {Math.abs(
-                      statistics.transactionCount -
-                        compareStatistics.transactionCount
+                    {getCategoryDisplayName(
+                      compareStatistics.topCategory.category
                     )}
                   </Text>
-                </View>
-                <View>
-                  <Text>Average</Text>
                   <Text>
-                    £{compareStatistics.averageTransaction.toFixed(2)}
+                    £{compareStatistics.topCategory.amount.toFixed(2)}
                   </Text>
-                  <Text>
-                    {compareStatistics.averageTransaction >
-                    statistics.averageTransaction
-                      ? "up"
-                      : "down"}
-                    {Math.abs(
-                      ((statistics.averageTransaction -
-                        compareStatistics.averageTransaction) /
-                        compareStatistics.averageTransaction) *
-                        100
-                    ).toFixed(1)}
-                    %
-                  </Text>
-                </View>
-                {compareStatistics.topCategory && (
-                  <View>
-                    <Text>Top Category</Text>
-                    <Text>
-                      {getCategoryDisplayName(
-                        compareStatistics.topCategory.category
-                      )}
-                    </Text>
-                    <Text>
-                      £{compareStatistics.topCategory.amount.toFixed(2)}
-                    </Text>
-                  </View>
-                )}
-              </View>
+                </Card>
+              )}
             </View>
           </View>
-        ) : (
-          <View>
-            <View>
-              <Text>Total Spent</Text>
-              <Text>£{statistics.totalSpent.toFixed(2)}</Text>
-            </View>
-            <View>
-              <Text>Transactions</Text>
-              <Text>{statistics.transactionCount}</Text>
-            </View>
-            <View>
-              <Text>Average</Text>
-              <Text>£{statistics.averageTransaction.toFixed(2)}</Text>
-            </View>
-            {statistics.topCategory && (
-              <View>
-                <Text>Top Category</Text>
-                <Text>
-                  {getCategoryDisplayName(statistics.topCategory.category)}
-                </Text>
-                <Text>£{statistics.topCategory.amount.toFixed(2)}</Text>
-              </View>
-            )}
-          </View>
-        )}
-      </View>
+        </View>
+      ) : (
+        <View
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+          }}
+        >
+          <Card style={{ marginBottom: 16, padding: 8 }}>
+            <Text>Total Spent</Text>
+            <Text>£{statistics.totalSpent.toFixed(2)}</Text>
+          </Card>
+          <Card style={{ marginBottom: 16, padding: 8 }}>
+            <Text>Transactions</Text>
+            <Text>{statistics.transactionCount}</Text>
+
+            <Text>Average</Text>
+            <Text>£{statistics.averageTransaction.toFixed(2)}</Text>
+          </Card>
+          {statistics.topCategory && (
+            <Card style={{ marginBottom: 16, padding: 8 }}>
+              <Text>Top Category</Text>
+              <Text>
+                {getCategoryDisplayName(statistics.topCategory.category)}
+              </Text>
+              <Text>£{statistics.topCategory.amount.toFixed(2)}</Text>
+            </Card>
+          )}
+        </View>
+      )}
 
       {loading && <Text>Loading...</Text>}
       {error && <Text>{error}</Text>}
 
       {chartData.some((item) => item.value > 0) ? (
         <Card>
+          <Card.Title title="Spending Over Time" />
           <LineChart
             data={chartData}
             data2={comparisonMode ? compareChartData : undefined}
@@ -634,6 +643,7 @@ export default function analytics() {
       {categoryData.length > 0 ? (
         <View>
           <Card>
+            <Card.Title title="Proportion of Spending by Category" />
             <PieChart
               data={pieChartData}
               donut
@@ -662,6 +672,7 @@ export default function analytics() {
             </View>
           </Card>
           <Card>
+            <Card.Title title="Spending by Category" />
             <BarChart
               data={barChartData}
               width={Dimensions.get("window").width - 60}
