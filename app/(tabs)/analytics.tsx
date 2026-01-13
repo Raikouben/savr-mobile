@@ -1,6 +1,5 @@
 import {
   View,
-  Text,
   TouchableOpacity,
   Dimensions,
   StyleSheet,
@@ -19,7 +18,23 @@ import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
 import { yAxisConfig, categoriseSpending } from "@/utils/analyticsHelper";
 import { getCategoryDisplayName } from "@/constants/config";
-
+import {
+  ActivityIndicator,
+  MD2Colors,
+  Text,
+  TextInput,
+  Button,
+  Card,
+  List,
+  TouchableRipple,
+  Portal,
+  Modal,
+  Dialog,
+  IconButton,
+  ToggleButton,
+  SegmentedButtons,
+} from "react-native-paper";
+import CategoryFilter from "@/components/CategoryFilter";
 export default function analytics() {
   const [error, setError] = useState<string | null>(null);
   const [timeRange, setTimeRange] = useState<"week" | "month" | "year">("week");
@@ -385,68 +400,60 @@ export default function analytics() {
   );
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
-      <Text>Analytics</Text>
+    <ScrollView
+      contentContainerStyle={{
+        padding: 20,
+        gap: 20,
+        backgroundColor: "#8a77aa",
+        flexGrow: 1,
+      }}
+      showsVerticalScrollIndicator={false}
+    >
+      <Text variant="headlineLarge">Analytics</Text>
 
-      <View>
-        <TouchableOpacity onPress={() => setTimeRange("week")}>
-          <Text>Week</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setTimeRange("month")}>
-          <Text>Month</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setTimeRange("year")}>
-          <Text>Year</Text>
-        </TouchableOpacity>
+      <SegmentedButtons
+        value={timeRange}
+        onValueChange={(value) =>
+          setTimeRange(value as "week" | "month" | "year")
+        }
+        buttons={[
+          { value: "week", label: "Week", icon: "calendar-week" },
+          { value: "month", label: "Month", icon: "calendar-month" },
+          { value: "year", label: "Year", icon: "calendar" },
+        ]}
+      />
+
+      <SegmentedButtons
+        value={comparisonMode ? "on" : "off"}
+        onValueChange={(value) => setComparisonMode(value === "on")}
+        buttons={[
+          { value: "off", label: "Enable Comparison" },
+          { value: "on", label: "Comparison Mode: ON" },
+        ]}
+      />
+
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
+        <IconButton icon="chevron-left" onPress={navigatePrevious} />
+        <Text variant="titleMedium">{getTimeRangeLabel()}</Text>
+        <IconButton
+          icon="chevron-right"
+          onPress={navigateNext}
+          disabled={!canNavigateNext()}
+        />
       </View>
 
-      <View>
-        <TouchableOpacity onPress={navigatePrevious}>
-          <Text>{"<"}</Text>
-        </TouchableOpacity>
-
-        <Text>{getTimeRangeLabel()}</Text>
-
-        <TouchableOpacity onPress={navigateNext} disabled={!canNavigateNext()}>
-          <Text>{">"}</Text>
-        </TouchableOpacity>
-      </View>
-
-      <TouchableOpacity onPress={() => setComparisonMode(!comparisonMode)}>
-        <Text>
-          {comparisonMode ? "Comparison Mode: ON" : "Enable Comparison"}
-        </Text>
-      </TouchableOpacity>
-
-      {comparisonMode && (
-        <View>
-          <Text>Compare With:</Text>
-          <View>
-            <TouchableOpacity onPress={navigateComparePrevious}>
-              <Text>{"<"}</Text>
-            </TouchableOpacity>
-
-            <Text>{getTimeRangeLabel(true)}</Text>
-
-            <TouchableOpacity onPress={navigateCompareNext}>
-              <Text>{">"}</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
-
-      <CategoryPicker
+      <CategoryFilter
         selectedCategory={category}
         onCategoryChange={setCategory}
       />
 
-      <TouchableOpacity onPress={() => setCategory("")}>
+      {/* <Button mode="elevated" onPress={() => setCategory("")}>
         <Text>Clear Category Filter</Text>
-      </TouchableOpacity>
+      </Button> */}
 
-      <TouchableOpacity onPress={resetFilters}>
+      <Button mode="elevated" onPress={resetFilters}>
         <Text>Reset Filters</Text>
-      </TouchableOpacity>
+      </Button>
 
       <View>
         <Text>Statistics</Text>
@@ -577,7 +584,7 @@ export default function analytics() {
       {error && <Text>{error}</Text>}
 
       {chartData.some((item) => item.value > 0) ? (
-        <View>
+        <Card>
           <LineChart
             data={chartData}
             data2={comparisonMode ? compareChartData : undefined}
@@ -619,14 +626,14 @@ export default function analytics() {
             stepValue={lineChartYAxisSettings.stepValue}
             noOfSections={6}
           />
-        </View>
+        </Card>
       ) : (
         <Text>No line chart data to display</Text>
       )}
 
       {categoryData.length > 0 ? (
         <View>
-          <View>
+          <Card>
             <PieChart
               data={pieChartData}
               donut
@@ -653,8 +660,8 @@ export default function analytics() {
                 </View>
               ))}
             </View>
-          </View>
-          <View>
+          </Card>
+          <Card>
             <BarChart
               data={barChartData}
               width={Dimensions.get("window").width - 60}
@@ -671,7 +678,7 @@ export default function analytics() {
               maxValue={barChartYAxisSettings.maxValue}
               stepValue={barChartYAxisSettings.stepValue}
             />
-          </View>
+          </Card>
         </View>
       ) : (
         <Text>No category data to display</Text>

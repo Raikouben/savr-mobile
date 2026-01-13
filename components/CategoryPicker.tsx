@@ -6,7 +6,7 @@ import {
   getCategoryIcon,
   getCategoryDisplayName,
 } from "../constants/config";
-import { Button, Menu, Divider, PaperProvider } from "react-native-paper";
+import { Button, Menu, Divider, PaperProvider, Text } from "react-native-paper";
 import Ionicons from "@expo/vector-icons/build/Ionicons";
 
 interface CategoryPickerProps {
@@ -35,15 +35,17 @@ export default function CategoryPicker({
       contentStyle={{ maxHeight: 400 }}
       anchor={
         <Button
-          mode="outlined"
+          mode="elevated"
           onPress={openMenu}
           icon="chevron-down"
           contentStyle={{ justifyContent: "space-between" }}
           style={{ marginTop: 5 }}
         >
-          {selectedCategory
-            ? getCategoryDisplayName(selectedCategory)
-            : `Select Category`}
+          <Text>
+            {selectedCategory
+              ? getCategoryDisplayName(selectedCategory)
+              : `Select Category`}
+          </Text>
         </Button>
       }
     >
