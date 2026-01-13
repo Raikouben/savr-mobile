@@ -96,9 +96,11 @@ export default function transactions() {
                 item.description ? ` • ${item.description}` : ""
               }`}
               left={(props) => (
-                <List.Icon
-                  {...props}
-                  icon={getCategoryIcon(item.category) as any}
+                <Ionicons
+                  name={getCategoryIcon(item.category) as any}
+                  size={22}
+                  color="#ffffff"
+                  style={{ marginLeft: 8, alignSelf: "center" }}
                 />
               )}
               right={() => (
