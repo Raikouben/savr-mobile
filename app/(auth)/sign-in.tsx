@@ -46,6 +46,8 @@ export default function Page() {
       console.error(JSON.stringify(err, null, 2));
     }
   };
+  const emailError = error?.toLowerCase().includes("email");
+  const passwordError = error?.toLowerCase().includes("password");
 
   return (
     // <KeyboardAwareScrollView
@@ -80,6 +82,7 @@ export default function Page() {
             keyboardType="email-address"
             value={emailAddress}
             onChangeText={setEmailAddress}
+            error={!!emailError}
           />
 
           <TextInput
@@ -88,6 +91,7 @@ export default function Page() {
             secureTextEntry
             value={password}
             onChangeText={setPassword}
+            error={!!passwordError}
           />
         </Card.Content>
 

@@ -94,6 +94,8 @@ export default function SignUpScreen() {
       console.error(JSON.stringify(err, null, 2));
     }
   };
+  const emailError = signUpError?.toLowerCase().includes("email");
+  const passwordError = signUpError?.toLowerCase().includes("password");
 
   if (pendingVerification) {
     return (
@@ -119,6 +121,7 @@ export default function SignUpScreen() {
               value={code}
               placeholder="Enter your verification code"
               onChangeText={(code) => setCode(code)}
+              error={!!verificationError}
             />
           </Card.Content>
           <Card.Actions>
@@ -163,6 +166,7 @@ export default function SignUpScreen() {
             value={emailAddress}
             placeholder="Enter email"
             onChangeText={(email) => setEmailAddress(email)}
+            error={!!emailError}
           />
           <TextInput
             mode="outlined"
@@ -178,6 +182,7 @@ export default function SignUpScreen() {
             placeholder="Enter password"
             secureTextEntry={true}
             onChangeText={(password) => setPassword(password)}
+            error={!!passwordError}
           />
         </Card.Content>
         <Card.Actions>

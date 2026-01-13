@@ -278,7 +278,6 @@ export default function analytics() {
     const averageTransaction =
       transactionCount > 0 ? totalSpent / transactionCount : 0;
 
-
     const categoryTotals: { [key: string]: number } = {};
     compareLineChartTransactions.forEach((tx: any) => {
       const cat = tx.category;
