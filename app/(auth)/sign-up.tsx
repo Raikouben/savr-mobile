@@ -1,10 +1,12 @@
 import { useSignUp } from "@clerk/clerk-expo";
 import { Link, useRouter } from "expo-router";
 import * as React from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { useAuth } from "../../hooks/useAuth";
 import { useState } from "react";
-
+import { Text, TextInput, Button, Card } from "react-native-paper";
+import { KeyboardAvoidingView } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 export default function SignUpScreen() {
   const { isLoaded, signUp, setActive } = useSignUp();
   const { createUser } = useAuth();
@@ -95,56 +97,100 @@ export default function SignUpScreen() {
 
   if (pendingVerification) {
     return (
-      <>
-        <Text>Verify your email</Text>
-        {verificationError && (
-          <Text style={{ color: "red" }}>{verificationError}</Text>
-        )}
-        <TextInput
-          value={code}
-          placeholder="Enter your verification code"
-          onChangeText={(code) => setCode(code)}
-        />
-        <TouchableOpacity onPress={onVerifyPress}>
-          <Text>Verify</Text>
-        </TouchableOpacity>
-      </>
+      <KeyboardAvoidingView
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          padding: 20,
+          backgroundColor: "#7852b6",
+        }}
+        behavior="padding"
+      >
+        <Card style={{ width: "100%", maxWidth: 400 }}>
+          <Card.Title title="Email Verification" />
+          <Card.Content>
+            {verificationError && (
+              <Text style={{ color: "red" }}>{verificationError}</Text>
+            )}
+            <TextInput
+              mode="outlined"
+              label="Verification Code"
+              value={code}
+              placeholder="Enter your verification code"
+              onChangeText={(code) => setCode(code)}
+            />
+          </Card.Content>
+          <Card.Actions>
+            <Button mode="contained" onPress={onVerifyPress}>
+              <Text>Verify</Text>
+            </Button>
+          </Card.Actions>
+        </Card>
+      </KeyboardAvoidingView>
     );
   }
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <View>
-        <Text>Sign up</Text>
-        {signUpError && <Text style={{ color: "red" }}>{signUpError}</Text>}
-        <TextInput
-          autoCapitalize="none"
-          value={emailAddress}
-          placeholder="Enter email"
-          onChangeText={(email) => setEmailAddress(email)}
-        />
-        <TextInput
-          autoCapitalize="none"
-          value={username}
-          placeholder="Enter username"
-          onChangeText={(username) => setUsername(username)}
-        />
-        <TextInput
-          value={password}
-          placeholder="Enter password"
-          secureTextEntry={true}
-          onChangeText={(password) => setPassword(password)}
-        />
-        <TouchableOpacity onPress={onSignUpPress}>
-          <Text>Continue</Text>
-        </TouchableOpacity>
-        <View style={{ display: "flex", flexDirection: "row", gap: 3 }}>
-          <Text>Already have an account?</Text>
-          <Link href="/sign-in">
+    // <KeyboardAwareScrollView
+    //   contentContainerStyle={{
+    //     flexGrow: 1,
+    //     justifyContent: "center",
+    //     alignItems: "center",
+    //     padding: 20,
+    //     backgroundColor: "#7852b6",
+    //   }}
+    //   keyboardShouldPersistTaps="handled"
+    // >
+    <KeyboardAvoidingView
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 20,
+        backgroundColor: "#7852b6",
+      }}
+      behavior="padding"
+    >
+      <Card style={{ width: "100%", maxWidth: 400 }}>
+        <Card.Title title="Sign up" />
+        <Card.Content>
+          {signUpError && <Text style={{ color: "red" }}>{signUpError}</Text>}
+          <TextInput
+            mode="outlined"
+            label="Email"
+            autoCapitalize="none"
+            value={emailAddress}
+            placeholder="Enter email"
+            onChangeText={(email) => setEmailAddress(email)}
+          />
+          <TextInput
+            mode="outlined"
+            label="Username"
+            value={username}
+            placeholder="Enter username"
+            onChangeText={(username) => setUsername(username)}
+          />
+          <TextInput
+            mode="outlined"
+            label="Password"
+            value={password}
+            placeholder="Enter password"
+            secureTextEntry={true}
+            onChangeText={(password) => setPassword(password)}
+          />
+        </Card.Content>
+        <Card.Actions>
+          <Button onPress={onSignUpPress}>
+            <Text>Sign up</Text>
+          </Button>
+
+          <Button onPress={() => router.push("/(auth)/sign-in")}>
             <Text>Sign in</Text>
-          </Link>
-        </View>
-      </View>
-    </View>
+          </Button>
+        </Card.Actions>
+      </Card>
+    </KeyboardAvoidingView>
+    // {/* </KeyboardAwareScrollView> */}
   );
 }

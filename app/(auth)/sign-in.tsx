@@ -4,7 +4,8 @@ import React from "react";
 import { TouchableOpacity, View } from "react-native";
 import { useState } from "react";
 import { Text, TextInput, Button, Card } from "react-native-paper";
-
+import { KeyboardAvoidingView } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 export default function Page() {
   const { signIn, setActive, isLoaded } = useSignIn();
   const router = useRouter();
@@ -47,39 +48,60 @@ export default function Page() {
   };
 
   return (
-    <Card >
-      <Card.Title title="Sign In" />
+    // <KeyboardAwareScrollView
+    //   contentContainerStyle={{
+    //     flexGrow: 1,
+    //     justifyContent: "center",
+    //     alignItems: "center",
+    //     padding: 20,
+    //     backgroundColor: "#7852b6",
+    //   }}
+    //   keyboardShouldPersistTaps="handled"
+    // >
+    <KeyboardAvoidingView
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 20,
+        backgroundColor: "#7852b6",
+      }}
+      behavior="padding"
+    >
+      <Card style={{ width: "100%", maxWidth: 400 }}>
+        <Card.Title title="Sign In" />
+        <Card.Content>
+          {error ? <Text>{error}</Text> : null}
 
-      <Card.Content>
-        {error ? <Text>{error}</Text> : null}
+          <TextInput
+            mode="outlined"
+            label="Email"
+            autoCapitalize="none"
+            keyboardType="email-address"
+            value={emailAddress}
+            onChangeText={setEmailAddress}
+          />
 
-        <TextInput
-          mode="outlined"
-          label="Email"
-          autoCapitalize="none"
-          keyboardType="email-address"
-          value={emailAddress}
-          onChangeText={setEmailAddress}
-        />
+          <TextInput
+            mode="outlined"
+            label="Password"
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+          />
+        </Card.Content>
 
-        <TextInput
-          mode="outlined"
-          label="Password"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-        />
-      </Card.Content>
+        <Card.Actions>
+          <Button mode="contained" onPress={onSignInPress}>
+            Continue
+          </Button>
 
-      <Card.Actions>
-        <Button mode="contained" onPress={onSignInPress}>
-          Continue
-        </Button>
-
-        <Button mode="text" onPress={() => router.push("/(auth)/sign-up")}>
-          Sign up
-        </Button>
-      </Card.Actions>
-    </Card>
+          <Button mode="text" onPress={() => router.push("/(auth)/sign-up")}>
+            Sign up
+          </Button>
+        </Card.Actions>
+      </Card>
+    </KeyboardAvoidingView>
+    // </KeyboardAwareScrollView>
   );
 }
