@@ -197,7 +197,7 @@ export default function analytics() {
   const barChartData = useMemo(() => {
     return categoryData.map((item, index) => ({
       value: item.amount,
-      label: item.category,
+      label: getCategoryDisplayName(item.category), // Use first letter of display name
       frontColor: item.color,
     }));
   }, [categoryData]);
@@ -564,103 +564,127 @@ export default function analytics() {
       {error && <Text>{error}</Text>}
 
       {chartData.some((item) => item.value > 0) ? (
-        <Card>
+        <Card style={{ padding: 16, overflow: "hidden" }}>
           <Card.Title title="Spending Over Time" />
-          <LineChart
-            data={chartData}
-            data2={comparisonMode ? compareChartData : undefined}
-            width={Dimensions.get("window").width - 60}
-            height={250}
-            spacing={
-              timeRange === "week" ? 55 : timeRange === "month" ? 10 : 30
-            }
-            initialSpacing={20}
-            color="transparent"
-            color2="transparent"
-            yAxisOffset={0}
-            yAxisLabelWidth={50}
-            thickness={3}
-            hideDataPoints={true}
-            disableScroll={true}
-            startFillColor="#4A90E2"
-            endFillColor="#E3F2FD"
-            startFillColor2="#FF6B6B"
-            endFillColor2="#FFE5E5"
-            startOpacity={0.9}
-            endOpacity={0.6}
-            startOpacity2={0.9}
-            endOpacity2={0.6}
-            areaChart
-            yAxisColor="#ddd"
-            xAxisColor="transparent"
-            yAxisTextStyle={{ color: "#666" }}
-            xAxisLabelTextStyle={{ color: "#666", fontSize: 10 }}
-            // rulesColor="transparent"
-            rulesLength={Dimensions.get("window").width - 60 - 16}
-            rulesType="dotted"
-            yAxisThickness={0}
-            xAxisThickness={0}
-            animateOnDataChange={true}
-            animationDuration={1000}
-            onDataChangeAnimationDuration={300}
-            maxValue={lineChartYAxisSettings.maxValue}
-            stepValue={lineChartYAxisSettings.stepValue}
-            noOfSections={6}
-          />
+          <Card.Content>
+            <View style={{ overflow: "hidden" }}>
+              <LineChart
+                data={chartData}
+                data2={comparisonMode ? compareChartData : undefined}
+                width={Dimensions.get("window").width - 72}
+                height={250}
+                spacing={
+                  timeRange === "week" ? 40 : timeRange === "month" ? 10 : 30
+                }
+                initialSpacing={10}
+                color="transparent"
+                color2="transparent"
+                yAxisOffset={0}
+                yAxisLabelWidth={35}
+                thickness={3}
+                hideDataPoints={true}
+                disableScroll={true}
+                startFillColor="#4A90E2"
+                endFillColor="#E3F2FD"
+                startFillColor2="#FF6B6B"
+                endFillColor2="#FFE5E5"
+                startOpacity={0.9}
+                endOpacity={0.6}
+                startOpacity2={0.9}
+                endOpacity2={0.6}
+                areaChart
+                yAxisColor="#ddd"
+                xAxisColor="transparent"
+                yAxisTextStyle={{ color: "#666", fontSize: 10 }}
+                xAxisLabelTextStyle={{ color: "#666", fontSize: 10 }}
+                rulesLength={Dimensions.get("window").width - 112}
+                rulesType="dotted"
+                yAxisThickness={0}
+                xAxisThickness={0}
+                animateOnDataChange={true}
+                animationDuration={1000}
+                onDataChangeAnimationDuration={300}
+                maxValue={lineChartYAxisSettings.maxValue}
+                stepValue={lineChartYAxisSettings.stepValue}
+                noOfSections={6}
+              />
+            </View>
+          </Card.Content>
         </Card>
       ) : (
         <Text>No line chart data to display</Text>
       )}
 
       {categoryData.length > 0 ? (
-        <View>
-          <Card>
+        <View style={{ gap: 20 }}>
+          <Card style={{ padding: 16, overflow: "hidden" }}>
             <Card.Title title="Proportion of Spending by Category" />
-            <PieChart
-              data={pieChartData}
-              donut
-              focusOnPress
-              radius={100}
-              innerRadius={50}
-            />
-            <View>
-              {pieChartData.map((item, index) => (
-                <View key={index}>
+            <Card.Content style={{ alignItems: "center" }}>
+              <View style={{ overflow: "hidden", alignItems: "center" }}>
+                <PieChart
+                  data={pieChartData}
+                  donut
+                  focusOnPress
+                  radius={100}
+                  innerRadius={50}
+                />
+              </View>
+              <View style={{ marginTop: 16, gap: 8 }}>
+                {pieChartData.map((item, index) => (
                   <View
+                    key={index}
                     style={{
-                      width: 16,
-                      height: 16,
-                      backgroundColor: item.color,
-                      marginRight: 8,
-                      borderRadius: 4,
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 8,
                     }}
-                  />
-                  <Text>
-                    {getCategoryDisplayName(item.text)}: {item.value.toFixed(2)}
-                    %
-                  </Text>
-                </View>
-              ))}
-            </View>
+                  >
+                    <View
+                      style={{
+                        width: 16,
+                        height: 16,
+                        backgroundColor: item.color,
+                        borderRadius: 4,
+                      }}
+                    />
+                    <Text>
+                      {getCategoryDisplayName(item.text)}:{" "}
+                      {item.value.toFixed(2)}%
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            </Card.Content>
           </Card>
-          <Card>
+          <Card style={{ padding: 16, overflow: "hidden" }}>
             <Card.Title title="Spending by Category" />
-            <BarChart
-              data={barChartData}
-              width={Dimensions.get("window").width - 60}
-              height={250}
-              barWidth={30}
-              spacing={20}
-              yAxisThickness={0}
-              xAxisThickness={0}
-              yAxisLabelWidth={50}
-              yAxisTextStyle={{ color: "#666" }}
-              xAxisLabelTextStyle={{ color: "#666", fontSize: 10 }}
-              yAxisColor="transparent"
-              xAxisColor="transparent"
-              maxValue={barChartYAxisSettings.maxValue}
-              stepValue={barChartYAxisSettings.stepValue}
-            />
+            <Card.Content>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <View style={{ overflow: "hidden" }}>
+                  <BarChart
+                    data={barChartData}
+                    width={Math.max(
+                      Dimensions.get("window").width - 72,
+                      barChartData.length * 60
+                    )}
+                    height={250}
+                    barWidth={30}
+                    spacing={28}
+                    initialSpacing={10}
+                    endSpacing={10}
+                    yAxisThickness={0}
+                    xAxisThickness={0}
+                    yAxisLabelWidth={35}
+                    yAxisTextStyle={{ color: "#666", fontSize: 10 }}
+                    xAxisLabelTextStyle={{ color: "#666", fontSize: 10 }}
+                    yAxisColor="transparent"
+                    xAxisColor="transparent"
+                    maxValue={barChartYAxisSettings.maxValue}
+                    stepValue={barChartYAxisSettings.stepValue}
+                  />
+                </View>
+              </ScrollView>
+            </Card.Content>
           </Card>
         </View>
       ) : (

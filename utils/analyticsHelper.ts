@@ -48,7 +48,7 @@ export function aggregateByTimeRange(
 
     let label: string;
     if (range === "week") {
-      const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const dayNames = ["S", "M", "T", "W", "T", "F", "S"];
       label = dayNames[txDate.getUTCDay()];
     } else if (range === "month") {
       label = String(txDate.getUTCDate());
@@ -67,7 +67,7 @@ export function aggregateByTimeRange(
   const chartData: Array<{ value: number; label: string }> = [];
 
   if (range === "week") {
-    const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    const weekDays = ["M", "T", "W", "T", "F", "S", "S"];
     for (const day of weekDays) {
       chartData.push({ value: totals[day] || 0, label: day });
     }
