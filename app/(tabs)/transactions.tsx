@@ -12,6 +12,7 @@ import DateSelector from "../../components/DateSelector";
 import CategoryPicker from "../../components/CategoryPicker";
 import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
 import { getCategoryDisplayName, getCategoryIcon } from "@/constants/config";
+import CategoryFilter from "@/components/CategoryFilter";
 import {
   ActivityIndicator,
   MD2Colors,
@@ -78,7 +79,7 @@ export default function transactions() {
             <View>
               <Text variant="headlineLarge">Transactions</Text>
               <DateSelector date={date} onDateChange={setDate} />
-              <CategoryPicker
+              <CategoryFilter
                 selectedCategory={category}
                 onCategoryChange={setCategory}
               />

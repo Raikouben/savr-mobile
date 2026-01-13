@@ -37,7 +37,7 @@ export default function DateSelector({
       <Button
         onPress={() => setShowPicker(true)}
         uppercase={false}
-        mode="outlined"
+        mode="contained"
       >
         Pick single date
       </Button>
