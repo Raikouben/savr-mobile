@@ -1,13 +1,18 @@
 import { useBudget } from "@/hooks/useBudget";
 import { getCategoryDisplayName } from "@/constants/config";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import {
-  Modal,
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
   ActivityIndicator,
-} from "react-native";
+  MD2Colors,
+  Text,
+  TextInput,
+  Button,
+  Card,
+  List,
+  TouchableRipple,
+  Portal,
+  Modal,
+} from "react-native-paper";
 import { useEffect, useState } from "react";
 
 export const AdviceModal = ({
@@ -49,14 +54,24 @@ export const AdviceModal = ({
     }
   }, [visible, category, budgetAmount, actualSpent]);
   return (
-    <Modal>
-      <View>
-        <Text>Advice for {getCategoryDisplayName(category)}</Text>
-        {loading ? <ActivityIndicator /> : <Text>{advice}</Text>}
-        <TouchableOpacity onPress={onClose}>
-          <Text>Close</Text>
-        </TouchableOpacity>
-      </View>
-    </Modal>
+    <Portal>
+      <Modal
+        visible={visible}
+        onDismiss={onClose}
+        contentContainerStyle={{
+          backgroundColor: "white",
+          padding: 20,
+          margin: 20,
+          borderRadius: 8,
+        }}
+      >
+        <View>
+          <Text style={{ color: "black" }}>
+            Advice for {getCategoryDisplayName(category)}
+          </Text>
+          {loading ? <ActivityIndicator /> : <Text style={{ color: "rgba(98, 79, 168, 0.96)" }}>{advice}</Text>}
+        </View>
+      </Modal>
+    </Portal>
   );
 };

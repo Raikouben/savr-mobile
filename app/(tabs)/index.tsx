@@ -9,6 +9,7 @@ import {
   Button,
   Card,
   List,
+  TouchableRipple
 } from "react-native-paper";
 import { useState, useMemo } from "react";
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
@@ -130,7 +131,7 @@ export default function Page() {
               >
                 {Object.entries(budgetSummary).map(
                   ([category, data]: [string, any], index) => (
-                    <TouchableOpacity
+                    <TouchableRipple
                       key={category}
                       onPress={() => {
                         setSelectedCategory({
@@ -181,7 +182,7 @@ export default function Page() {
                           </Text>
                         </Card.Content>
                       </Card>
-                    </TouchableOpacity>
+                    </TouchableRipple>
                   )
                 )}
               </View>
