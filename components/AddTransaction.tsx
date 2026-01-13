@@ -1,4 +1,4 @@
-import { Modal, View, TouchableOpacity, Platform } from "react-native";
+import { View, TouchableOpacity, Platform } from "react-native";
 import React, { useState } from "react";
 import DateSelector from "./DateSelector";
 import CategoryPicker from "./CategoryPicker";
@@ -15,6 +15,9 @@ import {
   Card,
   List,
   TouchableRipple,
+  Portal,
+  Modal,
+  Dialog,
 } from "react-native-paper";
 export default function AddTransaction({
   visible,
@@ -75,64 +78,57 @@ export default function AddTransaction({
   };
 
   return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={visible}
-      onRequestClose={onClose}
-    >
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "rgba(0, 0, 0, 0.7)",
-        }}
-      >
+    <Portal>
+      <Dialog visible={visible} onDismiss={onClose}>
         <View
           style={{
-            backgroundColor: "white",
-            padding: 20,
-            borderRadius: 10,
-            width: "80%",
-            maxWidth: 400,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingHorizontal: 24,
           }}
         >
-          <Text>Add Transaction</Text>
-          <TouchableOpacity onPress={() => setBulkMode(!bulkMode)}>
-            <Text>{bulkMode ? "Switch to Single" : "Switch to Bulk"}</Text>
-          </TouchableOpacity>
-
-          <View>
-            <TextInput
-              placeholder="Amount"
-              keyboardType="decimal-pad"
-              value={amount}
-              onChangeText={setAmount}
-            />
-            <DateSelector date={date} onDateChange={setDate} />
-            <TextInput
-              placeholder="Description (optional)"
-              value={description}
-              onChangeText={setDescription}
-            />
-            <CategoryPicker
-              selectedCategory={category}
-              onCategoryChange={setCategory}
-            />
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
-            >
-              <TouchableOpacity onPress={handleSubmit}>
-                <Text>Add Transaction</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={onClose}>
-                <Text>Cancel</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          <Text variant="titleLarge">Add Transaction</Text>
+          <Button mode="text" compact onPress={() => setBulkMode(!bulkMode)}>
+            {bulkMode ? "Single" : "Bulk"}
+          </Button>
         </View>
-      </View>
-    </Modal>
+        <Dialog.Content>
+          <DateSelector date={date} onDateChange={setDate} mode="input" />
+          <TextInput
+            mode="outlined"
+            label="Amount"
+            placeholder="Amount"
+            keyboardType="decimal-pad"
+            value={amount}
+            onChangeText={setAmount}
+          />
+
+          <TextInput
+            mode="outlined"
+            label="Description"
+            placeholder="Description (optional)"
+            value={description}
+            onChangeText={setDescription}
+          />
+          <CategoryPicker
+            selectedCategory={category}
+            onCategoryChange={setCategory}
+          />
+          <Dialog.Actions style={{ marginTop: 10}}>
+            <Button
+              onPress={handleSubmit}
+              mode="contained"
+              disabled={submitting}
+            >
+              <Text>Add Transaction</Text>
+            </Button>
+            <Button mode="outlined" onPress={onClose}>
+              <Text>Cancel</Text>
+            </Button>
+          </Dialog.Actions>
+        </Dialog.Content>
+      </Dialog>
+    </Portal>
   );
 }
