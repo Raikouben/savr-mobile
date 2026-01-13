@@ -43,7 +43,7 @@ export const categoryConfig = {
   transportation: {
     color: "#F59E0B",
     icon: "car-outline",
-    displayName: "Transportation",
+    displayName: "Transport",
   },
   groceries: {
     color: "#EAB308",
@@ -67,7 +67,7 @@ export const categoryConfig = {
   miscellaneous: {
     color: "#EC4899",
     icon: "ellipsis-horizontal-circle-outline",
-    displayName: "Miscellaneous",
+    displayName: "Other",
   },
 };
 
