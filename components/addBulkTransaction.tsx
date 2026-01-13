@@ -1,19 +1,25 @@
-import {
-  Modal,
-  Text,
-  Button,
-  View,
-  TextInput,
-  TouchableOpacity,
-  Platform,
-  ScrollView,
-} from "react-native";
+import { View, TouchableOpacity, Platform, ScrollView } from "react-native";
 import React, { useState } from "react";
 import DateSelector from "./DateSelector";
 import CategoryPicker from "./CategoryPicker";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
+import { KeyboardAvoidingView } from "react-native";
+import {
+  ActivityIndicator,
+  MD2Colors,
+  Text,
+  TextInput,
+  Button,
+  Card,
+  List,
+  TouchableRipple,
+  Portal,
+  Modal,
+  Dialog,
+  IconButton,
+} from "react-native-paper";
 // import { ScrollView } from "react-native-reanimated/lib/typescript/Animated";
 type transaction = {
   amount: number;
@@ -84,112 +90,98 @@ export default function addBulkTransaction({
       console.error("Error creating transactions:", error);
     }
   };
-
   return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={visible}
-      onRequestClose={onClose}
-    >
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "rgba(0, 0, 0, 0.7)",
-        }}
+    <Portal>
+      <Dialog
+        visible={visible}
+        onDismiss={onClose}
+        style={{ maxHeight: "85%" }}
       >
-        <View
-          style={{
-            backgroundColor: "white",
-            padding: 20,
-            borderRadius: 10,
-            width: "90%",
-            maxWidth: 500,
-            height: "55%",
-          }}
-        >
-          <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 15 }}>
-            Add Multiple Transactions
-          </Text>
-
-          {/* Scrollable list of transaction cards */}
-          <ScrollView
-            style={{ flex: 1, marginBottom: 15 }}
-            showsVerticalScrollIndicator={true}
-          >
+        <Dialog.Title>Add Transaction</Dialog.Title>
+        <Dialog.ScrollArea style={{ paddingHorizontal: 0 }}>
+          <ScrollView>
             {draftTransactions.map((tx, index) => (
-              <View key={index} style={{ marginBottom: 10 }}>
-                <View>
-                  <Text>Transaction {index + 1}</Text>
-                  <TouchableOpacity
-                    onPress={() => removeDraftTransaction(index)}
+              <Card key={index} style={{ margin: 12 }}>
+                <Card.Content>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: 12,
+                    }}
                   >
-                    <Text>delete</Text>
-                  </TouchableOpacity>
-                </View>
+                    <Text variant="titleMedium">Transaction {index + 1}</Text>
+                    <IconButton
+                      icon="delete"
+                      size={20}
+                      onPress={() => removeDraftTransaction(index)}
+                    />
+                  </View>
 
-                <View>
-                  <View>
-                    <Text>Date</Text>
-                    <DateSelector
-                      date={tx.date}
-                      onDateChange={(newDate) =>
-                        updateDraftTransaction(index, {
-                          ...tx,
-                          date: newDate || new Date(),
-                        })
-                      }
-                    />
-                  </View>
-                  <View>
-                    <Text>Category</Text>
-                    <CategoryPicker
-                      selectedCategory={tx.category}
-                      onCategoryChange={(newCategory) =>
-                        updateDraftTransaction(index, {
-                          ...tx,
-                          category: newCategory,
-                        })
-                      }
-                    />
-                  </View>
-                </View>
+                  <View style={{ marginBottom: 12 }}>
+                    <View>
+                      <DateSelector
+                        mode="input"
+                        date={tx.date}
+                        onDateChange={(newDate) =>
+                          updateDraftTransaction(index, {
+                            ...tx,
+                            date: newDate || new Date(),
+                          })
+                        }
+                      />
+                    </View>
 
-                <View style={{ flexDirection: "row", gap: 10 }}>
-                  <View style={{ flex: 1 }}>
-                    <Text>Description</Text>
-                    <TextInput
-                      placeholder="Description"
-                      value={tx.description || ""}
-                      onChangeText={(text) =>
-                        updateDraftTransaction(index, {
-                          ...tx,
-                          description: text,
-                        })
-                      }
-                    />
+                    <View style={{ marginBottom: 12 }}>
+                      <CategoryPicker
+                        selectedCategory={tx.category}
+                        onCategoryChange={(newCategory) =>
+                          updateDraftTransaction(index, {
+                            ...tx,
+                            category: newCategory,
+                          })
+                        }
+                      />
+                    </View>
+
+                    <View style={{ flexDirection: "row", gap: 12 }}>
+                      <View style={{ flex: 1 }}>
+                        <TextInput
+                          mode="outlined"
+                          placeholder="Description"
+                          value={tx.description || ""}
+                          onChangeText={(text) =>
+                            updateDraftTransaction(index, {
+                              ...tx,
+                              description: text,
+                            })
+                          }
+                        />
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <TextInput
+                          mode="outlined"
+                          placeholder="0.00"
+                          keyboardType="decimal-pad"
+                          value={tx.amount.toString()}
+                          onChangeText={(text) =>
+                            updateDraftTransaction(index, {
+                              ...tx,
+                              amount: parseFloat(text) || 0,
+                            })
+                          }
+                        />
+                      </View>
+                    </View>
                   </View>
-                  <View style={{ flex: 1 }}>
-                    <Text>Amount</Text>
-                    <TextInput
-                      placeholder="0.00"
-                      keyboardType="decimal-pad"
-                      value={tx.amount.toString()}
-                      onChangeText={(text) =>
-                        updateDraftTransaction(index, {
-                          ...tx,
-                          amount: parseFloat(text) || 0,
-                        })
-                      }
-                    />
-                  </View>
-                </View>
-              </View>
+                </Card.Content>
+              </Card>
             ))}
 
-            <TouchableOpacity
+            <Button
+              mode="text"
+              icon="plus"
               onPress={() =>
                 addDraftTransaction({
                   amount: 0,
@@ -199,41 +191,23 @@ export default function addBulkTransaction({
                 })
               }
             >
-              <Text>+ Add Another Transaction</Text>
-            </TouchableOpacity>
+              Add Another Transaction
+            </Button>
           </ScrollView>
+        </Dialog.ScrollArea>
 
-          <View style={{ flexDirection: "row", gap: 10, marginTop: 10 }}>
-            <TouchableOpacity
-              onPress={onClose}
-              style={{
-                flex: 1,
-                padding: 12,
-                backgroundColor: "#e0e0e0",
-                borderRadius: 8,
-                alignItems: "center",
-              }}
-            >
-              <Text style={{ fontSize: 14 }}>Cancel</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={handleSubmit}
-              disabled={isCreatingBulk}
-              style={{
-                flex: 1,
-                padding: 12,
-                backgroundColor: "#1a1a1a",
-                borderRadius: 8,
-                alignItems: "center",
-              }}
-            >
-              <Text style={{ fontSize: 14, color: "white" }}>
-                {isCreatingBulk ? "Saving" : "Save All"}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    </Modal>
+        <Dialog.Actions>
+          <Button onPress={onClose}>Cancel</Button>
+          <Button
+            mode="contained"
+            onPress={handleSubmit}
+            disabled={isCreatingBulk}
+            loading={isCreatingBulk}
+          >
+            {isCreatingBulk ? "Saving" : "Save All"}
+          </Button>
+        </Dialog.Actions>
+      </Dialog>
+    </Portal>
   );
 }

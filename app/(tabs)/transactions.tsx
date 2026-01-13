@@ -72,6 +72,7 @@ export default function transactions() {
       {error && <Text>{error}</Text>}
       {transactions && (
         <FlatList
+          showsVerticalScrollIndicator={false}
           style={{ padding: 20 }}
           data={filteredTransactions}
           keyExtractor={(item) => item.id.toString()}

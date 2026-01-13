@@ -9,7 +9,7 @@ import {
   Button,
   Card,
   List,
-  TouchableRipple
+  TouchableRipple,
 } from "react-native-paper";
 import { useState, useMemo } from "react";
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
@@ -60,6 +60,7 @@ export default function Page() {
         backgroundColor: "#8a77aa",
         flexGrow: 1,
       }}
+      showsVerticalScrollIndicator={false}
     >
       <Text variant="headlineLarge">Budget Progress</Text>
       {loading && (

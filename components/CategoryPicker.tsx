@@ -35,7 +35,7 @@ export default function CategoryPicker({
       contentStyle={{ maxHeight: 400 }}
       anchor={
         <Button
-          mode="elevated"
+          mode="outlined"
           onPress={openMenu}
           icon="chevron-down"
           contentStyle={{ justifyContent: "space-between" }}

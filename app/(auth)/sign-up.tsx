@@ -186,11 +186,11 @@ export default function SignUpScreen() {
           />
         </Card.Content>
         <Card.Actions>
-          <Button onPress={onSignUpPress}>
+          <Button mode="contained" onPress={onSignUpPress}>
             <Text>Sign up</Text>
           </Button>
 
-          <Button onPress={() => router.push("/(auth)/sign-in")}>
+          <Button mode="outlined" onPress={() => router.push("/(auth)/sign-in")}>
             <Text>Sign in</Text>
           </Button>
         </Card.Actions>
