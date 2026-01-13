@@ -43,7 +43,7 @@ function RootLayoutNav() {
 
 export default function RootLayout() {
   return (
-    <PaperProvider>
+    <PaperProvider >
       <QueryClientProvider client={queryClient}>
         <ClerkProvider tokenCache={tokenCache}>
           <RootLayoutNav />

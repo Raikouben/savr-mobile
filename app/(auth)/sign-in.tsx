@@ -1,8 +1,9 @@
 import { useSignIn } from "@clerk/clerk-expo";
 import { Link, useRouter } from "expo-router";
 import React from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { useState } from "react";
+import { Text, TextInput, Button, Card } from "react-native-paper";
 
 export default function Page() {
   const { signIn, setActive, isLoaded } = useSignIn();
@@ -46,30 +47,39 @@ export default function Page() {
   };
 
   return (
-    <View>
-      <Text>Sign in</Text>
-      {error && <Text style={{ color: "red" }}>{error}</Text>}
-      <TextInput
-        autoCapitalize="none"
-        value={emailAddress}
-        placeholder="Enter email"
-        onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
-      />
-      <TextInput
-        value={password}
-        placeholder="Enter password"
-        secureTextEntry={true}
-        onChangeText={(password) => setPassword(password)}
-      />
-      <TouchableOpacity onPress={onSignInPress}>
-        <Text>Continue</Text>
-      </TouchableOpacity>
-      <View style={{ display: "flex", flexDirection: "row", gap: 3 }}>
-        <Text>Don't have an account?</Text>
-        <Link href="/sign-up">
-          <Text>Sign up</Text>
-        </Link>
-      </View>
-    </View>
+    <Card >
+      <Card.Title title="Sign In" />
+
+      <Card.Content>
+        {error ? <Text>{error}</Text> : null}
+
+        <TextInput
+          mode="outlined"
+          label="Email"
+          autoCapitalize="none"
+          keyboardType="email-address"
+          value={emailAddress}
+          onChangeText={setEmailAddress}
+        />
+
+        <TextInput
+          mode="outlined"
+          label="Password"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+      </Card.Content>
+
+      <Card.Actions>
+        <Button mode="contained" onPress={onSignInPress}>
+          Continue
+        </Button>
+
+        <Button mode="text" onPress={() => router.push("/(auth)/sign-up")}>
+          Sign up
+        </Button>
+      </Card.Actions>
+    </Card>
   );
 }

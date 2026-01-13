@@ -56,6 +56,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer, CommonActions } from "@react-navigation/native";
 import { Provider, BottomNavigation } from "react-native-paper";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const Tab = createBottomTabNavigator();
 
@@ -67,9 +68,9 @@ export default function TabLayout() {
       }}
       tabBar={({ navigation, state, descriptors, insets }) => (
         <BottomNavigation.Bar
+          safeAreaInsets={{ bottom: 0 }}
           labeled={false}
           navigationState={state}
-          safeAreaInsets={insets}
           onTabPress={({ route, preventDefault }) => {
             const event = navigation.emit({
               type: "tabPress",
