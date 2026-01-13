@@ -64,13 +64,14 @@ export default function transactions() {
   }, [transactions, date, category]);
 
   return (
-    <View style={{ padding: 20, gap: 20, backgroundColor: "#8a77aa" }}>
+    <View style={{ flex: 1, backgroundColor: "#8a77aa" }}>
       {loading && (
         <ActivityIndicator animating={true} color={MD2Colors.purple500} />
       )}
       {error && <Text>{error}</Text>}
       {transactions && (
         <FlatList
+          style={{ padding: 20 }}
           data={filteredTransactions}
           keyExtractor={(item) => item.id.toString()}
           ListHeaderComponent={

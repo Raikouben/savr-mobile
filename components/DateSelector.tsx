@@ -3,39 +3,55 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { DatePickerInput } from "react-native-paper-dates";
 import { DatePickerModal } from "react-native-paper-dates";
+import { Button } from "react-native-paper";
 interface DateSelectorProps {
   date: Date | null;
   onDateChange: (date: Date | null) => void;
   label?: string;
+  mode?: "modal" | "input";
 }
 
 export default function DateSelector({
   date,
   onDateChange,
+  mode = "modal",
   label = "Select Date",
 }: DateSelectorProps) {
   const [showPicker, setShowPicker] = useState(false);
-  const handleDateChange = (event: any, selectedDate: any) => {
-    setShowPicker(false);
-    if (selectedDate) {
-      onDateChange(selectedDate);
-    }
-  };
+
+  if (mode === "input") {
+    return (
+      <DatePickerInput
+        locale="en-GB"
+        label={label}
+        value={date || undefined}
+        onChange={(d) => onDateChange(d || null)}
+        inputMode="start"
+        mode="outlined"
+      />
+    );
+  }
+
   return (
-    <View>
-      <TouchableOpacity onPress={() => setShowPicker(true)}>
-        <Text>
-          {label}: {date ? date.toLocaleDateString() : "Not selected"}
-        </Text>
-      </TouchableOpacity>
-      {showPicker && (
-        <DateTimePicker
-          value={date || new Date()}
-          mode="date"
-          display="default"
-          onChange={handleDateChange}
-        />
-      )}
+    <View style={{ justifyContent: "center", flex: 1, alignItems: "center" }}>
+      <Button
+        onPress={() => setShowPicker(true)}
+        uppercase={false}
+        mode="outlined"
+      >
+        Pick single date
+      </Button>
+      <DatePickerModal
+        locale="en-GB"
+        mode="single"
+        visible={showPicker}
+        onDismiss={() => setShowPicker(false)}
+        date={date || new Date()}
+        onConfirm={(params) => {
+          setShowPicker(false);
+          onDateChange(params.date || null);
+        }}
+      />
     </View>
   );
 }

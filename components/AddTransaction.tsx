@@ -1,12 +1,4 @@
-import {
-  Modal,
-  Text,
-  Button,
-  View,
-  TextInput,
-  TouchableOpacity,
-  Platform,
-} from "react-native";
+import { Modal, View, TouchableOpacity, Platform } from "react-native";
 import React, { useState } from "react";
 import DateSelector from "./DateSelector";
 import CategoryPicker from "./CategoryPicker";
@@ -14,6 +6,16 @@ import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
 import addBulkTransaction from "@/components/addBulkTransaction";
+import {
+  ActivityIndicator,
+  MD2Colors,
+  Text,
+  TextInput,
+  Button,
+  Card,
+  List,
+  TouchableRipple,
+} from "react-native-paper";
 export default function AddTransaction({
   visible,
   onClose,

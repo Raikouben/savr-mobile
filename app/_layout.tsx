@@ -11,6 +11,8 @@ import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
 import { useColorScheme } from "react-native";
 import { PaperProvider } from "react-native-paper";
 import { oceanTheme } from "@/themes/oceanTheme";
+import { enGB, registerTranslation } from "react-native-paper-dates";
+registerTranslation("en-GB", enGB);
 
 const queryClient = new QueryClient();
 
@@ -43,7 +45,7 @@ function RootLayoutNav() {
 
 export default function RootLayout() {
   return (
-    <PaperProvider >
+    <PaperProvider>
       <QueryClientProvider client={queryClient}>
         <ClerkProvider tokenCache={tokenCache}>
           <RootLayoutNav />
