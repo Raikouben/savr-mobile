@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
+import { View, FlatList, TouchableOpacity, ScrollView } from "react-native";
 import React from "react";
 import { useEffect } from "react";
 import { useTransactions } from "../../hooks/useTransactions";
@@ -17,8 +11,21 @@ import { useMemo } from "react";
 import DateSelector from "../../components/DateSelector";
 import CategoryPicker from "../../components/CategoryPicker";
 import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
-import { getCategoryDisplayName } from "@/constants/config";
-
+import { getCategoryDisplayName, getCategoryIcon } from "@/constants/config";
+import {
+  ActivityIndicator,
+  MD2Colors,
+  Text,
+  TextInput,
+  Button,
+  Card,
+  List,
+  TouchableRipple,
+  Portal,
+  Modal,
+  AnimatedFAB,
+  FAB,
+} from "react-native-paper";
 export default function transactions() {
   const [error, setError] = useState<string | null>(null);
   const [date, setDate] = useState<Date | null>(null);
@@ -57,8 +64,10 @@ export default function transactions() {
   }, [transactions, date, category]);
 
   return (
-    <View>
-      {loading && <Text>Loading...</Text>}
+    <View style={{ padding: 20, gap: 20, backgroundColor: "#8a77aa" }}>
+      {loading && (
+        <ActivityIndicator animating={true} color={MD2Colors.purple500} />
+      )}
       {error && <Text>{error}</Text>}
       {transactions && (
         <FlatList
@@ -66,40 +75,44 @@ export default function transactions() {
           keyExtractor={(item) => item.id.toString()}
           ListHeaderComponent={
             <View>
-              <Text>Transactions</Text>
+              <Text variant="headlineLarge">Transactions</Text>
               <DateSelector date={date} onDateChange={setDate} />
               <CategoryPicker
                 selectedCategory={category}
                 onCategoryChange={setCategory}
               />
-              <TouchableOpacity onPress={resetFilters}>
+              <Button mode="outlined" onPress={resetFilters}>
                 <Text>Reset Filters</Text>
-              </TouchableOpacity>
-              <Ionicons
-                name="add-circle-outline"
-                size={32}
-                color="black"
-                onPress={() => setModalVisible(true)}
-              />
-              <TouchableOpacity onPress={() => setBulkModalVisible(true)}>
+              </Button>
+              <Button mode="outlined" onPress={() => setBulkModalVisible(true)}>
                 <Text>Test Bulk Transaction</Text>
-              </TouchableOpacity>
+              </Button>
             </View>
           }
           renderItem={({ item }) => (
-            <View>
-              <Text>{getCategoryDisplayName(item.category)}</Text>
-              <Text>£{(parseFloat(item.amount) || 0).toFixed(2)}</Text>
-              <Text>{new Date(item.date).toLocaleDateString()}</Text>
-              {item.description && <Text>{item.description}</Text>}
-            </View>
+            <List.Item
+              title={getCategoryDisplayName(item.category)}
+              description={`${new Date(item.date).toLocaleDateString()}${
+                item.description ? ` • ${item.description}` : ""
+              }`}
+              left={(props) => (
+                <List.Icon
+                  {...props}
+                  icon={getCategoryIcon(item.category) as any}
+                />
+              )}
+              right={() => (
+                <Text variant="titleMedium">
+                  £{(parseFloat(item.amount) || 0).toFixed(2)}
+                </Text>
+              )}
+            />
           )}
         />
       )}
-      <Ionicons
-        name="add-circle-outline"
-        size={32}
-        color="black"
+      <FAB
+        icon="plus"
+        style={{ position: "absolute", right: 16, bottom: 16 }}
         onPress={() => setModalVisible(true)}
       />
       {modalVisible && (
