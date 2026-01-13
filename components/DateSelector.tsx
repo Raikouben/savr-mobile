@@ -33,7 +33,7 @@ export default function DateSelector({
   }
 
   return (
-    <View style={{ justifyContent: "center", flex: 1, alignItems: "center" }}>
+    <View>
       <Button
         onPress={() => setShowPicker(true)}
         uppercase={false}

@@ -78,14 +78,17 @@ export default function transactions() {
           ListHeaderComponent={
             <View>
               <Text variant="headlineLarge">Transactions</Text>
-              <DateSelector date={date} onDateChange={setDate} />
+              <View style={{ flexDirection: "row", marginBottom: 10, gap: 10 }}>
+                <DateSelector date={date} onDateChange={setDate} />
+                <Button mode="contained" onPress={resetFilters}>
+                  <Text style={{ color: "#000000" }}>Reset Filters</Text>
+                </Button>
+              </View>
               <CategoryFilter
                 selectedCategory={category}
                 onCategoryChange={setCategory}
               />
-              <Button mode="outlined" onPress={resetFilters}>
-                <Text>Reset Filters</Text>
-              </Button>
+
               <Button mode="outlined" onPress={() => setBulkModalVisible(true)}>
                 <Text>Test Bulk Transaction</Text>
               </Button>
