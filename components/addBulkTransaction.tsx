@@ -102,23 +102,19 @@ export default function addBulkTransaction({
           <ScrollView>
             {draftTransactions.map((tx, index) => (
               <Card key={index} style={{ margin: 12 }}>
-                <Card.Content>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: 12,
-                    }}
-                  >
-                    <Text variant="titleMedium">Transaction {index + 1}</Text>
+                <Card.Title
+                  title={`Transaction ${index + 1}`}
+                  titleVariant="titleMedium"
+                  right={(props) => (
                     <IconButton
+                      {...props}
                       icon="delete"
                       size={20}
                       onPress={() => removeDraftTransaction(index)}
                     />
-                  </View>
-
+                  )}
+                />
+                <Card.Content>
                   <View style={{ marginBottom: 12 }}>
                     <View>
                       <DateSelector

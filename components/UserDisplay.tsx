@@ -1,13 +1,24 @@
 import { useUserQuery } from "@/hooks/queries/authQuery";
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  TextInput,
-} from "react-native";
+import { View, ScrollView, TouchableOpacity } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import { useState, useEffect } from "react";
+import {
+  ActivityIndicator,
+  MD2Colors,
+  Text,
+  TextInput,
+  Button,
+  Card,
+  List,
+  TouchableRipple,
+  Portal,
+  Modal,
+  Dialog,
+  IconButton,
+  ToggleButton,
+  SegmentedButtons,
+  Surface,
+} from "react-native-paper";
 
 const userFields = ["username", "email"] as const;
 
@@ -41,51 +52,57 @@ export default function UserDisplay() {
   }
 
   return (
-    <View>
-      <View>
-        <Text>{editable ? "Edit Information" : "User Information"}</Text>
-        <Feather
-          name={editable ? "x" : "edit"}
-          size={24}
-          onPress={() => setEditable(!editable)}
-        />
-      </View>
-      {editable ? (
-        <View>
-          {userFields.map((field) => (
-            <View key={field}>
-              <Text>{field}</Text>
+    <Card>
+      <Card.Title
+        title={editable ? "Edit Information" : "User Information"}
+        right={(props) => (
+          <IconButton
+            {...props}
+            icon={editable ? "close" : "pencil"}
+            onPress={() => setEditable(!editable)}
+          />
+        )}
+      />
+      <Card.Content style={{ gap: 16 }}>
+        {editable ? (
+          <View style={{ gap: 12 }}>
+            {userFields.map((field) => (
               <TextInput
-                placeholder="Amount"
+                key={field}
+                label={field.charAt(0).toUpperCase() + field.slice(1)}
                 value={userForm[field]}
                 onChangeText={(val) =>
                   setUserForm({ ...userForm, [field]: val })
                 }
+                mode="outlined"
               />
+            ))}
+            <Button
+              mode="contained"
+              onPress={handleSubmit}
+              disabled={isUpdating}
+              loading={isUpdating}
+            >
+              {isUpdating ? "Saving..." : "Save"}
+            </Button>
+          </View>
+        ) : (
+          <View style={{ gap: 8 }}>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <Text>Username</Text>
+              <Text style={{ fontWeight: "bold" }}>{user?.username}</Text>
             </View>
-          ))}
-          {/* <TextInput
-            placeholder="username"
-            value={userForm.username}
-            onChangeText={(text) =>
-              setUserForm({ ...userForm, username: text })
-            }
-          />
-          <TextInput
-            placeholder="email"
-            value={userForm.email}
-            onChangeText={(text) => setUserForm({ ...userForm, email: text })}
-          /> */}
-          <TouchableOpacity onPress={handleSubmit} disabled={isUpdating}>
-            <Text>{isUpdating ? "Saving..." : "Save"}</Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <View>
-          <Text>Username: {user?.username}</Text>
-          <Text>Email: {user?.email}</Text>
-        </View>
-      )}
-    </View>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <Text>Email</Text>
+              <Text style={{ fontWeight: "bold" }}>{user?.email}</Text>
+            </View>
+          </View>
+        )}
+      </Card.Content>
+    </Card>
   );
 }

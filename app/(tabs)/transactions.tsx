@@ -78,7 +78,9 @@ export default function transactions() {
           keyExtractor={(item) => item.id.toString()}
           ListHeaderComponent={
             <View>
-              <Text variant="headlineLarge">Transactions</Text>
+              <Text variant="headlineLarge" style={{ marginBottom: 20 }}>
+                Transactions
+              </Text>
               <View style={{ flexDirection: "row", marginBottom: 10, gap: 10 }}>
                 <DateSelector date={date} onDateChange={setDate} />
                 <Button mode="contained" onPress={resetFilters}>

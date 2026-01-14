@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, ScrollView, TouchableOpacity } from "react-native";
 import React from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
@@ -11,6 +11,23 @@ import BudgetDisplay from "@/components/BudgetDisplay";
 import { SignOutButton } from "../../components/SignOutButton";
 import UserDisplay from "@/components/UserDisplay";
 import { useRecommender } from "@/hooks/useRecommender";
+import {
+  ActivityIndicator,
+  MD2Colors,
+  Text,
+  TextInput,
+  Button,
+  Card,
+  List,
+  TouchableRipple,
+  Portal,
+  Modal,
+  Dialog,
+  IconButton,
+  ToggleButton,
+  SegmentedButtons,
+  Surface,
+} from "react-native-paper";
 
 export default function profile() {
   const { user, isLoading: userLoading, updateUser } = useUserQuery();
@@ -19,15 +36,24 @@ export default function profile() {
   const router = useRouter();
 
   return (
-    <ScrollView>
-      <Text>profile</Text>
+    <ScrollView
+      contentContainerStyle={{
+        padding: 20,
+        gap: 20,
+        backgroundColor: "#8a77aa",
+        flexGrow: 1,
+      }}
+      showsVerticalScrollIndicator={false}
+    >
+      <Text variant="headlineLarge">profile</Text>
       <UserDisplay />
       <BudgetDisplay />
-      <TouchableOpacity
+      <Button
+        mode="elevated"
         onPress={() => router.push("../(setup)/income-disclosure?edit=true")}
       >
         <Text>Updates to lifestyle</Text>
-      </TouchableOpacity>
+      </Button>
       {/* <TouchableOpacity
         onPress={async () => {
           try {

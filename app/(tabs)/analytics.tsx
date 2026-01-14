@@ -34,6 +34,7 @@ import {
   ToggleButton,
   SegmentedButtons,
   Surface,
+  Switch,
 } from "react-native-paper";
 import CategoryFilter from "@/components/CategoryFilter";
 export default function analytics() {
@@ -411,206 +412,229 @@ export default function analytics() {
       showsVerticalScrollIndicator={false}
     >
       <Text variant="headlineLarge">Analytics</Text>
-      <Surface style={{ padding: 16, gap: 16, elevation: 4 }}>
+      <Card style={{ padding: 12 }}>
         <SegmentedButtons
           value={timeRange}
           onValueChange={(value) =>
             setTimeRange(value as "week" | "month" | "year")
           }
           buttons={[
-            { value: "week", label: "Week", icon: "calendar-week" },
-            { value: "month", label: "Month", icon: "calendar-month" },
-            { value: "year", label: "Year", icon: "calendar" },
+            { value: "week", label: "Week" },
+            { value: "month", label: "Month" },
+            { value: "year", label: "Year" },
           ]}
         />
 
-        <SegmentedButtons
-          value={comparisonMode ? "on" : "off"}
-          onValueChange={(value) => setComparisonMode(value === "on")}
-          buttons={[
-            { value: "off", label: "Enable Comparison" },
-            { value: "on", label: "Comparison Mode: ON" },
-          ]}
-        />
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Text>Comparison Mode</Text>
+          <Switch value={comparisonMode} onValueChange={setComparisonMode} />
+        </View>
 
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
-          <IconButton icon="chevron-left" onPress={navigatePrevious} />
-          <Text variant="titleMedium">{getTimeRangeLabel()}</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+          }}
+        >
+          <IconButton
+            icon="chevron-left"
+            onPress={navigatePrevious}
+            size={20}
+          />
+          <Text
+            variant="titleSmall"
+            style={{ minWidth: 120, textAlign: "center" }}
+          >
+            {getTimeRangeLabel()}
+          </Text>
           <IconButton
             icon="chevron-right"
             onPress={navigateNext}
             disabled={!canNavigateNext()}
+            size={20}
           />
         </View>
-
-        <CategoryFilter
-          selectedCategory={category}
-          onCategoryChange={setCategory}
-        />
 
         {/* <Button mode="elevated" onPress={() => setCategory("")}>
         <Text>Clear Category Filter</Text>
       </Button> */}
-
-        <Button mode="outlined" onPress={resetFilters}>
-          <Text>Reset Filters</Text>
+        <Button mode="outlined" onPress={resetFilters} compact>
+          Reset Filters
         </Button>
-      </Surface>
-      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
-        <Card style={{ flex: 1, minWidth: "45%", padding: 12 }}>
-          <Text variant="labelMedium" style={{ opacity: 0.7 }}>
-            Total Spent
-          </Text>
-          <Text variant="headlineSmall">
-            £{statistics.totalSpent.toFixed(2)}
-          </Text>
-          {comparisonMode && compareStatistics && (
-            <Text
-              variant="bodySmall"
-              style={{
-                color:
-                  compareStatistics.totalSpent > statistics.totalSpent
-                    ? "#4CAF50"
-                    : "#F44336",
-              }}
-            >
-              {compareStatistics.totalSpent > statistics.totalSpent ? "↓" : "↑"}
-              {Math.abs(
-                ((statistics.totalSpent - compareStatistics.totalSpent) /
-                  compareStatistics.totalSpent) *
-                  100
-              ).toFixed(1)}
-              % vs prev
-            </Text>
-          )}
-        </Card>
-
-        <Card style={{ flex: 1, minWidth: "45%", padding: 12 }}>
-          <Text variant="labelMedium" style={{ opacity: 0.7 }}>
-            Transactions
-          </Text>
-          <Text variant="headlineSmall">{statistics.transactionCount}</Text>
-          {comparisonMode && compareStatistics && (
-            <Text
-              variant="bodySmall"
-              style={{
-                color:
-                  statistics.transactionCount >
-                  compareStatistics.transactionCount
-                    ? "#F44336"
-                    : "#4CAF50",
-              }}
-            >
-              {statistics.transactionCount > compareStatistics.transactionCount
-                ? "↑"
-                : "↓"}
-              {Math.abs(
-                statistics.transactionCount - compareStatistics.transactionCount
-              )}{" "}
-              vs prev
-            </Text>
-          )}
-        </Card>
-
-        <Card style={{ flex: 1, minWidth: "45%", padding: 12 }}>
-          <Text variant="labelMedium" style={{ opacity: 0.7 }}>
-            Average
-          </Text>
-          <Text variant="headlineSmall">
-            £{statistics.averageTransaction.toFixed(2)}
-          </Text>
-          {comparisonMode && compareStatistics && (
-            <Text
-              variant="bodySmall"
-              style={{
-                color:
-                  compareStatistics.averageTransaction >
-                  statistics.averageTransaction
-                    ? "#4CAF50"
-                    : "#F44336",
-              }}
-            >
-              {compareStatistics.averageTransaction >
-              statistics.averageTransaction
-                ? "↓"
-                : "↑"}
-              {Math.abs(
-                ((statistics.averageTransaction -
-                  compareStatistics.averageTransaction) /
-                  compareStatistics.averageTransaction) *
-                  100
-              ).toFixed(1)}
-              % vs prev
-            </Text>
-          )}
-        </Card>
-
-        {statistics.topCategory && (
-          <Card style={{ flex: 1, minWidth: "45%", padding: 12 }}>
-            <Text variant="labelMedium" style={{ opacity: 0.7 }}>
-              Top Category
-            </Text>
-            <Text variant="titleMedium">
-              {getCategoryDisplayName(statistics.topCategory.category)}
-            </Text>
-            <Text variant="bodyMedium">
-              £{statistics.topCategory.amount.toFixed(2)}
-            </Text>
-          </Card>
-        )}
-      </View>
+      </Card>
 
       {loading && <Text>Loading...</Text>}
       {error && <Text>{error}</Text>}
 
       {chartData.some((item) => item.value > 0) ? (
-        <Card style={{ padding: 16, overflow: "hidden" }}>
-          <Card.Title title="Spending Over Time" />
-          <Card.Content>
-            <View style={{ overflow: "hidden" }}>
-              <LineChart
-                data={chartData}
-                data2={comparisonMode ? compareChartData : undefined}
-                width={Dimensions.get("window").width - 72}
-                height={250}
-                spacing={
-                  timeRange === "week" ? 40 : timeRange === "month" ? 10 : 30
-                }
-                initialSpacing={10}
-                color="transparent"
-                color2="transparent"
-                yAxisOffset={0}
-                yAxisLabelWidth={35}
-                thickness={3}
-                hideDataPoints={true}
-                disableScroll={true}
-                startFillColor="#4A90E2"
-                endFillColor="#E3F2FD"
-                startFillColor2="#FF6B6B"
-                endFillColor2="#FFE5E5"
-                startOpacity={0.9}
-                endOpacity={0.6}
-                startOpacity2={0.9}
-                endOpacity2={0.6}
-                areaChart
-                yAxisColor="#ddd"
-                xAxisColor="transparent"
-                yAxisTextStyle={{ color: "#666", fontSize: 10 }}
-                xAxisLabelTextStyle={{ color: "#666", fontSize: 10 }}
-                rulesLength={Dimensions.get("window").width - 112}
-                rulesType="dotted"
-                yAxisThickness={0}
-                xAxisThickness={0}
-                animateOnDataChange={true}
-                animationDuration={1000}
-                onDataChangeAnimationDuration={300}
-                maxValue={lineChartYAxisSettings.maxValue}
-                stepValue={lineChartYAxisSettings.stepValue}
-                noOfSections={6}
-              />
-            </View>
-          </Card.Content>
-        </Card>
+        <View style={{ gap: 20 }}>
+          <Card style={{ padding: 16, overflow: "hidden" }}>
+            <Card.Title title="Spending Over Time" />
+            <Card.Content>
+              <View style={{ overflow: "hidden" }}>
+                <LineChart
+                  data={chartData}
+                  data2={comparisonMode ? compareChartData : undefined}
+                  width={Dimensions.get("window").width - 72}
+                  height={250}
+                  spacing={
+                    timeRange === "week" ? 40 : timeRange === "month" ? 10 : 30
+                  }
+                  initialSpacing={10}
+                  color="transparent"
+                  color2="transparent"
+                  yAxisOffset={0}
+                  yAxisLabelWidth={35}
+                  thickness={3}
+                  hideDataPoints={true}
+                  disableScroll={true}
+                  startFillColor="#4A90E2"
+                  endFillColor="#E3F2FD"
+                  startFillColor2="#FF6B6B"
+                  endFillColor2="#FFE5E5"
+                  startOpacity={0.9}
+                  endOpacity={0.6}
+                  startOpacity2={0.9}
+                  endOpacity2={0.6}
+                  areaChart
+                  yAxisColor="#ddd"
+                  xAxisColor="transparent"
+                  yAxisTextStyle={{ color: "#666", fontSize: 10 }}
+                  xAxisLabelTextStyle={{ color: "#666", fontSize: 10 }}
+                  rulesLength={Dimensions.get("window").width - 112}
+                  rulesType="dotted"
+                  yAxisThickness={0}
+                  xAxisThickness={0}
+                  animateOnDataChange={true}
+                  animationDuration={1000}
+                  onDataChangeAnimationDuration={300}
+                  maxValue={lineChartYAxisSettings.maxValue}
+                  stepValue={lineChartYAxisSettings.stepValue}
+                  noOfSections={6}
+                />
+              </View>
+            </Card.Content>
+            <CategoryFilter
+              selectedCategory={category}
+              onCategoryChange={setCategory}
+            />
+          </Card>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+            <Card style={{ flex: 1, minWidth: "45%", padding: 12 }}>
+              <Text variant="labelMedium" style={{ opacity: 0.7 }}>
+                Total Spent
+              </Text>
+              <Text variant="headlineSmall">
+                £{statistics.totalSpent.toFixed(2)}
+              </Text>
+              {comparisonMode && compareStatistics && (
+                <Text
+                  variant="bodySmall"
+                  style={{
+                    color:
+                      compareStatistics.totalSpent > statistics.totalSpent
+                        ? "#4CAF50"
+                        : "#F44336",
+                  }}
+                >
+                  {compareStatistics.totalSpent > statistics.totalSpent
+                    ? "↓"
+                    : "↑"}
+                  {Math.abs(
+                    ((statistics.totalSpent - compareStatistics.totalSpent) /
+                      compareStatistics.totalSpent) *
+                      100
+                  ).toFixed(1)}
+                  % vs prev
+                </Text>
+              )}
+            </Card>
+
+            <Card style={{ flex: 1, minWidth: "45%", padding: 12 }}>
+              <Text variant="labelMedium" style={{ opacity: 0.7 }}>
+                Transactions
+              </Text>
+              <Text variant="headlineSmall">{statistics.transactionCount}</Text>
+              {comparisonMode && compareStatistics && (
+                <Text
+                  variant="bodySmall"
+                  style={{
+                    color:
+                      statistics.transactionCount >
+                      compareStatistics.transactionCount
+                        ? "#F44336"
+                        : "#4CAF50",
+                  }}
+                >
+                  {statistics.transactionCount >
+                  compareStatistics.transactionCount
+                    ? "↑"
+                    : "↓"}
+                  {Math.abs(
+                    statistics.transactionCount -
+                      compareStatistics.transactionCount
+                  )}{" "}
+                  vs prev
+                </Text>
+              )}
+            </Card>
+
+            <Card style={{ flex: 1, minWidth: "45%", padding: 12 }}>
+              <Text variant="labelMedium" style={{ opacity: 0.7 }}>
+                Average
+              </Text>
+              <Text variant="headlineSmall">
+                £{statistics.averageTransaction.toFixed(2)}
+              </Text>
+              {comparisonMode && compareStatistics && (
+                <Text
+                  variant="bodySmall"
+                  style={{
+                    color:
+                      compareStatistics.averageTransaction >
+                      statistics.averageTransaction
+                        ? "#4CAF50"
+                        : "#F44336",
+                  }}
+                >
+                  {compareStatistics.averageTransaction >
+                  statistics.averageTransaction
+                    ? "↓"
+                    : "↑"}
+                  {Math.abs(
+                    ((statistics.averageTransaction -
+                      compareStatistics.averageTransaction) /
+                      compareStatistics.averageTransaction) *
+                      100
+                  ).toFixed(1)}
+                  % vs prev
+                </Text>
+              )}
+            </Card>
+
+            {statistics.topCategory && (
+              <Card style={{ flex: 1, minWidth: "45%", padding: 12 }}>
+                <Text variant="labelMedium" style={{ opacity: 0.7 }}>
+                  Top Category
+                </Text>
+                <Text variant="titleMedium">
+                  {getCategoryDisplayName(statistics.topCategory.category)}
+                </Text>
+                <Text variant="bodyMedium">
+                  £{statistics.topCategory.amount.toFixed(2)}
+                </Text>
+              </Card>
+            )}
+          </View>
+        </View>
       ) : (
         <Text>No line chart data to display</Text>
       )}

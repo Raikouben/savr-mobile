@@ -1,14 +1,25 @@
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 import { getCategoryDisplayName } from "@/constants/config";
 import { useState, useEffect } from "react";
+import { View, TouchableOpacity, ScrollView } from "react-native";
+import Feather from "@expo/vector-icons/Feather";
 import {
-  View,
+  ActivityIndicator,
+  MD2Colors,
   Text,
   TextInput,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
-import Feather from "@expo/vector-icons/Feather";
+  Button,
+  Card,
+  List,
+  TouchableRipple,
+  Portal,
+  Modal,
+  Dialog,
+  IconButton,
+  ToggleButton,
+  SegmentedButtons,
+  Surface,
+} from "react-native-paper";
 
 const categories = [
   "housing",
@@ -78,24 +89,29 @@ export default function BudgetDisplay() {
   if (isLoading || !budget) return <Text>Loading...</Text>;
 
   return (
-    <View>
-      <View>
-        <Text>{editable ? "Edit Budget" : "Budget Overview"}</Text>
-        <Feather
-          name={editable ? "x" : "edit"}
-          size={24}
-          onPress={() => setEditable(!editable)}
-        />
-      </View>
+    <Card>
+      <Card.Title
+        title={editable ? "Edit Budget" : "Budget Overview"}
+        right={(props) => (
+          <IconButton
+            {...props}
+            icon={editable ? "close" : "pencil"}
+            onPress={() => setEditable(!editable)}
+          />
+        )}
+      />
 
       {editable ? (
-        <View>
-          <Text>Total: £{calculateTotal().toFixed(2)}</Text>
+        <Card.Content>
+          <Text variant="headlineSmall" style={{ marginBottom: 10 }}>
+            Total: £{calculateTotal().toFixed(2)}
+          </Text>
           {categories.map((category) => (
-            <View key={category}>
-              <Text>{getCategoryDisplayName(category)}</Text>
+            <View key={category} style={{ marginBottom: 10 }}>
               <TextInput
+                mode="outlined"
                 placeholder="Amount"
+                label={getCategoryDisplayName(category)}
                 keyboardType="decimal-pad"
                 value={budgetForm[category]}
                 onChangeText={(val) =>
@@ -104,21 +120,26 @@ export default function BudgetDisplay() {
               />
             </View>
           ))}
-
-          <TouchableOpacity onPress={handleSubmit} disabled={isUpdating}>
-            <Text>{isUpdating ? "Saving..." : "Save"}</Text>
-          </TouchableOpacity>
-        </View>
+          <Card.Actions>
+            <Button
+              mode="contained"
+              onPress={handleSubmit}
+              disabled={isUpdating}
+            >
+              {isUpdating ? "Saving..." : "Save"}
+            </Button>
+          </Card.Actions>
+        </Card.Content>
       ) : (
-        <View>
-          <Text>Total: £{budget.total_budget}</Text>
+        <Card.Content>
+          <Text variant="headlineSmall">Total: £{budget.total_budget}</Text>
           {categories.map((category) => (
             <Text key={category}>
               {getCategoryDisplayName(category)}: £{budget[category]}
             </Text>
           ))}
-        </View>
+        </Card.Content>
       )}
-    </View>
+    </Card>
   );
 }
