@@ -37,6 +37,7 @@ import {
   Switch,
 } from "react-native-paper";
 import CategoryFilter from "@/components/CategoryFilter";
+import { tr } from "react-native-paper-dates";
 export default function analytics() {
   const [error, setError] = useState<string | null>(null);
   const [timeRange, setTimeRange] = useState<"week" | "month" | "year">("week");
@@ -46,6 +47,25 @@ export default function analytics() {
     new Date().getFullYear()
   );
   const [selectedWeek, setSelectedWeek] = useState<Date>(new Date());
+
+  // seperate states for comparison period selectors
+  // const [lineSelectedWeek, setLineSelectedWeek] = useState(new Date());
+  // const [lineSelectedMonth, setLineSelectedMonth] = useState(new Date());
+  // const [lineSelectedYear, setLineSelectedYear] = useState(
+  //   new Date().getFullYear()
+  // );
+
+  // const [pieSelectedWeek, setPieSelectedWeek] = useState(new Date());
+  // const [pieSelectedMonth, setPieSelectedMonth] = useState(new Date());
+  // const [pieSelectedYear, setPieSelectedYear] = useState(
+  //   new Date().getFullYear()
+  // );
+
+  // const [barSelectedWeek, setBarSelectedWeek] = useState(new Date());
+  // const [barSelectedMonth, setBarSelectedMonth] = useState(new Date());
+  // const [barSelectedYear, setBarSelectedYear] = useState(
+  //   new Date().getFullYear()
+  // );
 
   // Comparison mode states
   const [comparisonMode, setComparisonMode] = useState(false);
@@ -138,10 +158,10 @@ export default function analytics() {
     category,
   ]);
 
-  const categoryChartTransactions = useMemo(() => {
-    if (!transactions) return [];
-    return transactions;
-  }, [transactions]);
+  // const categoryChartTransactions = useMemo(() => {
+  //   if (!transactions) return [];
+  //   return transactions;
+  // }, [transactions]);
 
   const chartData = useMemo(() => {
     const data = aggregateByTimeRange(
@@ -183,12 +203,51 @@ export default function analytics() {
     compareWeek,
   ]);
 
+  //CREATE A HELPER FUNCTIION THAT CAN BEU SED NI AGGREGATEbyTIMERANGE AND THIS ONE
   const categoryData = useMemo(() => {
-    return categoriseSpending(categoryChartTransactions);
-  }, [categoryChartTransactions]);
+    if (!transactions) return [];
+    let startDate: Date, endDate: Date;
+
+    if (timeRange === "week") {
+      const targetWeek = selectedWeek;
+      const dayOfWeek = targetWeek.getDay();
+      const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+      startDate = new Date(targetWeek);
+      startDate.setDate(targetWeek.getDate() - daysToMonday);
+      startDate.setHours(0, 0, 0, 0);
+      endDate = new Date(startDate);
+      endDate.setDate(startDate.getDate() + 6);
+      endDate.setHours(23, 59, 59, 999);
+    } else if (timeRange === "month") {
+      startDate = new Date(
+        selectedMonthYear.getFullYear(),
+        selectedMonthYear.getMonth(),
+        1
+      );
+      endDate = new Date(
+        selectedMonthYear.getFullYear(),
+        selectedMonthYear.getMonth() + 1,
+        0,
+        23,
+        59,
+        59,
+        999
+      );
+    } else {
+      startDate = new Date(selectedYear, 0, 1);
+      endDate = new Date(selectedYear, 11, 31, 23, 59, 59, 999);
+    }
+
+    const filteredTransactions = transactions.filter((tx: any) => {
+      const txDate = new Date(tx.date);
+      return txDate >= startDate && txDate <= endDate;
+    });
+
+    return categoriseSpending(filteredTransactions);
+  }, [transactions, timeRange, selectedMonthYear, selectedYear, selectedWeek]);
 
   const pieChartData = useMemo(() => {
-    return categoryData.map((item, index) => ({
+    return categoryData.map((item) => ({
       value: item.percentage,
       text: item.category,
       color: item.color,
@@ -196,7 +255,7 @@ export default function analytics() {
   }, [categoryData]);
 
   const barChartData = useMemo(() => {
-    return categoryData.map((item, index) => ({
+    return categoryData.map((item) => ({
       value: item.amount,
       label: getCategoryDisplayName(item.category), // Use first letter of display name
       frontColor: item.color,
@@ -436,33 +495,6 @@ export default function analytics() {
           <Switch value={comparisonMode} onValueChange={setComparisonMode} />
         </View>
 
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 8,
-          }}
-        >
-          <IconButton
-            icon="chevron-left"
-            onPress={navigatePrevious}
-            size={20}
-          />
-          <Text
-            variant="titleSmall"
-            style={{ minWidth: 120, textAlign: "center" }}
-          >
-            {getTimeRangeLabel()}
-          </Text>
-          <IconButton
-            icon="chevron-right"
-            onPress={navigateNext}
-            disabled={!canNavigateNext()}
-            size={20}
-          />
-        </View>
-
         {/* <Button mode="elevated" onPress={() => setCategory("")}>
         <Text>Clear Category Filter</Text>
       </Button> */}
@@ -522,6 +554,32 @@ export default function analytics() {
                 />
               </View>
             </Card.Content>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+              }}
+            >
+              <IconButton
+                icon="chevron-left"
+                onPress={navigatePrevious}
+                size={20}
+              />
+              <Text
+                variant="titleSmall"
+                style={{ minWidth: 120, textAlign: "center" }}
+              >
+                {getTimeRangeLabel()}
+              </Text>
+              <IconButton
+                icon="chevron-right"
+                onPress={navigateNext}
+                disabled={!canNavigateNext()}
+                size={20}
+              />
+            </View>
             <CategoryFilter
               selectedCategory={category}
               onCategoryChange={setCategory}
@@ -679,6 +737,32 @@ export default function analytics() {
                 ))}
               </View>
             </Card.Content>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+              }}
+            >
+              <IconButton
+                icon="chevron-left"
+                onPress={navigatePrevious}
+                size={20}
+              />
+              <Text
+                variant="titleSmall"
+                style={{ minWidth: 120, textAlign: "center" }}
+              >
+                {getTimeRangeLabel()}
+              </Text>
+              <IconButton
+                icon="chevron-right"
+                onPress={navigateNext}
+                disabled={!canNavigateNext()}
+                size={20}
+              />
+            </View>
           </Card>
           <Card style={{ padding: 16, overflow: "hidden" }}>
             <Card.Title title="Spending by Category" />
@@ -709,6 +793,32 @@ export default function analytics() {
                 </View>
               </ScrollView>
             </Card.Content>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+              }}
+            >
+              <IconButton
+                icon="chevron-left"
+                onPress={navigatePrevious}
+                size={20}
+              />
+              <Text
+                variant="titleSmall"
+                style={{ minWidth: 120, textAlign: "center" }}
+              >
+                {getTimeRangeLabel()}
+              </Text>
+              <IconButton
+                icon="chevron-right"
+                onPress={navigateNext}
+                disabled={!canNavigateNext()}
+                size={20}
+              />
+            </View>
           </Card>
         </View>
       ) : (
