@@ -69,17 +69,13 @@ export function calculateTotalBudgetComparison(
     percentageUsed,
   };
 }
-
-export function aggregateByTimeRange(
-  transactions: any[],
+export function getDateRange(
   range: "week" | "month" | "year",
   selectedMonthYear?: Date,
   selectedYear?: number,
   selectedWeek?: Date
-) {
+): { startDate: Date; endDate: Date } {
   const now = new Date();
-
-  // STEP 1: Figure out what date range we're looking at
   let startDate: Date;
   let endDate: Date;
 
@@ -107,6 +103,24 @@ export function aggregateByTimeRange(
     endDate.setHours(23, 59, 59, 999);
   }
 
+  return { startDate, endDate };
+}
+export function aggregateByTimeRange(
+  transactions: any[],
+  range: "week" | "month" | "year",
+  selectedMonthYear?: Date,
+  selectedYear?: number,
+  selectedWeek?: Date
+) {
+  const now = new Date();
+
+  // STEP 1: Figure out what date range we're looking at
+  const { startDate, endDate } = getDateRange(
+    range,
+    selectedMonthYear,
+    selectedYear,
+    selectedWeek
+  );
   // STEP 2: Group transactions and sum by time period
   // (Skip the filtering step - just check dates while grouping)
   const totals: { [key: string]: number } = {};

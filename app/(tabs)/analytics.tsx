@@ -38,6 +38,7 @@ import {
 } from "react-native-paper";
 import CategoryFilter from "@/components/CategoryFilter";
 import { tr } from "react-native-paper-dates";
+import { getDateRange } from "@/utils/calculation";
 export default function analytics() {
   const [error, setError] = useState<string | null>(null);
   const [timeRange, setTimeRange] = useState<"week" | "month" | "year">("week");
@@ -107,37 +108,12 @@ export default function analytics() {
     if (!transactions || !comparisonMode) return [];
 
     let startDate: Date, endDate: Date;
-
-    if (timeRange === "week") {
-      const weekDate = new Date(compareWeek);
-      const dayOfWeek = weekDate.getDay();
-      const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-      startDate = new Date(weekDate);
-      startDate.setDate(weekDate.getDate() - daysToMonday);
-      startDate.setHours(0, 0, 0, 0);
-
-      endDate = new Date(startDate);
-      endDate.setDate(startDate.getDate() + 6);
-      endDate.setHours(23, 59, 59, 999);
-    } else if (timeRange === "month") {
-      startDate = new Date(
-        compareMonthYear.getFullYear(),
-        compareMonthYear.getMonth(),
-        1
-      );
-      endDate = new Date(
-        compareMonthYear.getFullYear(),
-        compareMonthYear.getMonth() + 1,
-        0,
-        23,
-        59,
-        59,
-        999
-      );
-    } else {
-      startDate = new Date(compareYear, 0, 1);
-      endDate = new Date(compareYear, 11, 31, 23, 59, 59, 999);
-    }
+    ({ startDate, endDate } = getDateRange(
+      timeRange,
+      timeRange === "month" ? compareMonthYear : undefined,
+      timeRange === "year" ? compareYear : undefined,
+      timeRange === "week" ? compareWeek : undefined
+    ));
 
     const filtered = transactions.filter((tx: any) => {
       const txDate = new Date(tx.date);
@@ -206,37 +182,13 @@ export default function analytics() {
   //CREATE A HELPER FUNCTIION THAT CAN BEU SED NI AGGREGATEbyTIMERANGE AND THIS ONE
   const categoryData = useMemo(() => {
     if (!transactions) return [];
-    let startDate: Date, endDate: Date;
 
-    if (timeRange === "week") {
-      const targetWeek = selectedWeek;
-      const dayOfWeek = targetWeek.getDay();
-      const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-      startDate = new Date(targetWeek);
-      startDate.setDate(targetWeek.getDate() - daysToMonday);
-      startDate.setHours(0, 0, 0, 0);
-      endDate = new Date(startDate);
-      endDate.setDate(startDate.getDate() + 6);
-      endDate.setHours(23, 59, 59, 999);
-    } else if (timeRange === "month") {
-      startDate = new Date(
-        selectedMonthYear.getFullYear(),
-        selectedMonthYear.getMonth(),
-        1
-      );
-      endDate = new Date(
-        selectedMonthYear.getFullYear(),
-        selectedMonthYear.getMonth() + 1,
-        0,
-        23,
-        59,
-        59,
-        999
-      );
-    } else {
-      startDate = new Date(selectedYear, 0, 1);
-      endDate = new Date(selectedYear, 11, 31, 23, 59, 59, 999);
-    }
+    const { startDate, endDate } = getDateRange(
+      timeRange,
+      selectedMonthYear,
+      selectedYear,
+      selectedWeek
+    );
 
     const filteredTransactions = transactions.filter((tx: any) => {
       const txDate = new Date(tx.date);
@@ -317,16 +269,26 @@ export default function analytics() {
 
   //ADD STATISTICS FOR COMPARISON MODE?
   const statistics = useMemo(() => {
-    const totalSpent = lineChartTransactions.reduce(
+    const { startDate, endDate } = getDateRange(
+      timeRange,
+      selectedMonthYear,
+      selectedYear,
+      selectedWeek
+    );
+    const filteredTransactions = lineChartTransactions.filter((tx: any) => {
+      const txDate = new Date(tx.date);
+      return txDate >= startDate && txDate <= endDate;
+    });
+    const totalSpent = filteredTransactions.reduce(
       (sum: any, tx: any) => sum + Number(tx.amount),
       0
     );
-    const transactionCount = lineChartTransactions.length;
+    const transactionCount = filteredTransactions.length;
     const averageTransaction =
       transactionCount > 0 ? totalSpent / transactionCount : 0;
 
     const categoryTotals: { [key: string]: number } = {};
-    lineChartTransactions.forEach((tx: any) => {
+    filteredTransactions.forEach((tx: any) => {
       const cat = tx.category;
       categoryTotals[cat] = (categoryTotals[cat] || 0) + Number(tx.amount);
     });
@@ -340,7 +302,7 @@ export default function analytics() {
       : null;
 
     return { totalSpent, transactionCount, averageTransaction, topCategory };
-  }, [lineChartTransactions]);
+  }, [lineChartTransactions, timeRange, selectedMonthYear, selectedYear, selectedWeek]);
 
   // Calculate comparison statistics
   const compareStatistics = useMemo(() => {
@@ -506,12 +468,12 @@ export default function analytics() {
       {loading && <Text>Loading...</Text>}
       {error && <Text>{error}</Text>}
 
-      {chartData.some((item) => item.value > 0) ? (
-        <View style={{ gap: 20 }}>
-          <Card style={{ padding: 16, overflow: "hidden" }}>
-            <Card.Title title="Spending Over Time" />
-            <Card.Content>
-              <View style={{ overflow: "hidden" }}>
+      <View style={{ gap: 20 }}>
+        <Card style={{ padding: 16, overflow: "hidden" }}>
+          <Card.Title title="Spending Over Time" />
+          <Card.Content>
+            <View style={{ overflow: "hidden" }}>
+              {chartData.some((item) => item.value > 0) ? (
                 <LineChart
                   data={chartData}
                   data2={comparisonMode ? compareChartData : undefined}
@@ -552,157 +514,157 @@ export default function analytics() {
                   stepValue={lineChartYAxisSettings.stepValue}
                   noOfSections={6}
                 />
-              </View>
-            </Card.Content>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-              }}
-            >
-              <IconButton
-                icon="chevron-left"
-                onPress={navigatePrevious}
-                size={20}
-              />
-              <Text
-                variant="titleSmall"
-                style={{ minWidth: 120, textAlign: "center" }}
-              >
-                {getTimeRangeLabel()}
-              </Text>
-              <IconButton
-                icon="chevron-right"
-                onPress={navigateNext}
-                disabled={!canNavigateNext()}
-                size={20}
-              />
+              ) : (
+                <Text>No line chart data to display</Text>
+              )}
             </View>
-            <CategoryFilter
-              selectedCategory={category}
-              onCategoryChange={setCategory}
+          </Card.Content>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+            }}
+          >
+            <IconButton
+              icon="chevron-left"
+              onPress={navigatePrevious}
+              size={20}
             />
-          </Card>
-          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
-            <Card style={{ flex: 1, minWidth: "45%", padding: 12 }}>
-              <Text variant="labelMedium" style={{ opacity: 0.7 }}>
-                Total Spent
-              </Text>
-              <Text variant="headlineSmall">
-                £{statistics.totalSpent.toFixed(2)}
-              </Text>
-              {comparisonMode && compareStatistics && (
-                <Text
-                  variant="bodySmall"
-                  style={{
-                    color:
-                      compareStatistics.totalSpent > statistics.totalSpent
-                        ? "#4CAF50"
-                        : "#F44336",
-                  }}
-                >
-                  {compareStatistics.totalSpent > statistics.totalSpent
-                    ? "↓"
-                    : "↑"}
-                  {Math.abs(
-                    ((statistics.totalSpent - compareStatistics.totalSpent) /
-                      compareStatistics.totalSpent) *
-                      100
-                  ).toFixed(1)}
-                  % vs prev
-                </Text>
-              )}
-            </Card>
-
-            <Card style={{ flex: 1, minWidth: "45%", padding: 12 }}>
-              <Text variant="labelMedium" style={{ opacity: 0.7 }}>
-                Transactions
-              </Text>
-              <Text variant="headlineSmall">{statistics.transactionCount}</Text>
-              {comparisonMode && compareStatistics && (
-                <Text
-                  variant="bodySmall"
-                  style={{
-                    color:
-                      statistics.transactionCount >
-                      compareStatistics.transactionCount
-                        ? "#F44336"
-                        : "#4CAF50",
-                  }}
-                >
-                  {statistics.transactionCount >
-                  compareStatistics.transactionCount
-                    ? "↑"
-                    : "↓"}
-                  {Math.abs(
-                    statistics.transactionCount -
-                      compareStatistics.transactionCount
-                  )}{" "}
-                  vs prev
-                </Text>
-              )}
-            </Card>
-
-            <Card style={{ flex: 1, minWidth: "45%", padding: 12 }}>
-              <Text variant="labelMedium" style={{ opacity: 0.7 }}>
-                Average
-              </Text>
-              <Text variant="headlineSmall">
-                £{statistics.averageTransaction.toFixed(2)}
-              </Text>
-              {comparisonMode && compareStatistics && (
-                <Text
-                  variant="bodySmall"
-                  style={{
-                    color:
-                      compareStatistics.averageTransaction >
-                      statistics.averageTransaction
-                        ? "#4CAF50"
-                        : "#F44336",
-                  }}
-                >
-                  {compareStatistics.averageTransaction >
-                  statistics.averageTransaction
-                    ? "↓"
-                    : "↑"}
-                  {Math.abs(
-                    ((statistics.averageTransaction -
-                      compareStatistics.averageTransaction) /
-                      compareStatistics.averageTransaction) *
-                      100
-                  ).toFixed(1)}
-                  % vs prev
-                </Text>
-              )}
-            </Card>
-
-            {statistics.topCategory && (
-              <Card style={{ flex: 1, minWidth: "45%", padding: 12 }}>
-                <Text variant="labelMedium" style={{ opacity: 0.7 }}>
-                  Top Category
-                </Text>
-                <Text variant="titleMedium">
-                  {getCategoryDisplayName(statistics.topCategory.category)}
-                </Text>
-                <Text variant="bodyMedium">
-                  £{statistics.topCategory.amount.toFixed(2)}
-                </Text>
-              </Card>
-            )}
+            <Text
+              variant="titleSmall"
+              style={{ minWidth: 120, textAlign: "center" }}
+            >
+              {getTimeRangeLabel()}
+            </Text>
+            <IconButton
+              icon="chevron-right"
+              onPress={navigateNext}
+              disabled={!canNavigateNext()}
+              size={20}
+            />
           </View>
-        </View>
-      ) : (
-        <Text>No line chart data to display</Text>
-      )}
+          <CategoryFilter
+            selectedCategory={category}
+            onCategoryChange={setCategory}
+          />
+        </Card>
+        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+          <Card style={{ flex: 1, minWidth: "45%", padding: 12 }}>
+            <Text variant="labelMedium" style={{ opacity: 0.7 }}>
+              Total Spent
+            </Text>
+            <Text variant="headlineSmall">
+              £{statistics.totalSpent.toFixed(2)}
+            </Text>
+            {comparisonMode && compareStatistics && (
+              <Text
+                variant="bodySmall"
+                style={{
+                  color:
+                    compareStatistics.totalSpent > statistics.totalSpent
+                      ? "#4CAF50"
+                      : "#F44336",
+                }}
+              >
+                {compareStatistics.totalSpent > statistics.totalSpent
+                  ? "↓"
+                  : "↑"}
+                {Math.abs(
+                  ((statistics.totalSpent - compareStatistics.totalSpent) /
+                    compareStatistics.totalSpent) *
+                    100
+                ).toFixed(1)}
+                % vs prev
+              </Text>
+            )}
+          </Card>
 
-      {categoryData.length > 0 ? (
-        <View style={{ gap: 20 }}>
-          <Card style={{ padding: 16, overflow: "hidden" }}>
-            <Card.Title title="Proportion of Spending by Category" />
-            <Card.Content style={{ alignItems: "center" }}>
-              <View style={{ overflow: "hidden", alignItems: "center" }}>
+          <Card style={{ flex: 1, minWidth: "45%", padding: 12 }}>
+            <Text variant="labelMedium" style={{ opacity: 0.7 }}>
+              Transactions
+            </Text>
+            <Text variant="headlineSmall">{statistics.transactionCount}</Text>
+            {comparisonMode && compareStatistics && (
+              <Text
+                variant="bodySmall"
+                style={{
+                  color:
+                    statistics.transactionCount >
+                    compareStatistics.transactionCount
+                      ? "#F44336"
+                      : "#4CAF50",
+                }}
+              >
+                {statistics.transactionCount >
+                compareStatistics.transactionCount
+                  ? "↑"
+                  : "↓"}
+                {Math.abs(
+                  statistics.transactionCount -
+                    compareStatistics.transactionCount
+                )}{" "}
+                vs prev
+              </Text>
+            )}
+          </Card>
+
+          <Card style={{ flex: 1, minWidth: "45%", padding: 12 }}>
+            <Text variant="labelMedium" style={{ opacity: 0.7 }}>
+              Average
+            </Text>
+            <Text variant="headlineSmall">
+              £{statistics.averageTransaction.toFixed(2)}
+            </Text>
+            {comparisonMode && compareStatistics && (
+              <Text
+                variant="bodySmall"
+                style={{
+                  color:
+                    compareStatistics.averageTransaction >
+                    statistics.averageTransaction
+                      ? "#4CAF50"
+                      : "#F44336",
+                }}
+              >
+                {compareStatistics.averageTransaction >
+                statistics.averageTransaction
+                  ? "↓"
+                  : "↑"}
+                {Math.abs(
+                  ((statistics.averageTransaction -
+                    compareStatistics.averageTransaction) /
+                    compareStatistics.averageTransaction) *
+                    100
+                ).toFixed(1)}
+                % vs prev
+              </Text>
+            )}
+          </Card>
+
+          {statistics.topCategory && (
+            <Card style={{ flex: 1, minWidth: "45%", padding: 12 }}>
+              <Text variant="labelMedium" style={{ opacity: 0.7 }}>
+                Top Category
+              </Text>
+              <Text variant="titleMedium">
+                {getCategoryDisplayName(statistics.topCategory.category)}
+              </Text>
+              <Text variant="bodyMedium">
+                £{statistics.topCategory.amount.toFixed(2)}
+              </Text>
+            </Card>
+          )}
+        </View>
+      </View>
+      {/* FIX SCREEN REPOSITION BECUASE OF PIE CAHRT*/}
+      <View style={{ gap: 20 }}>
+        <Card style={{ padding: 16, overflow: "hidden" }}>
+          <Card.Title title="Proportion of Spending by Category" />
+          <Card.Content style={{ alignItems: "center" }}>
+            <View style={{ overflow: "hidden", alignItems: "center" }}>
+              {categoryData.length > 0 ? (
                 <PieChart
                   data={pieChartData}
                   donut
@@ -710,65 +672,69 @@ export default function analytics() {
                   radius={100}
                   innerRadius={50}
                 />
-              </View>
-              <View style={{ marginTop: 16, gap: 8 }}>
-                {pieChartData.map((item, index) => (
-                  <View
-                    key={index}
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      gap: 8,
-                    }}
-                  >
-                    <View
-                      style={{
-                        width: 16,
-                        height: 16,
-                        backgroundColor: item.color,
-                        borderRadius: 4,
-                      }}
-                    />
-                    <Text>
-                      {getCategoryDisplayName(item.text)}:{" "}
-                      {item.value.toFixed(2)}%
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            </Card.Content>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-              }}
-            >
-              <IconButton
-                icon="chevron-left"
-                onPress={navigatePrevious}
-                size={20}
-              />
-              <Text
-                variant="titleSmall"
-                style={{ minWidth: 120, textAlign: "center" }}
-              >
-                {getTimeRangeLabel()}
-              </Text>
-              <IconButton
-                icon="chevron-right"
-                onPress={navigateNext}
-                disabled={!canNavigateNext()}
-                size={20}
-              />
+              ) : (
+                <Text>No category data to display</Text>
+              )}
             </View>
-          </Card>
-          <Card style={{ padding: 16, overflow: "hidden" }}>
-            <Card.Title title="Spending by Category" />
-            <Card.Content>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <View style={{ overflow: "hidden" }}>
+            <View style={{ marginTop: 16, gap: 8 }}>
+              {pieChartData.map((item, index) => (
+                <View
+                  key={index}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 8,
+                  }}
+                >
+                  <View
+                    style={{
+                      width: 16,
+                      height: 16,
+                      backgroundColor: item.color,
+                      borderRadius: 4,
+                    }}
+                  />
+                  <Text>
+                    {getCategoryDisplayName(item.text)}: {item.value.toFixed(2)}
+                    %
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </Card.Content>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+            }}
+          >
+            <IconButton
+              icon="chevron-left"
+              onPress={navigatePrevious}
+              size={20}
+            />
+            <Text
+              variant="titleSmall"
+              style={{ minWidth: 120, textAlign: "center" }}
+            >
+              {getTimeRangeLabel()}
+            </Text>
+            <IconButton
+              icon="chevron-right"
+              onPress={navigateNext}
+              disabled={!canNavigateNext()}
+              size={20}
+            />
+          </View>
+        </Card>
+        <Card style={{ padding: 16, overflow: "hidden" }}>
+          <Card.Title title="Spending by Category" />
+          <Card.Content>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <View style={{ overflow: "hidden" }}>
+                {categoryData.length > 0 ? (
                   <BarChart
                     data={barChartData}
                     width={Math.max(
@@ -790,40 +756,40 @@ export default function analytics() {
                     maxValue={barChartYAxisSettings.maxValue}
                     stepValue={barChartYAxisSettings.stepValue}
                   />
-                </View>
-              </ScrollView>
-            </Card.Content>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-              }}
+                ) : (
+                  <Text>No category data to display</Text>
+                )}
+              </View>
+            </ScrollView>
+          </Card.Content>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+            }}
+          >
+            <IconButton
+              icon="chevron-left"
+              onPress={navigatePrevious}
+              size={20}
+            />
+            <Text
+              variant="titleSmall"
+              style={{ minWidth: 120, textAlign: "center" }}
             >
-              <IconButton
-                icon="chevron-left"
-                onPress={navigatePrevious}
-                size={20}
-              />
-              <Text
-                variant="titleSmall"
-                style={{ minWidth: 120, textAlign: "center" }}
-              >
-                {getTimeRangeLabel()}
-              </Text>
-              <IconButton
-                icon="chevron-right"
-                onPress={navigateNext}
-                disabled={!canNavigateNext()}
-                size={20}
-              />
-            </View>
-          </Card>
-        </View>
-      ) : (
-        <Text>No category data to display</Text>
-      )}
+              {getTimeRangeLabel()}
+            </Text>
+            <IconButton
+              icon="chevron-right"
+              onPress={navigateNext}
+              disabled={!canNavigateNext()}
+              size={20}
+            />
+          </View>
+        </Card>
+      </View>
     </ScrollView>
   );
 }
