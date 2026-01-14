@@ -162,7 +162,7 @@ export default function analytics() {
     if (!comparisonMode) return [];
 
     const data = aggregateByTimeRange(
-      lineChartTransactions,
+      compareLineChartTransactions,
       timeRange,
       timeRange === "month" ? compareMonthYear : undefined,
       timeRange === "year" ? compareYear : undefined,
@@ -172,7 +172,7 @@ export default function analytics() {
     return data;
   }, [
     comparisonMode,
-    lineChartTransactions,
+    compareLineChartTransactions,
     timeRange,
     compareMonthYear,
     compareYear,
@@ -302,7 +302,13 @@ export default function analytics() {
       : null;
 
     return { totalSpent, transactionCount, averageTransaction, topCategory };
-  }, [lineChartTransactions, timeRange, selectedMonthYear, selectedYear, selectedWeek]);
+  }, [
+    lineChartTransactions,
+    timeRange,
+    selectedMonthYear,
+    selectedYear,
+    selectedWeek,
+  ]);
 
   // Calculate comparison statistics
   const compareStatistics = useMemo(() => {
@@ -545,6 +551,33 @@ export default function analytics() {
               size={20}
             />
           </View>
+          {comparisonMode && (
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+              }}
+            >
+              <IconButton
+                icon="chevron-left"
+                onPress={navigateComparePrevious}
+                size={20}
+              />
+              <Text
+                variant="titleSmall"
+                style={{ minWidth: 120, textAlign: "center" }}
+              >
+                {getTimeRangeLabel(true)}
+              </Text>
+              <IconButton
+                icon="chevron-right"
+                onPress={navigateCompareNext}
+                size={20}
+              />
+            </View>
+          )}
           <CategoryFilter
             selectedCategory={category}
             onCategoryChange={setCategory}
