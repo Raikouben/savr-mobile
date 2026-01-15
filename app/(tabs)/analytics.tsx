@@ -622,28 +622,48 @@ export default function analytics() {
               £{statistics.totalSpent.toFixed(2)}
             </Text>
             {comparisonMode && compareStatistics && (
-              <Text
-                variant="bodySmall"
-                style={{
-                  color:
-                    compareStatistics.totalSpent > statistics.totalSpent
-                      ? "#4CAF50"
-                      : "#F44336",
-                }}
-              >
-                {compareStatistics.totalSpent > statistics.totalSpent
-                  ? "↓"
-                  : "↑"}
-                {Math.abs(
-                  ((statistics.totalSpent - compareStatistics.totalSpent) /
-                    compareStatistics.totalSpent) *
-                    100
-                ).toFixed(1)}
-                % vs prev
-              </Text>
+              <View>
+                <Text
+                  variant="bodySmall"
+                  style={{
+                    color:
+                      compareStatistics.totalSpent > statistics.totalSpent
+                        ? "#4CAF50"
+                        : "#F44336",
+                  }}
+                >
+                  {compareStatistics.totalSpent > statistics.totalSpent
+                    ? "↓"
+                    : "↑"}
+                  {Math.abs(
+                    ((statistics.totalSpent - compareStatistics.totalSpent) /
+                      compareStatistics.totalSpent) *
+                      100
+                  ).toFixed(1)}
+                  % vs prev
+                </Text>
+                <Text
+                  variant="bodySmall"
+                  style={{
+                    color:
+                      compareStatistics.totalSpent > statistics.totalSpent
+                        ? "#4CAF50"
+                        : "#F44336",
+                  }}
+                >
+                  {compareStatistics.totalSpent > statistics.totalSpent
+                    ? "↓"
+                    : "↑"}
+                  £
+                  {Math.abs(
+                    statistics.totalSpent - compareStatistics.totalSpent
+                  ).toFixed(2)}{" "}
+                  vs prev
+                </Text>
+              </View>
             )}
           </Card>
-
+          {/* I THINK COMBINE TRANSACTION AND AVERAGE TO MATCH TOP CATEGORY SIZE*/}
           <Card style={{ flex: 1, minWidth: "45%", padding: 12 }}>
             <Text variant="labelMedium" style={{ opacity: 0.7 }}>
               Transactions
@@ -681,28 +701,51 @@ export default function analytics() {
               £{statistics.averageTransaction.toFixed(2)}
             </Text>
             {comparisonMode && compareStatistics && (
-              <Text
-                variant="bodySmall"
-                style={{
-                  color:
-                    compareStatistics.averageTransaction >
-                    statistics.averageTransaction
-                      ? "#4CAF50"
-                      : "#F44336",
-                }}
-              >
-                {compareStatistics.averageTransaction >
-                statistics.averageTransaction
-                  ? "↓"
-                  : "↑"}
-                {Math.abs(
-                  ((statistics.averageTransaction -
-                    compareStatistics.averageTransaction) /
-                    compareStatistics.averageTransaction) *
-                    100
-                ).toFixed(1)}
-                % vs prev
-              </Text>
+              <View>
+                <Text
+                  variant="bodySmall"
+                  style={{
+                    color:
+                      compareStatistics.averageTransaction >
+                      statistics.averageTransaction
+                        ? "#4CAF50"
+                        : "#F44336",
+                  }}
+                >
+                  {compareStatistics.averageTransaction >
+                  statistics.averageTransaction
+                    ? "↓"
+                    : "↑"}
+                  {Math.abs(
+                    ((statistics.averageTransaction -
+                      compareStatistics.averageTransaction) /
+                      compareStatistics.averageTransaction) *
+                      100
+                  ).toFixed(1)}
+                  % vs prev
+                </Text>
+                <Text
+                  variant="bodySmall"
+                  style={{
+                    color:
+                      compareStatistics.averageTransaction >
+                      statistics.averageTransaction
+                        ? "#4CAF50"
+                        : "#F44336",
+                  }}
+                >
+                  {compareStatistics.averageTransaction >
+                  statistics.averageTransaction
+                    ? "↓"
+                    : "↑"}
+                  £
+                  {Math.abs(
+                    statistics.averageTransaction -
+                      compareStatistics.averageTransaction
+                  ).toFixed(2)}{" "}
+                  vs prev
+                </Text>
+              </View>
             )}
           </Card>
 
@@ -717,6 +760,23 @@ export default function analytics() {
               <Text variant="bodyMedium">
                 £{statistics.topCategory.amount.toFixed(2)}
               </Text>
+              {comparisonMode &&
+                compareStatistics &&
+                compareStatistics.topCategory && (
+                  <View>
+                    <Text variant="labelMedium" style={{ opacity: 0.7 }}>
+                      Prev Top Category
+                    </Text>
+                    <Text variant="bodySmall">
+                      {getCategoryDisplayName(
+                        compareStatistics.topCategory.category
+                      )}
+                    </Text>
+                    <Text>
+                      £{compareStatistics.topCategory.amount.toFixed(2)}
+                    </Text>
+                  </View>
+                )}
             </Card>
           )}
         </View>
@@ -758,7 +818,7 @@ export default function analytics() {
                     }}
                   />
                   <Text>
-                    {getCategoryDisplayName(item.text)}: {item.value.toFixed(2)}
+                    {getCategoryDisplayName(item.text)}: {item.value.toFixed(0)}
                     %
                   </Text>
                 </View>
