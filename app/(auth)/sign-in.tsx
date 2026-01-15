@@ -66,7 +66,7 @@ export default function Page() {
         justifyContent: "center",
         alignItems: "center",
         padding: 20,
-        backgroundColor: "#7852b6",
+        backgroundColor: "#8a77aa",
       }}
       behavior="padding"
     >

@@ -105,7 +105,7 @@ export default function SignUpScreen() {
           justifyContent: "center",
           alignItems: "center",
           padding: 20,
-          backgroundColor: "#7852b6",
+          backgroundColor: "#8a77aa",
         }}
         behavior="padding"
       >
@@ -190,7 +190,10 @@ export default function SignUpScreen() {
             <Text>Sign up</Text>
           </Button>
 
-          <Button mode="outlined" onPress={() => router.push("/(auth)/sign-in")}>
+          <Button
+            mode="outlined"
+            onPress={() => router.push("/(auth)/sign-in")}
+          >
             <Text>Sign in</Text>
           </Button>
         </Card.Actions>

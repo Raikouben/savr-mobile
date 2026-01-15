@@ -1,8 +1,15 @@
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, TouchableOpacity, ScrollView } from "react-native";
 import { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
 import { useSurveyQuery } from "@/hooks/queries/surveyQuery";
-
+import {
+  Text,
+  TextInput,
+  Button,
+  Card,
+  RadioButton,
+  ActivityIndicator,
+} from "react-native-paper";
 const lifestyleQuestions = [
   {
     id: "housing_impact",
@@ -142,8 +149,11 @@ export default function LifestyleSurvey() {
   };
   if (isLoading) {
     return (
-      <View style={{ flex: 1, backgroundColor: "white" }}>
-        <Text>Loading...</Text>
+      <View style={{ flex: 1, backgroundColor: "#8a77aa" }}>
+        <ActivityIndicator
+          size="large"
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        />
       </View>
     );
   }
@@ -168,32 +178,51 @@ export default function LifestyleSurvey() {
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <ScrollView>
+      <ScrollView
+        contentContainerStyle={{
+          padding: 20,
+          gap: 20,
+          backgroundColor: "#8a77aa",
+          flexGrow: 1,
+        }}
+        showsVerticalScrollIndicator={false}
+      >
         <View>
-          <Text>Lifestyle Survey</Text>
-
-          {lifestyleQuestions.map((question) => (
-            <View key={question.id}>
-              <Text>{question.question}</Text>
-              {question.options.map((option) => (
-                <TouchableOpacity
-                  key={option.value}
-                  onPress={() => handleSelect(question.id, option.value)}
+          <Text variant="headlineLarge">Lifestyle Survey</Text>
+          <Text variant="bodyMedium" style={{ marginBottom: 16 }}>
+            Please answer the following questions to help us understand your
+            lifestyle better.
+          </Text>
+          {lifestyleQuestions.map((question, index) => (
+            <Card key={question.id} style={{ marginBottom: 16 }}>
+              <Card.Content>
+                <Text variant="titleMedium" style={{ marginBottom: 12 }}>
+                  {index + 1}. {question.question}
+                </Text>
+                <RadioButton.Group
+                  onValueChange={(value) =>
+                    handleSelect(question.id, parseInt(value))
+                  }
+                  value={answers[question.id]?.toString()}
                 >
-                  <Text>
-                    {answers[question.id] === option.value ? "✓ " : ""}
-                    {option.label}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+                  {question.options.map((option) => (
+                    <RadioButton.Item
+                      key={option.value}
+                      label={option.label}
+                      value={option.value.toString()}
+                      style={{ paddingVertical: 4 }}
+                    />
+                  ))}
+                </RadioButton.Group>
+              </Card.Content>
+            </Card>
           ))}
 
           <TouchableOpacity
             onPress={handleSubmit}
             disabled={!allAnswered || isSubmitting}
           >
-            <Text>
+            <Button mode="contained" disabled={!allAnswered || isSubmitting}>
               {isSubmitting
                 ? hasExistingAnswers
                   ? "Updating..."
@@ -201,7 +230,7 @@ export default function LifestyleSurvey() {
                 : hasExistingAnswers
                 ? "Update"
                 : "Submit"}
-            </Text>
+            </Button>
           </TouchableOpacity>
         </View>
       </ScrollView>

@@ -1,16 +1,20 @@
 import { useState, useEffect } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { getCategoryDisplayName } from "../../constants/config";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
+import { View, TouchableOpacity, ScrollView } from "react-native";
 import { useRecommender } from "@/hooks/useRecommender";
 import { useBudget } from "@/hooks/useBudget";
 import { useUserQuery } from "@/hooks/queries/authQuery";
+import { IconButton, MD2Colors } from "react-native-paper";
+import {
+  Text,
+  TextInput,
+  Button,
+  Card,
+  RadioButton,
+  ActivityIndicator,
+  Surface,
+} from "react-native-paper";
 
 const categories = [
   "housing",
@@ -108,57 +112,123 @@ export default function BudgetSelection() {
   };
 
   if (recommenderLoading || !recommendation) {
-    return <Text>Loading...</Text>;
+    return (
+      <View
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+          flex: 1,
+          backgroundColor: "#8a77aa",
+        }}
+      >
+        <ActivityIndicator size="large" />
+        <Text style={{ marginTop: 16, color: "white" }}>
+          Loading your personalized budget...
+        </Text>
+      </View>
+    );
   }
 
   return (
-    <ScrollView>
+    <ScrollView
+      contentContainerStyle={{
+        padding: 20,
+        gap: 20,
+        backgroundColor: "#8a77aa",
+        flexGrow: 1,
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+      showsVerticalScrollIndicator={false}
+    >
       {!viewExplanation && explanation ? (
-        <View>
-          <View>
-            <Text>Budget Recommendation</Text>
-            <TouchableOpacity onPress={() => setIsEditing(!isEditing)}>
-              <Text>{isEditing ? "Done" : "Edit"}</Text>
-            </TouchableOpacity>
-          </View>
+        <Card>
+          <Card.Title
+            title={isEditing ? "Edit Budget" : "Budget Overview"}
+            right={(props) => (
+              <IconButton
+                {...props}
+                icon={isEditing ? "close" : "pencil"}
+                onPress={() => setIsEditing(!isEditing)}
+              />
+            )}
+          />
+          <Card.Content>
+            <Text variant="titleMedium" style={{ marginBottom: 10 }}>
+              Total: £{calculateTotal().toFixed(2)}
+            </Text>
+            {user?.income && (
+              <Text variant="titleMedium" style={{ marginBottom: 10 }}>
+                Income: £{parseFloat(user.income)}
+              </Text>
+            )}
 
-          <Text>Total: £{calculateTotal().toFixed(2)}</Text>
-          {user?.income && <Text>Income: £{parseFloat(user.income)}</Text>}
-
-          {categories.map((category) => (
-            <View key={category}>
-              <Text>{getCategoryDisplayName(category)}</Text>
-              {isEditing ? (
-                <TextInput
-                  value={budgetValues[category]}
-                  onChangeText={(text) =>
-                    setBudgetValues({ ...budgetValues, [category]: text })
-                  }
-                  keyboardType="decimal-pad"
-                  placeholder="0"
-                />
-              ) : (
-                <Text>£{parseFloat(budgetValues[category] || "0")}</Text>
-              )}
-            </View>
-          ))}
-
-          <TouchableOpacity
-            onPress={handleAcceptBudget}
-            disabled={budgetLoading}
-          >
-            <Text>{budgetLoading ? "Creating..." : "Accept Budget"}</Text>
-          </TouchableOpacity>
-        </View>
+            {categories.map((category) => (
+              <View key={category} style={{ marginBottom: 10 }}>
+                {isEditing ? (
+                  <TextInput
+                    mode="outlined"
+                    placeholder="Amount"
+                    //THIS LABEL DOESNT IMMEDIATELY LOAD
+                    label={getCategoryDisplayName(category)}
+                    value={budgetValues[category]}
+                    onChangeText={(text) =>
+                      setBudgetValues({ ...budgetValues, [category]: text })
+                    }
+                    keyboardType="decimal-pad"
+                    left={<TextInput.Affix text="£" />}
+                  />
+                ) : (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      paddingVertical: 8,
+                    }}
+                  >
+                    <Text variant="bodyLarge">
+                      {getCategoryDisplayName(category)}
+                    </Text>
+                    <Text variant="bodyLarge" style={{ fontWeight: "600" }}>
+                      £{parseFloat(budgetValues[category] || "0").toFixed(2)}
+                    </Text>
+                  </View>
+                )}
+              </View>
+            ))}
+          </Card.Content>
+          <Card.Actions>
+            <Button
+              mode="contained"
+              onPress={handleAcceptBudget}
+              disabled={budgetLoading}
+            >
+              <Text>{budgetLoading ? "Creating..." : "Accept Budget"}</Text>
+            </Button>
+            <Button
+              mode="outlined"
+              onPress={() => setViewExplanation(!viewExplanation)}
+            >
+              <Text>View Explanation</Text>
+            </Button>
+          </Card.Actions>
+        </Card>
       ) : (
-        <View>
-          <Text>Budget Explanation</Text>
-          <Text>{explanation}</Text>
-        </View>
+        <Card>
+          <Card.Title title="Budget Explanation" />
+          <Card.Content>
+            <Text>{explanation}</Text>
+          </Card.Content>
+          <Card.Actions>
+            <Button
+              mode="contained"
+              onPress={() => setViewExplanation(!viewExplanation)}
+            >
+              <Text>Back to Budget</Text>
+            </Button>
+          </Card.Actions>
+        </Card>
       )}
-      <TouchableOpacity onPress={() => setViewExplanation(!viewExplanation)}>
-        <Text>{viewExplanation ? "View Budget" : "View Explanation"}</Text>
-      </TouchableOpacity>
     </ScrollView>
   );
 }

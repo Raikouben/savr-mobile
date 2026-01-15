@@ -4,8 +4,8 @@ import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 import { useState, useEffect } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
-import { View, TextInput, Text } from "react-native";
-
+import { View } from "react-native";
+import { Text, TextInput, Button, Card } from "react-native-paper";
 export default function IncomeDisclosure() {
   const router = useRouter();
   const [income, setIncome] = useState<number | null>(null);
@@ -57,23 +57,40 @@ export default function IncomeDisclosure() {
     router.replace("/(setup)/lifestyle-survey");
   };
   return (
-    <View>
-      <Text>Income disclosure</Text>
-      <TextInput
-        autoCapitalize="none"
-        value={income !== null ? income.toString() : ""}
-        placeholder="Enter income"
-        onChangeText={(text) => {
-          const numValue = Number(text);
-          if (!isNaN(numValue)) {
-            setIncome(numValue);
-          }
-        }}
-        keyboardType="numeric"
-      />
-      <Text onPress={handleSubmit} disabled={submitting}>
-        {submitting ? "Submitting..." : "Submit"}
-      </Text>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 20,
+        gap: 20,
+        backgroundColor: "#8a77aa",
+        flexGrow: 1,
+      }}
+    >
+      <Card style={{ width: "100%", maxWidth: 400 }}>
+        <Card.Title title="Income disclosure" />
+        <TextInput
+          mode="outlined"
+          label="Monthly Income (£)"
+          autoCapitalize="none"
+          value={income !== null ? income.toString() : ""}
+          placeholder="Enter income"
+          onChangeText={(text) => {
+            const numValue = Number(text);
+            if (!isNaN(numValue)) {
+              setIncome(numValue);
+            }
+          }}
+          keyboardType="numeric"
+          style={{ margin: 16 }}
+        />
+        <Card.Actions>
+          <Button mode="contained" onPress={handleSubmit} disabled={submitting}>
+            {submitting ? "Submitting..." : "Submit"}
+          </Button>
+        </Card.Actions>
+      </Card>
     </View>
   );
 }
