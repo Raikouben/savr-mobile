@@ -49,25 +49,6 @@ export default function analytics() {
   );
   const [selectedWeek, setSelectedWeek] = useState<Date>(new Date());
 
-  // seperate states for comparison period selectors
-  // const [lineSelectedWeek, setLineSelectedWeek] = useState(new Date());
-  // const [lineSelectedMonth, setLineSelectedMonth] = useState(new Date());
-  // const [lineSelectedYear, setLineSelectedYear] = useState(
-  //   new Date().getFullYear()
-  // );
-
-  // const [pieSelectedWeek, setPieSelectedWeek] = useState(new Date());
-  // const [pieSelectedMonth, setPieSelectedMonth] = useState(new Date());
-  // const [pieSelectedYear, setPieSelectedYear] = useState(
-  //   new Date().getFullYear()
-  // );
-
-  // const [barSelectedWeek, setBarSelectedWeek] = useState(new Date());
-  // const [barSelectedMonth, setBarSelectedMonth] = useState(new Date());
-  // const [barSelectedYear, setBarSelectedYear] = useState(
-  //   new Date().getFullYear()
-  // );
-
   // Comparison mode states
   const [comparisonMode, setComparisonMode] = useState(false);
   const [compareMonthYear, setCompareMonthYear] = useState<Date>(
@@ -104,7 +85,7 @@ export default function analytics() {
   }, [transactions, category]);
 
   // Comparison period transactions
-  const compareLineChartTransactions = useMemo(() => {
+  const compareStatisticsTransactions = useMemo(() => {
     if (!transactions || !comparisonMode) return [];
 
     let startDate: Date, endDate: Date;
@@ -159,10 +140,9 @@ export default function analytics() {
 
   // Comparison chart data
   const compareChartData = useMemo(() => {
-    if (!comparisonMode) return [];
-
+    if (!comparisonMode) return undefined;
     const data = aggregateByTimeRange(
-      compareLineChartTransactions,
+      lineChartTransactions,
       timeRange,
       timeRange === "month" ? compareMonthYear : undefined,
       timeRange === "year" ? compareYear : undefined,
@@ -172,7 +152,7 @@ export default function analytics() {
     return data;
   }, [
     comparisonMode,
-    compareLineChartTransactions,
+    lineChartTransactions,
     timeRange,
     compareMonthYear,
     compareYear,
@@ -219,13 +199,16 @@ export default function analytics() {
       chartData.length > 0
         ? Math.max(...chartData.map((item) => item.value))
         : 0;
+    if (!comparisonMode || !compareChartData) {
+      return yAxisConfig(maxValue1);
+    }
     const maxValue2 =
       compareChartData.length > 0
         ? Math.max(...compareChartData.map((item) => item.value))
         : 0;
     const maxValue = Math.max(maxValue1, maxValue2);
     return yAxisConfig(maxValue);
-  }, [chartData, compareChartData]);
+  }, [chartData, compareChartData, comparisonMode]);
 
   const barChartYAxisSettings = useMemo(() => {
     const maxValue =
@@ -314,16 +297,16 @@ export default function analytics() {
   const compareStatistics = useMemo(() => {
     if (!comparisonMode) return null;
 
-    const totalSpent = compareLineChartTransactions.reduce(
+    const totalSpent = compareStatisticsTransactions.reduce(
       (sum: any, tx: any) => sum + Number(tx.amount),
       0
     );
-    const transactionCount = compareLineChartTransactions.length;
+    const transactionCount = compareStatisticsTransactions.length;
     const averageTransaction =
       transactionCount > 0 ? totalSpent / transactionCount : 0;
 
     const categoryTotals: { [key: string]: number } = {};
-    compareLineChartTransactions.forEach((tx: any) => {
+    compareStatisticsTransactions.forEach((tx: any) => {
       const cat = tx.category;
       categoryTotals[cat] = (categoryTotals[cat] || 0) + Number(tx.amount);
     });
@@ -337,7 +320,7 @@ export default function analytics() {
       : null;
 
     return { totalSpent, transactionCount, averageTransaction, topCategory };
-  }, [comparisonMode, compareLineChartTransactions]);
+  }, [comparisonMode, compareStatisticsTransactions]);
 
   const navigatePrevious = () => {
     if (timeRange === "week") {
@@ -417,6 +400,52 @@ export default function analytics() {
       setCompareYear(compareYear + 1);
     }
   };
+  const canNavigateCompareNext = () => {
+    const now = new Date();
+    if (timeRange === "week") {
+      const nextWeek = new Date(compareWeek);
+      nextWeek.setDate(nextWeek.getDate() + 7);
+
+      return nextWeek < selectedWeek;
+    } else if (timeRange === "month") {
+      const nextMonth = new Date(compareMonthYear);
+      nextMonth.setMonth(nextMonth.getMonth() + 1);
+
+      return nextMonth < selectedMonthYear;
+    } else if (timeRange === "year") {
+      return compareYear < selectedYear;
+    }
+    return false;
+  };
+  const lineChartKey = useMemo(() => {
+    const baseKey = `${comparisonMode ? "comparison" : "single"}-${timeRange}`;
+    const currentDateKey =
+      timeRange === "week"
+        ? selectedWeek.getTime()
+        : timeRange === "month"
+        ? selectedMonthYear.getTime()
+        : selectedYear;
+
+    if (!comparisonMode) return `${baseKey}-${currentDateKey}`;
+
+    const compareKey =
+      timeRange === "week"
+        ? compareWeek.getTime()
+        : timeRange === "month"
+        ? compareMonthYear.getTime()
+        : compareYear;
+
+    return `${baseKey}-${currentDateKey}-${compareKey}`;
+  }, [
+    comparisonMode,
+    timeRange,
+    selectedWeek,
+    selectedMonthYear,
+    selectedYear,
+    compareWeek,
+    compareMonthYear,
+    compareYear,
+  ]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -481,6 +510,7 @@ export default function analytics() {
             <View style={{ overflow: "hidden" }}>
               {chartData.some((item) => item.value > 0) ? (
                 <LineChart
+                  key={lineChartKey}
                   data={chartData}
                   data2={comparisonMode ? compareChartData : undefined}
                   width={Dimensions.get("window").width - 72}
