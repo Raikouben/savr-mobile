@@ -481,21 +481,15 @@ export default function analytics() {
           ]}
         />
 
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Text>Comparison Mode</Text>
-          <Switch value={comparisonMode} onValueChange={setComparisonMode} />
-        </View>
-
         {/* <Button mode="elevated" onPress={() => setCategory("")}>
         <Text>Clear Category Filter</Text>
       </Button> */}
-        <Button mode="outlined" onPress={resetFilters} compact>
+        <Button
+          style={{ marginTop: 8 }}
+          mode="outlined"
+          onPress={resetFilters}
+          compact
+        >
           Reset Filters
         </Button>
       </Card>
@@ -555,6 +549,16 @@ export default function analytics() {
               )}
             </View>
           </Card.Content>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Text>Comparison Mode</Text>
+            <Switch value={comparisonMode} onValueChange={setComparisonMode} />
+          </View>
           <View
             style={{
               flexDirection: "row",
