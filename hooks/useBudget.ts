@@ -158,31 +158,31 @@ export const useBudget = () => {
     }
   };
 
-  // const getPastBudgets = async () => {
-  //   setLoading(true);
-  //   setError(null);
-  //   try {
-  //     const token = await getToken();
-  //     const response = await fetch(`${API_URL}/budgets/past`, {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
-  //     if (!response.ok) {
-  //       const errorText = await response.text();
-  //       throw new Error(errorText);
-  //     }
-  //     const data = await response.json();
-  //     return data;
-  //   } catch (err: any) {
-  //     setError(err.message);
-  //     throw err;
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  const getPastBudgets = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const token = await getToken();
+      const response = await fetch(`${API_URL}/budgets/past`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText);
+      }
+      const data = await response.json();
+      return data;
+    } catch (err: any) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return {
     loading,
@@ -191,6 +191,6 @@ export const useBudget = () => {
     getBudget,
     updateBudget,
     getBudgetAdvice,
-    // getPastBudgets,
+    getPastBudgets,
   };
 };
