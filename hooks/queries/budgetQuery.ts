@@ -3,7 +3,12 @@ import { useBudget } from "../useBudget";
 import { isClerkAPIResponseError } from "@clerk/clerk-expo";
 
 export const useBudgetQuery = () => {
-  const { getBudget, updateBudget, createBudget } = useBudget();
+  const {
+    getBudget,
+    updateBudget,
+    createBudget,
+    // getPastBudgets,
+  } = useBudget();
   const queryClient = useQueryClient();
 
   const query = useQuery({
@@ -18,6 +23,13 @@ export const useBudgetQuery = () => {
       queryClient.invalidateQueries({ queryKey: ["budget"] });
     },
   });
+
+  // const getPastBudgetsQuery = useQuery({
+  //   queryKey: ["pastBudgets"],
+  //   queryFn: getPastBudgets,
+  //   retry: false, // Don't retry on 404 errors
+  // });
+
   const updateMutation = useMutation({
     mutationFn: updateBudget,
     onSuccess: () => {
@@ -36,4 +48,3 @@ export const useBudgetQuery = () => {
     isCreating: createMutation.isPending,
   };
 };
-

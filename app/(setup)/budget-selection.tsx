@@ -43,7 +43,7 @@ export default function BudgetSelection() {
   const [explanation, setExplanation] = useState<string | null>(null);
   const [recommendation, setRecommendation] = useState<any>(null);
   const [budgetValues, setBudgetValues] = useState<{ [key: string]: string }>(
-    {}
+    {},
   );
   const [isEditing, setIsEditing] = useState(false);
 
@@ -55,7 +55,7 @@ export default function BudgetSelection() {
         const explanationText = await getRecommenderExplanation(
           parseFloat(user?.income || "0"),
           data.budget,
-          data.meta
+          data.meta,
         );
         setExplanation(explanationText);
 
@@ -85,6 +85,9 @@ export default function BudgetSelection() {
 
   const handleAcceptBudget = async () => {
     try {
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
       const budgetData = {
         housing: parseFloat(budgetValues.housing || "0"),
         utilities: parseFloat(budgetValues.utilities || "0"),
