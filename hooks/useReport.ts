@@ -7,7 +7,7 @@ export const useReport = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const getReport = async (reportId: number) => {
+  const getReport = async () => {
     setLoading(true);
     setError(null);
     try {
