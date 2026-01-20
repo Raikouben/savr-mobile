@@ -19,11 +19,17 @@ import { useReport } from "@/hooks/useReport";
 export default function ReportModal({
   visible,
   onClose,
+  reportId,
 }: {
   visible: boolean;
   onClose: () => void;
+  reportId: string;
 }) {
-  const { report, isLoading, error, refetch } = useReportQuery();
+  const { report, isLoading, error, refetch } = useReportQuery(reportId);
+  const budget = report?.budget_snapshot;
+  const expenses = report?.expenses;
+  const insight = report?.insights;
+  const period = report?.period;
   return (
     <Portal>
       <Modal
@@ -36,9 +42,32 @@ export default function ReportModal({
           borderRadius: 8,
         }}
       >
-        <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 10 }}>
-          Financial Report
-        </Text>
+        {isLoading ? (
+          <ActivityIndicator animating={true} />
+        ) : (
+          <View>
+            <Text variant="titleLarge">Report of {period}</Text>
+            <Text>{insight}</Text>
+            <View>
+              <Text>Designated income : {report?.income}</Text>
+              <Text>Budget Snapshot :</Text>
+              {budget &&
+                Object.entries(budget).map(([category, amount]) => (
+                  <Text key={category}>
+                    {category}: {String(amount)}
+                  </Text>
+                ))}
+              <Text>Expenses :</Text>
+              {expenses &&
+                Object.entries(expenses).map(([category, amount]) => (
+                  <Text key={category}>
+                    {category}: {String(amount)}
+                  </Text>
+                ))}
+              <Text>Insights :</Text>
+            </View>
+          </View>
+        )}
       </Modal>
     </Portal>
   );
