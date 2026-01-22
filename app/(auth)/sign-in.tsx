@@ -1,6 +1,7 @@
 import { useSignIn } from "@clerk/clerk-expo";
 import { Link, useRouter } from "expo-router";
 import React from "react";
+import { useEffect } from "react";
 import { TouchableOpacity, View } from "react-native";
 import { useState } from "react";
 import { Text, TextInput, Button, Card } from "react-native-paper";
@@ -13,7 +14,11 @@ export default function Page() {
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-
+  const [pendingVerification, setPendingVerification] = useState(false);
+  const [verificationError, setVerificationError] = useState<string | null>(
+    null,
+  );
+  const [code, setCode] = useState("");
   // Handle the submission of the sign-in form
   const onSignInPress = async () => {
     if (!isLoaded) return;
@@ -31,6 +36,11 @@ export default function Page() {
       if (signInAttempt.status === "complete") {
         await setActive({ session: signInAttempt.createdSessionId });
         router.replace("/(tabs)");
+      } else if (signInAttempt.status === "needs_second_factor") {
+        setPendingVerification(true);
+        await signIn.prepareSecondFactor({
+          strategy: "email_code",
+        });
       } else {
         // If the status isn't complete, check why. User might need to
         // complete further steps.
@@ -41,13 +51,73 @@ export default function Page() {
       // See https://clerk.com/docs/guides/development/custom-flows/error-handling
       // for more info on error handling
       setError(
-        err instanceof Error ? err.message : "An unknown error occurred"
+        err instanceof Error ? err.message : "An unknown error occurred",
       );
       console.error(JSON.stringify(err, null, 2));
     }
   };
   const emailError = error?.toLowerCase().includes("email");
   const passwordError = error?.toLowerCase().includes("password");
+
+  const onVerifyPress = async () => {
+    if (!signIn || !isLoaded) return;
+
+    try {
+      const signInAttempt = await signIn.attemptSecondFactor({
+        strategy: "email_code",
+        code: code.trim(),
+      });
+      if (signInAttempt.status === "complete") {
+        await setActive({ session: signInAttempt.createdSessionId });
+        router.replace("/(tabs)");
+      } else {
+        setVerificationError("Sign-in not complete. Please try again.");
+      }
+    } catch (err: any) {
+      const message = err.errors?.[0]?.message || "Invalid verification code";
+      setVerificationError(message);
+    }
+  };
+
+  if (pendingVerification) {
+    return (
+      <KeyboardAvoidingView
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          padding: 20,
+          backgroundColor: "#8a77aa",
+        }}
+        behavior="padding"
+      >
+        <Card style={{ width: "100%", maxWidth: 400 }}>
+          <Card.Title title="Email Verification" />
+          <Card.Content>
+            {verificationError && (
+              <Text style={{ color: "red" }}>{verificationError}</Text>
+            )}
+            <TextInput
+              mode="outlined"
+              label="Verification Code"
+              value={code}
+              placeholder="Enter your verification code"
+              onChangeText={(code) => setCode(code)}
+              error={!!verificationError}
+            />
+          </Card.Content>
+          <Card.Actions>
+            <Button mode="contained" onPress={onVerifyPress}>
+              <Text>Verify</Text>
+            </Button>
+            <Button onPress={() => setPendingVerification(false)}>
+              Cancel
+            </Button>
+          </Card.Actions>
+        </Card>
+      </KeyboardAvoidingView>
+    );
+  }
 
   return (
     // <KeyboardAwareScrollView
