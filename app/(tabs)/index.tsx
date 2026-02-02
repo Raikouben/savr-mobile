@@ -11,10 +11,12 @@ import {
   List,
   TouchableRipple,
 } from "react-native-paper";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
 import { useUserQuery } from "@/hooks/queries/authQuery";
+import { useReportQuery } from "@/hooks/queries/reportQuery";
+import ReportModal from "../../components/ReportModal";
 import {
   calculateBudgetSummary,
   calculateTotalBudgetComparison,
@@ -32,13 +34,26 @@ export default function Page() {
   const { budget, isLoading: budgetLoading } = useBudgetQuery();
   const { transactions, isLoading: transactionsLoading } =
     useTransactionQuery();
+  const { reports } = useReportQuery();
 
   const [adviceModalVisible, setAdviceModalVisible] = useState(false);
+  const [reportModalVisible, setReportModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<{
     category: string;
     budgetAmount: number;
     actualSpent: number;
   } | null>(null);
+  const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (reports && reports.length > 0) {
+      const unviewedReport = reports.find((report: any) => !report.viewed);
+      if (unviewedReport) {
+        setSelectedReportId(unviewedReport.id);
+        setReportModalVisible(true);
+      }
+    }
+  }, [reports]);
 
   const loading = budgetLoading || transactionsLoading;
 
@@ -92,7 +107,7 @@ export default function Page() {
                   overview && overview.totalBudget > 0
                     ? Math.min(
                         (overview.totalSpent / overview.totalBudget) * 100,
-                        100
+                        100,
                       )
                     : 0
                 }
@@ -101,10 +116,10 @@ export default function Page() {
                     ? overview.totalSpent / overview.totalBudget < 0.5
                       ? "#4caf50"
                       : overview.totalSpent / overview.totalBudget < 0.75
-                      ? "#ffeb3b"
-                      : overview.totalSpent / overview.totalBudget < 1
-                      ? "#ff9800"
-                      : "#e53935"
+                        ? "#ffeb3b"
+                        : overview.totalSpent / overview.totalBudget < 1
+                          ? "#ff9800"
+                          : "#e53935"
                     : "#4caf50"
                 }
                 backgroundColor="white"
@@ -166,10 +181,10 @@ export default function Page() {
                               data.percentageUsed < 50
                                 ? "#4caf50"
                                 : data.percentageUsed < 75
-                                ? "#ffeb3b"
-                                : data.percentageUsed < 100
-                                ? "#ff9800"
-                                : "#e53935"
+                                  ? "#ffeb3b"
+                                  : data.percentageUsed < 100
+                                    ? "#ff9800"
+                                    : "#e53935"
                             }
                             backgroundColor="#e0e0e0"
                           >
@@ -184,7 +199,7 @@ export default function Page() {
                         </Card.Content>
                       </Card>
                     </TouchableRipple>
-                  )
+                  ),
                 )}
               </View>
             </View>
@@ -199,6 +214,16 @@ export default function Page() {
               category={selectedCategory.category}
               budgetAmount={selectedCategory.budgetAmount}
               actualSpent={selectedCategory.actualSpent}
+            />
+          )}
+          {selectedReportId && (
+            <ReportModal
+              visible={reportModalVisible}
+              onClose={() => {
+                setReportModalVisible(false);
+                setSelectedReportId(null);
+              }}
+              reportId={selectedReportId}
             />
           )}
         </View>

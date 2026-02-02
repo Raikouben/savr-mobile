@@ -12,8 +12,36 @@ export const useReport = () => {
     setError(null);
     try {
       const token = await getToken();
+      console.log("Fetching reports from:", `${API_URL}/reports`);
       const response = await fetch(`${API_URL}/reports`, {
         method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("Reports response status:", response.status);
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.log("Reports error response:", errorText);
+        throw new Error(errorText);
+      }
+      const data = await response.json();
+      console.log("Reports data received:", data);
+      return data;
+    } catch (err: any) {
+      console.log("Reports fetch error:", err.message);
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+  const markReportAsViewed = async (id: number) => {
+    try {
+      const token = await getToken();
+      const response = await fetch(`${API_URL}/reports/${id}/viewed`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -28,12 +56,9 @@ export const useReport = () => {
     } catch (err: any) {
       setError(err.message);
       throw err;
-    } finally {
-      setLoading(false);
     }
   };
-
-  const getReport = async (id: string) => {
+  const getReport = async (id: number) => {
     setLoading(true);
     setError(null);
     try {
@@ -62,6 +87,7 @@ export const useReport = () => {
   return {
     getReports,
     getReport,
+    markReportAsViewed,
     loading,
     error,
   };
