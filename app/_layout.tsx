@@ -31,11 +31,7 @@ function RootLayoutNav() {
   }, [isLoaded, userLoading, budgetLoading, transactionsLoading]);
 
   if (!isLoaded) return null;
-
-  // if (!isSignedIn) {
-  //   return <Redirect href={"/(auth)/sign-in"} />;
-  // }
-
+  
   return (
     <SafeView>
       <Slot />

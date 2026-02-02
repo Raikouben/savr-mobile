@@ -34,7 +34,6 @@ export default function transactions() {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [bulkModalVisible, setBulkModalVisible] = useState<boolean>(false);
   const { transactions, isLoading: loading } = useTransactionQuery();
-  const [singleTransaction, setSingleTransaction] = useState(true);
 
   const resetFilters = () => {
     setDate(null);
@@ -60,7 +59,7 @@ export default function transactions() {
 
     return filtered.sort(
       (a: any, b: any) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
     );
   }, [transactions, date, category]);
 
@@ -91,10 +90,6 @@ export default function transactions() {
                 selectedCategory={category}
                 onCategoryChange={setCategory}
               />
-
-              <Button mode="outlined" onPress={() => setBulkModalVisible(true)}>
-                <Text>Test Bulk Transaction</Text>
-              </Button>
             </View>
           }
           renderItem={({ item }) => (
@@ -132,6 +127,10 @@ export default function transactions() {
           onSuccess={() => {
             setModalVisible(false);
           }}
+          onSwitchToBulk={() => {
+            setModalVisible(false);
+            setBulkModalVisible(true);
+          }}
         />
       )}
       {bulkModalVisible && (
@@ -140,6 +139,10 @@ export default function transactions() {
           onClose={() => setBulkModalVisible(false)}
           onSuccess={() => {
             setBulkModalVisible(false);
+          }}
+          onSwitchToSingle={() => {
+            setBulkModalVisible(false);
+            setModalVisible(true);
           }}
         />
       )}

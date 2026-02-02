@@ -5,7 +5,6 @@ import CategoryPicker from "./CategoryPicker";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
-import addBulkTransaction from "@/components/addBulkTransaction";
 import {
   ActivityIndicator,
   MD2Colors,
@@ -23,10 +22,12 @@ export default function AddTransaction({
   visible,
   onClose,
   onSuccess,
+  onSwitchToBulk,
 }: {
   visible: boolean;
   onClose: () => void;
   onSuccess?: () => void;
+  onSwitchToBulk?: () => void;
 }) {
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
@@ -36,7 +37,6 @@ export default function AddTransaction({
   const [loading, setLoading] = useState(false);
   const { createTransaction, isCreating } = useTransactionQuery();
   const [submitting, setSubmitting] = useState(false);
-  const [bulkMode, setBulkMode] = useState(false);
   const handleDateChange = (event: any, selectedDate: any) => {
     setShowDatePicker(false);
     if (selectedDate) {
@@ -88,9 +88,9 @@ export default function AddTransaction({
             paddingHorizontal: 24,
           }}
         >
-          <Text variant="titleLarge">Add Transaction</Text>
-          <Button mode="text" compact onPress={() => setBulkMode(!bulkMode)}>
-            {bulkMode ? "Single" : "Bulk"}
+          <Dialog.Title>Add Transaction</Dialog.Title>
+          <Button mode="text" compact onPress={onSwitchToBulk}>
+            Bulk
           </Button>
         </View>
         <Dialog.Content>
@@ -115,7 +115,7 @@ export default function AddTransaction({
             selectedCategory={category}
             onCategoryChange={setCategory}
           />
-          <Dialog.Actions style={{ marginTop: 10}}>
+          <Dialog.Actions style={{ marginTop: 10 }}>
             <Button
               onPress={handleSubmit}
               mode="contained"

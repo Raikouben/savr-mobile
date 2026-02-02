@@ -32,10 +32,12 @@ export default function addBulkTransaction({
   visible,
   onClose,
   onSuccess,
+  onSwitchToSingle,
 }: {
   visible: boolean;
   onClose: () => void;
   onSuccess?: () => void;
+  onSwitchToSingle?: () => void;
 }) {
   //   const [amount, setAmount] = useState("");
   //   const [description, setDescription] = useState("");
@@ -81,7 +83,7 @@ export default function addBulkTransaction({
           category: tx.category,
           date: tx.date.toISOString().split("T")[0],
           description: tx.description,
-        }))
+        })),
       );
       setDraftTransactions([]);
       onSuccess?.();
@@ -97,7 +99,19 @@ export default function addBulkTransaction({
         onDismiss={onClose}
         style={{ maxHeight: "85%" }}
       >
-        <Dialog.Title>Add Transaction</Dialog.Title>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingHorizontal: 24,
+          }}
+        >
+          <Dialog.Title>Add Transactions</Dialog.Title>
+          <Button mode="text" compact onPress={onSwitchToSingle}>
+            Single
+          </Button>
+        </View>
         <Dialog.ScrollArea style={{ paddingHorizontal: 0 }}>
           <ScrollView>
             {draftTransactions.map((tx, index) => (
