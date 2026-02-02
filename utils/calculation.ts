@@ -1,10 +1,9 @@
 import { budgetCategories } from "@/constants/config";
-export function calculateBudgetSummary(
-  budget: any,
-  transactions: any[],
-  startDate?: string,
-  endDate?: string
-) {
+export function calculateBudgetSummary(budget: any, transactions: any[]) {
+  const now = new Date();
+  const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+  const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  endDate.setHours(23, 59, 59, 999);
   const summary: any = {};
 
   for (const category of budgetCategories) {
@@ -17,8 +16,9 @@ export function calculateBudgetSummary(
       const matchesCategory =
         t.category?.toLowerCase() === category.toLowerCase();
 
+      const transactionDate = new Date(t.date);
       const withinDate =
-        (!startDate || t.date >= startDate) && (!endDate || t.date <= endDate);
+        transactionDate >= startDate && transactionDate <= endDate;
 
       if (matchesCategory && withinDate) {
         actualSpent += Number(t.amount) || 0;
@@ -42,17 +42,20 @@ export function calculateBudgetSummary(
 export function calculateTotalBudgetComparison(
   budget: any,
   transactions: any[],
-  startDate?: string,
-  endDate?: string
 ) {
+  const now = new Date();
+  const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+  const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  endDate.setHours(23, 59, 59, 999);
   // Get total budget (should be stored in budget.total_budget)
   const totalBudget = Number(budget.total_budget) || 0;
 
   // Calculate total spent from transactions in date range
   let totalSpent = 0;
   for (const tx of transactions) {
+    const transactionDate = new Date(tx.date);
     const withinDate =
-      (!startDate || tx.date >= startDate) && (!endDate || tx.date <= endDate);
+      transactionDate >= startDate && transactionDate <= endDate;
 
     if (withinDate) {
       totalSpent += Number(tx.amount) || 0;
@@ -73,7 +76,7 @@ export function getDateRange(
   range: "week" | "month" | "year",
   selectedMonthYear?: Date,
   selectedYear?: number,
-  selectedWeek?: Date
+  selectedWeek?: Date,
 ): { startDate: Date; endDate: Date } {
   const now = new Date();
   let startDate: Date;
@@ -110,7 +113,7 @@ export function aggregateByTimeRange(
   range: "week" | "month" | "year",
   selectedMonthYear?: Date,
   selectedYear?: number,
-  selectedWeek?: Date
+  selectedWeek?: Date,
 ) {
   const now = new Date();
 
@@ -119,7 +122,7 @@ export function aggregateByTimeRange(
     range,
     selectedMonthYear,
     selectedYear,
-    selectedWeek
+    selectedWeek,
   );
   // STEP 2: Group transactions and sum by time period
   // (Skip the filtering step - just check dates while grouping)
@@ -191,7 +194,7 @@ export function formatChartLabel(
   key: string,
   range: "week" | "month" | "year",
   index: number,
-  total: number
+  total: number,
 ): string {
   if (range === "week") {
     return key; // Mon, Tue, etc.
