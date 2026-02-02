@@ -1,12 +1,20 @@
 import React, { useState } from "react";
-import { View, ScrollView, StyleSheet } from "react-native";
+import { View, ScrollView, Modal, TouchableOpacity } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import {
   budgetCategories,
   getCategoryIcon,
   getCategoryDisplayName,
 } from "../constants/config";
-import { Button, Menu, Divider, PaperProvider, Text } from "react-native-paper";
+import {
+  Button,
+  Menu,
+  Divider,
+  PaperProvider,
+  Text,
+  List,
+  Surface,
+} from "react-native-paper";
 import Ionicons from "@expo/vector-icons/build/Ionicons";
 
 interface CategoryPickerProps {
@@ -29,45 +37,119 @@ export default function CategoryPicker({
   const closeMenu = () => setVisible(false);
 
   return (
-    <Menu
-      visible={visible}
-      onDismiss={closeMenu}
-      contentStyle={{ maxHeight: 400 }}
-      anchor={
-        <Button
-          mode="elevated"
-          onPress={openMenu}
-          icon="chevron-down"
-          contentStyle={{ justifyContent: "space-between" }}
-          style={{ marginTop: 5 }}
+    // <Menu
+    //   visible={visible}
+    //   onDismiss={closeMenu}
+    //   contentStyle={{ maxHeight: 400 }}
+    //   anchor={
+    //     <Button
+    //       mode="elevated"
+    //       onPress={openMenu}
+    //       icon="chevron-down"
+    //       contentStyle={{ justifyContent: "space-between" }}
+    //       style={{ marginTop: 5 }}
+    //     >
+    //       <Text>
+    //         {selectedCategory
+    //           ? getCategoryDisplayName(selectedCategory)
+    //           : `Select Category`}
+    //       </Text>
+    //     </Button>
+    //   }
+    // >
+    //   <ScrollView style={{ maxHeight: 400 }}>
+    //     {budgetCategories.map((category) => (
+    //       <Menu.Item
+    //         key={category}
+    //         onPress={() => {
+    //           onCategoryChange(category);
+    //           closeMenu();
+    //         }}
+    //         title={getCategoryDisplayName(category)}
+    //         leadingIcon={() => (
+    //           <Ionicons
+    //             name={getCategoryIcon(category) as any}
+    //             size={20}
+    //             color="#ffffff"
+    //           />
+    //         )}
+    //       />
+    //     ))}
+    //   </ScrollView>
+    // </Menu>
+    <View>
+      <Button
+        mode="elevated"
+        onPress={() => setVisible(true)}
+        icon="chevron-down"
+        contentStyle={{ justifyContent: "space-between" }}
+        style={{ marginTop: 5 }}
+      >
+        <Text>
+          {selectedCategory
+            ? getCategoryDisplayName(selectedCategory)
+            : `Select Category`}
+        </Text>
+      </Button>
+
+      <Modal
+        visible={visible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setVisible(false)}
+      >
+        <TouchableOpacity
+          style={{
+            flex: 1,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            justifyContent: "flex-end",
+          }}
+          activeOpacity={1}
+          onPress={() => setVisible(false)}
         >
-          <Text>
-            {selectedCategory
-              ? getCategoryDisplayName(selectedCategory)
-              : `Select Category`}
-          </Text>
-        </Button>
-      }
-    >
-      <ScrollView style={{ maxHeight: 400 }}>
-        {budgetCategories.map((category) => (
-          <Menu.Item
-            key={category}
-            onPress={() => {
-              onCategoryChange(category);
-              closeMenu();
-            }}
-            title={getCategoryDisplayName(category)}
-            leadingIcon={() => (
-              <Ionicons
-                name={getCategoryIcon(category) as any}
-                size={20}
-                color="#ffffff"
-              />
-            )}
-          />
-        ))}
-      </ScrollView>
-    </Menu>
+          <Surface elevation={4}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: 16,
+              }}
+            >
+              <Text variant="titleLarge">Select Category</Text>
+              <Button onPress={() => setVisible(false)}>Done</Button>
+            </View>
+            <Divider />
+            <ScrollView style={{ maxHeight: 400 }}>
+              {budgetCategories.map((category) => (
+                <View key={category}>
+                  <List.Item
+                    title={getCategoryDisplayName(category)}
+                    onPress={() => {
+                      onCategoryChange(category);
+                      setVisible(false);
+                    }}
+                    left={(props) => (
+                      <Ionicons
+                        name={getCategoryIcon(category) as any}
+                        size={24}
+                        color="white"
+                        style={{ marginLeft: 8, alignSelf: "center" }}
+                      />
+                    )}
+                    right={(props) =>
+                      selectedCategory === category ? (
+                        <Ionicons name="checkmark" size={24} color="#4CAF50" />
+                      ) : null
+                    }
+                  />
+                  <Divider />
+                </View>
+              ))}
+            </ScrollView>
+          </Surface>
+        </TouchableOpacity>
+      </Modal>
+    </View>
   );
 }
