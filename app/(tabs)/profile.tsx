@@ -35,6 +35,13 @@ export default function profile() {
   const { getBudgetRecommendation } = useRecommender();
   const router = useRouter();
 
+  useEffect(() => {
+    console.log("User data:", user);
+    console.log("Streak value:", user?.streak);
+    console.log("Days logged:", user?.days_logged);
+    console.log("Last logged:", user?.last_logged);
+  }, [user]);
+
   return (
     <ScrollView
       contentContainerStyle={{
@@ -46,6 +53,7 @@ export default function profile() {
       showsVerticalScrollIndicator={false}
     >
       <Text variant="headlineLarge">profile</Text>
+      <Text variant="bodyLarge">🔥 Streak: {user?.streak ?? 0} days</Text>
       <UserDisplay />
       <BudgetDisplay />
       <Button
