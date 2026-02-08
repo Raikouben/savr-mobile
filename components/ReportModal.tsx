@@ -10,6 +10,7 @@ import {
   Modal,
   Divider,
 } from "react-native-paper";
+import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 
 //puit this in the constants file later
 export interface ReportInsights {
@@ -47,6 +48,7 @@ export default function ReportModal({
   const insights: ReportInsights | null = report?.insights;
   const period = report?.period;
   const income = report?.income;
+  const { budget, isLoading: budgetLoading } = useBudgetQuery();
 
   useEffect(() => {
     if (visible && report?.id && !report.viewed) {
@@ -60,8 +62,9 @@ export default function ReportModal({
         visible={visible}
         onDismiss={onClose}
         contentContainerStyle={{
+          padding: 10,
           margin: 20,
-          backgroundColor: "white",
+          backgroundColor: "#8a77aa",
           borderRadius: 12,
           maxHeight: "90%",
         }}
