@@ -35,6 +35,7 @@ export default function Page() {
   const { transactions, isLoading: transactionsLoading } =
     useTransactionQuery();
   const { reports } = useReportQuery();
+  const { user, updateUserLoggedInfo } = useUserQuery();
 
   const [adviceModalVisible, setAdviceModalVisible] = useState(false);
   const [reportModalVisible, setReportModalVisible] = useState(false);
@@ -46,14 +47,26 @@ export default function Page() {
   const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
 
   useEffect(() => {
-    if (reports && reports.length > 0) {
-      const unviewedReport = reports.find((report: any) => !report.viewed);
-      if (unviewedReport) {
-        setSelectedReportId(unviewedReport.id);
-        setReportModalVisible(true);
+    if (user) {
+      const today = new Date().toDateString();
+      const lastLogged = user.last_logged
+        ? new Date(user.last_logged).toDateString()
+        : null;
+
+      if (lastLogged !== today) {
+        const newStreak = user.streak + 1;
+        const newDaysLogged = user.days_logged + 1;
+
+        updateUserLoggedInfo({
+          last_logged: new Date().toISOString(),
+          days_logged: newDaysLogged,
+          streak: newStreak,
+        }).catch((error) => {
+          console.error("Failed to update logged info:", error);
+        });
       }
     }
-  }, [reports]);
+  }, [user]);
 
   const loading = budgetLoading || transactionsLoading;
 
