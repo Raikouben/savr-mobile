@@ -2,7 +2,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../useAuth";
 
 export const useUserQuery = () => {
-  const { getUser, updateUser, updateUserIncome } = useAuth();
+  const {
+    getUser,
+    updateUser,
+    updateUserIncome,
+    updateUserLoggedInfo,
+    resetStreak,
+  } = useAuth();
   const queryClient = useQueryClient();
 
   const query = useQuery({
@@ -26,6 +32,20 @@ export const useUserQuery = () => {
     },
   });
 
+  const updateLoggedInfoMutation = useMutation({
+    mutationFn: updateUserLoggedInfo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
+  });
+
+  const resetStreakMutation = useMutation({
+    mutationFn: resetStreak,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
+  });
+
   return {
     user: query.data,
     isLoading: query.isLoading,
@@ -35,5 +55,9 @@ export const useUserQuery = () => {
     isUpdating: updateMutation.isPending,
     updateUserIncome: updateIncomeMutation.mutateAsync,
     isUpdatingIncome: updateIncomeMutation.isPending,
+    updateUserLoggedInfo: updateLoggedInfoMutation.mutateAsync,
+    isUpdatingLoggedInfo: updateLoggedInfoMutation.isPending,
+    resetStreak: resetStreakMutation.mutateAsync,
+    isResettingStreak: resetStreakMutation.isPending,
   };
 };
