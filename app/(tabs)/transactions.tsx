@@ -26,6 +26,8 @@ import {
   Modal,
   AnimatedFAB,
   FAB,
+  IconButton,
+  Divider,
 } from "react-native-paper";
 export default function transactions() {
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +35,12 @@ export default function transactions() {
   const [category, setCategory] = useState<string>("");
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [bulkModalVisible, setBulkModalVisible] = useState<boolean>(false);
-  const { transactions, isLoading: loading } = useTransactionQuery();
+  const {
+    transactions,
+    isLoading: loading,
+    deleteTransaction,
+    isDeleting,
+  } = useTransactionQuery();
 
   const resetFilters = () => {
     setDate(null);
@@ -93,25 +100,43 @@ export default function transactions() {
             </View>
           }
           renderItem={({ item }) => (
-            <List.Item
-              title={getCategoryDisplayName(item.category)}
-              description={`${new Date(item.date).toLocaleDateString()}${
-                item.description ? ` • ${item.description}` : ""
-              }`}
-              left={(props) => (
-                <Ionicons
-                  name={getCategoryIcon(item.category) as any}
-                  size={22}
-                  color="#ffffff"
-                  style={{ marginLeft: 8, alignSelf: "center" }}
-                />
-              )}
-              right={() => (
-                <Text variant="titleMedium">
-                  £{(parseFloat(item.amount) || 0).toFixed(2)}
-                </Text>
-              )}
-            />
+            <View>
+              <List.Item
+                title={getCategoryDisplayName(item.category)}
+                description={`${new Date(item.date).toLocaleDateString()}${
+                  item.description ? ` • ${item.description}` : ""
+                }`}
+                left={(props) => (
+                  <Ionicons
+                    name={getCategoryIcon(item.category) as any}
+                    size={22}
+                    color="#ffffff"
+                    style={{ marginLeft: 8, alignSelf: "center" }}
+                  />
+                )}
+                right={() => (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 10,
+                      marginRight: -30,
+                    }}
+                  >
+                    <Text variant="titleMedium">
+                      £{(parseFloat(item.amount) || 0).toFixed(2)}
+                    </Text>
+                    <IconButton
+                      icon="delete"
+                      size={20}
+                      iconColor="#ffffff"
+                      onPress={() => deleteTransaction(item.id)}
+                    />
+                  </View>
+                )}
+              />
+              <Divider />
+            </View>
           )}
         />
       )}
