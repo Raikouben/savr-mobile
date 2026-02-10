@@ -75,7 +75,7 @@ export const useTransactions = () => {
       category: string;
       date: string;
       description?: string;
-    }>
+    }>,
   ) => {
     setLoading(true);
     setError(null);
@@ -103,11 +103,38 @@ export const useTransactions = () => {
     }
   };
 
+  const deleteTransaction = async (id: number) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const token = await getToken();
+      const response = await fetch(`${API_URL}/transactions/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText);
+      }
+      const data = await response.json();
+      return data;
+    } catch (err: any) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     loading,
     error,
     getTransactions,
     createTransaction,
     createBulkTransactions,
+    deleteTransaction,
   };
 };

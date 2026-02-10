@@ -2,8 +2,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTransactions } from "../useTransactions";
 
 export const useTransactionQuery = () => {
-  const { getTransactions, createTransaction, createBulkTransactions } =
-    useTransactions();
+  const {
+    getTransactions,
+    createTransaction,
+    createBulkTransactions,
+    deleteTransaction,
+  } = useTransactions();
   const queryClient = useQueryClient();
 
   const query = useQuery({
@@ -27,6 +31,14 @@ export const useTransactionQuery = () => {
     },
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: deleteTransaction,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["budget"] });
+    },
+  });
+
   return {
     transactions: query.data,
     isLoading: query.isLoading,
@@ -36,5 +48,7 @@ export const useTransactionQuery = () => {
     isCreating: createMutation.isPending,
     createBulkTransactions: createBulkMutation.mutateAsync,
     isCreatingBulk: createBulkMutation.isPending,
+    deleteTransaction: deleteMutation.mutateAsync,
+    isDeleting: deleteMutation.isPending,
   };
 };
