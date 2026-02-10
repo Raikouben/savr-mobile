@@ -240,16 +240,8 @@ export default function Page() {
 
                       <View style={{ width: "100%", gap: 12 }}>
                         {groupData.categories.map(({ name, data }) => (
-                          <TouchableRipple
+                          <View
                             key={name}
-                            onPress={() => {
-                              setSelectedCategory({
-                                category: name,
-                                budgetAmount: data.budgetAmount,
-                                actualSpent: data.actualSpent,
-                              });
-                              setAdviceModalVisible(true);
-                            }}
                             style={{
                               borderRadius: 8,
                               padding: 12,
@@ -273,7 +265,7 @@ export default function Page() {
                                   <Ionicons
                                     name={getCategoryIcon(name) as any}
                                     size={24}
-                                    color="#e0e0e0"
+                                    color="#ffffff"
                                   />
                                   <Text
                                     style={{ fontSize: 15, fontWeight: "500" }}
@@ -281,15 +273,40 @@ export default function Page() {
                                     {getCategoryDisplayName(name)}
                                   </Text>
                                 </View>
-                                <Text style={{ fontSize: 13, color: "#666" }}>
-                                  £{data.actualSpent.toFixed(0)} / £
-                                  {Number(data.budgetAmount).toFixed(0)}
-                                </Text>
+                                <View
+                                  style={{
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    gap: 8,
+                                  }}
+                                >
+                                  <Text style={{ fontSize: 13, color: "#ffffff" }}>
+                                    £{data.actualSpent.toFixed(0)} / £
+                                    {Number(data.budgetAmount).toFixed(0)}
+                                  </Text>
+                                  <TouchableOpacity
+                                    onPress={() => {
+                                      setSelectedCategory({
+                                        category: name,
+                                        budgetAmount: data.budgetAmount,
+                                        actualSpent: data.actualSpent,
+                                      });
+                                      setAdviceModalVisible(true);
+                                    }}
+                                    style={{ padding: 4 }}
+                                  >
+                                    <Ionicons
+                                      name="information-circle-outline"
+                                      size={24}
+                                      color="#ffffff"
+                                    />
+                                  </TouchableOpacity>
+                                </View>
                               </View>
                               <View
                                 style={{
                                   height: 8,
-                                  backgroundColor: "#e0e0e0",
+                                  backgroundColor: "#ffffff",
                                   borderRadius: 4,
                                   overflow: "hidden",
                                 }}
@@ -311,7 +328,7 @@ export default function Page() {
                                 />
                               </View>
                             </View>
-                          </TouchableRipple>
+                          </View>
                         ))}
                       </View>
                     </Card.Content>
