@@ -10,6 +10,7 @@ import {
   Card,
   List,
   TouchableRipple,
+  Divider,
 } from "react-native-paper";
 import { useState, useMemo, useEffect } from "react";
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
@@ -29,6 +30,13 @@ import {
 } from "../../constants/config";
 import { Ionicons } from "@expo/vector-icons";
 import { AdviceModal } from "../../components/Advice";
+
+const categoryGroups = {
+  "Essential Living": ["housing", "utilities", "groceries"],
+  "Out & About": ["transportation", "eating_out"],
+  Lifestyle: ["shopping", "health", "entertainment"],
+  "Financial Management": ["savings", "debt"],
+};
 
 export default function Page() {
   const { budget, isLoading: budgetLoading } = useBudgetQuery();
@@ -79,6 +87,50 @@ export default function Page() {
     if (!budget || !transactions) return null;
     return calculateTotalBudgetComparison(budget, transactions);
   }, [budget, transactions]);
+
+  const groupedBudgetSummary = useMemo(() => {
+    if (!budgetSummary) return null;
+
+    const grouped: Record<
+      string,
+      {
+        categories: Array<{ name: string; data: any }>;
+        totalBudget: number;
+        totalSpent: number;
+        percentageUsed: number;
+      }
+    > = {};
+
+    Object.entries(categoryGroups).forEach(([groupName, categories]) => {
+      const groupData = categories
+        .map((cat) => ({
+          name: cat,
+          data: budgetSummary[cat],
+        }))
+        .filter((item) => item.data); // Only include categories that exist in budget
+
+      if (groupData.length > 0) {
+        const totalBudget = groupData.reduce(
+          (sum, item) => sum + item.data.budgetAmount,
+          0,
+        );
+        const totalSpent = groupData.reduce(
+          (sum, item) => sum + item.data.actualSpent,
+          0,
+        );
+
+        grouped[groupName] = {
+          categories: groupData,
+          totalBudget,
+          totalSpent,
+          percentageUsed:
+            totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0,
+        };
+      }
+    });
+
+    return grouped;
+  }, [budgetSummary]);
 
   return (
     <ScrollView
@@ -148,73 +200,124 @@ export default function Page() {
               }`}</Text>
             </Card.Content>
           </Card>
-          {budgetSummary && (
-            <View style={{ marginTop: 20 }}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  flexWrap: "wrap",
-                  gap: 10,
-                  justifyContent: "space-between",
-                }}
-              >
-                {Object.entries(budgetSummary).map(
-                  ([category, data]: [string, any], index) => (
-                    <TouchableRipple
-                      key={category}
-                      onPress={() => {
-                        setSelectedCategory({
-                          category,
-                          budgetAmount: data.budgetAmount,
-                          actualSpent: data.actualSpent,
-                        });
-                        setAdviceModalVisible(true);
-                      }}
-                      style={{ width: "48%" }}
-                    >
-                      <Card style={{ alignItems: "center" }}>
-                        <List.Item
-                          style={{ alignItems: "center" }}
-                          title={getCategoryDisplayName(category)}
-                          titleNumberOfLines={2}
-                          left={() => (
-                            <Ionicons
-                              name={getCategoryIcon(category) as any}
-                              size={24}
-                              color="white"
-                            />
-                          )}
-                        />
-                        <Card.Content style={{ alignItems: "center", gap: 10 }}>
-                          <AnimatedCircularProgress
-                            size={100}
-                            width={8}
-                            fill={data.percentageUsed}
-                            tintColor={
-                              data.percentageUsed < 50
-                                ? "#4caf50"
-                                : data.percentageUsed < 75
-                                  ? "#ffeb3b"
-                                  : data.percentageUsed < 100
-                                    ? "#ff9800"
-                                    : "#e53935"
-                            }
-                            backgroundColor="#e0e0e0"
-                          >
-                            {(fill: number) => (
-                              <Text>{`${Math.round(fill)}%`}</Text>
-                            )}
-                          </AnimatedCircularProgress>
-                          <Text>
-                            £{data.actualSpent.toFixed(0)} / £
-                            {Number(data.budgetAmount).toFixed(0)}
+          {groupedBudgetSummary && (
+            <View style={{ marginTop: 20, gap: 15 }}>
+              {Object.entries(groupedBudgetSummary).map(
+                ([groupName, groupData]) => (
+                  <Card key={groupName}>
+                    <Card.Title
+                      title={groupName}
+                      titleStyle={{ fontSize: 18, fontWeight: "bold" }}
+                    />
+                    <Card.Content style={{ gap: 15, alignItems: "center" }}>
+                      <AnimatedCircularProgress
+                        size={110}
+                        width={10}
+                        fill={Math.min(groupData.percentageUsed, 100)}
+                        tintColor={
+                          groupData.percentageUsed < 50
+                            ? "#4caf50"
+                            : groupData.percentageUsed < 75
+                              ? "#ffeb3b"
+                              : groupData.percentageUsed < 100
+                                ? "#ff9800"
+                                : "#e53935"
+                        }
+                        backgroundColor="#e0e0e0"
+                      >
+                        {(fill: number) => (
+                          <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                            {`${Math.round(fill)}%`}
                           </Text>
-                        </Card.Content>
-                      </Card>
-                    </TouchableRipple>
-                  ),
-                )}
-              </View>
+                        )}
+                      </AnimatedCircularProgress>
+                      <Text style={{ fontSize: 15, fontWeight: "500" }}>
+                        £{groupData.totalSpent.toFixed(0)} / £
+                        {groupData.totalBudget.toFixed(0)}
+                      </Text>
+
+                      <Divider style={{ width: "100%", marginVertical: 5 }} />
+
+                      <View style={{ width: "100%", gap: 12 }}>
+                        {groupData.categories.map(({ name, data }) => (
+                          <TouchableRipple
+                            key={name}
+                            onPress={() => {
+                              setSelectedCategory({
+                                category: name,
+                                budgetAmount: data.budgetAmount,
+                                actualSpent: data.actualSpent,
+                              });
+                              setAdviceModalVisible(true);
+                            }}
+                            style={{
+                              borderRadius: 8,
+                              padding: 12,
+                            }}
+                          >
+                            <View style={{ gap: 8 }}>
+                              <View
+                                style={{
+                                  flexDirection: "row",
+                                  alignItems: "center",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                <View
+                                  style={{
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    gap: 10,
+                                  }}
+                                >
+                                  <Ionicons
+                                    name={getCategoryIcon(name) as any}
+                                    size={24}
+                                    color="#e0e0e0"
+                                  />
+                                  <Text
+                                    style={{ fontSize: 15, fontWeight: "500" }}
+                                  >
+                                    {getCategoryDisplayName(name)}
+                                  </Text>
+                                </View>
+                                <Text style={{ fontSize: 13, color: "#666" }}>
+                                  £{data.actualSpent.toFixed(0)} / £
+                                  {Number(data.budgetAmount).toFixed(0)}
+                                </Text>
+                              </View>
+                              <View
+                                style={{
+                                  height: 8,
+                                  backgroundColor: "#e0e0e0",
+                                  borderRadius: 4,
+                                  overflow: "hidden",
+                                }}
+                              >
+                                <View
+                                  style={{
+                                    height: "100%",
+                                    width: `${Math.min(data.percentageUsed, 100)}%`,
+                                    backgroundColor:
+                                      data.percentageUsed < 50
+                                        ? "#4caf50"
+                                        : data.percentageUsed < 75
+                                          ? "#ffeb3b"
+                                          : data.percentageUsed < 100
+                                            ? "#ff9800"
+                                            : "#e53935",
+                                    borderRadius: 4,
+                                  }}
+                                />
+                              </View>
+                            </View>
+                          </TouchableRipple>
+                        ))}
+                      </View>
+                    </Card.Content>
+                  </Card>
+                ),
+              )}
             </View>
           )}
           {selectedCategory && (
