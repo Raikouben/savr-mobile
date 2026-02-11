@@ -197,7 +197,7 @@ export default function Page() {
                           : "#e53935"
                     : "#4caf50"
                 }
-                backgroundColor={surfaceVariant}
+                backgroundColor={backgroundColor}
               >
                 {(fill: number) => (
                   <Text
@@ -243,7 +243,7 @@ export default function Page() {
                                 ? "#ff9800"
                                 : "#e53935"
                         }
-                        backgroundColor={surfaceVariant}
+                        backgroundColor={backgroundColor}
                       >
                         {(fill: number) => (
                           <Text
