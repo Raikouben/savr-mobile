@@ -275,8 +275,9 @@ export default function Page() {
                           <View
                             key={name}
                             style={{
-                              borderRadius: 8,
+                              borderRadius: 20,
                               padding: 12,
+                              backgroundColor: surfaceVariant,
                             }}
                           >
                             <View style={{ gap: 8 }}>

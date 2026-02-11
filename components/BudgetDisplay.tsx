@@ -20,7 +20,7 @@ import {
   SegmentedButtons,
   Surface,
 } from "react-native-paper";
-
+import { useAppTheme } from "@/themes/useAppTheme";
 const categories = [
   "housing",
   "utilities",
@@ -39,7 +39,7 @@ export default function BudgetDisplay() {
   const { budget, isLoading, updateBudget, isUpdating } = useBudgetQuery();
   const [editable, setEditable] = useState(false);
   const [budgetForm, setBudgetForm] = useState<any>({});
-
+  const { surfaceColor, textOnPrimary, surfaceVariant } = useAppTheme();
   useEffect(() => {
     if (editable && budget) {
       const form: any = {};

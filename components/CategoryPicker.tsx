@@ -32,20 +32,20 @@ export default function CategoryPicker({
   onCategoryChange,
 }: CategoryPickerProps) {
   const [visible, setVisible] = useState(false);
-  const { backgroundColor, textColor } = useAppTheme();
+  const { backgroundColor, textColor, textOnPrimary } = useAppTheme();
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
   return (
     <View>
       <Button
-        mode="elevated"
+        mode="contained"
         onPress={() => setVisible(true)}
         icon="chevron-down"
         contentStyle={{ justifyContent: "space-between" }}
         style={{ marginTop: 5 }}
       >
-        <Text style={{ color: textColor }}>
+        <Text style={{ color: textOnPrimary, fontWeight: "bold" }}>
           {selectedCategory
             ? getCategoryDisplayName(selectedCategory)
             : `Select Category`}
@@ -82,7 +82,9 @@ export default function CategoryPicker({
                 padding: 16,
               }}
             >
-              <Text variant="titleLarge" style={{ color: textColor }}>Select Category</Text>
+              <Text variant="titleLarge" style={{ color: textColor }}>
+                Select Category
+              </Text>
               <Button onPress={() => setVisible(false)}>Done</Button>
             </View>
             <Divider />
