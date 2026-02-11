@@ -7,7 +7,7 @@ import {
   getCategoryIcon,
   getCategoryDisplayName,
 } from "../constants/config";
-
+import { useAppTheme } from "@/themes/useAppTheme";
 interface CategoryFilterProps {
   selectedCategory: string;
   onCategoryChange: (category: string) => void;
@@ -19,16 +19,16 @@ export default function CategoryFilter({
   onCategoryChange,
 }: CategoryFilterProps) {
   const [visible, setVisible] = useState(false);
-
+  const { textOnPrimary, backgroundColor, textColor } = useAppTheme();
   return (
     <View>
       <Button
-        mode="elevated"
+        mode="contained"
         onPress={() => setVisible(true)}
         icon="chevron-down"
         contentStyle={{ justifyContent: "space-between" }}
       >
-        <Text>
+        <Text style={{ color: textOnPrimary, fontWeight: "bold" }}>
           {selectedCategory
             ? getCategoryDisplayName(selectedCategory)
             : `Filter`}
@@ -50,7 +50,13 @@ export default function CategoryFilter({
           activeOpacity={1}
           onPress={() => setVisible(false)}
         >
-          <Surface elevation={4}>
+          <View
+            style={{
+              backgroundColor: backgroundColor,
+              borderTopLeftRadius: 16,
+              borderTopRightRadius: 16,
+            }}
+          >
             <View
               style={{
                 flexDirection: "row",
@@ -76,7 +82,7 @@ export default function CategoryFilter({
                       <Ionicons
                         name={getCategoryIcon(category) as any}
                         size={24}
-                        color="white"
+                        color={textColor}
                         style={{ marginLeft: 8, alignSelf: "center" }}
                       />
                     )}
@@ -90,7 +96,7 @@ export default function CategoryFilter({
                 </View>
               ))}
             </ScrollView>
-          </Surface>
+          </View>
         </TouchableOpacity>
       </Modal>
     </View>

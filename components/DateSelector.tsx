@@ -4,6 +4,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { DatePickerInput } from "react-native-paper-dates";
 import { DatePickerModal } from "react-native-paper-dates";
 import { Button } from "react-native-paper";
+import { useAppTheme } from "@/themes/useAppTheme";
 interface DateSelectorProps {
   date: Date | null;
   onDateChange: (date: Date | null) => void;
@@ -18,7 +19,7 @@ export default function DateSelector({
   label = "Select Date",
 }: DateSelectorProps) {
   const [showPicker, setShowPicker] = useState(false);
-
+  const { backgroundColor, textOnPrimary } = useAppTheme();
   if (mode === "input") {
     return (
       <DatePickerInput
@@ -39,7 +40,10 @@ export default function DateSelector({
         uppercase={false}
         mode="contained"
       >
-        Select Date
+        <Text style={{ color: textOnPrimary, fontWeight: "bold" }}>
+          {" "}
+          Select Date
+        </Text>
       </Button>
       <DatePickerModal
         locale="en-GB"

@@ -111,7 +111,7 @@ export default function transactions() {
                 >
                   <Text
                     style={{
-                      color: textColor,
+                      color: textOnPrimary,
 
                       fontWeight: "bold",
                     }}

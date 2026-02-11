@@ -40,13 +40,8 @@ const categoryGroups = {
 };
 
 export default function Page() {
-  const {
-    backgroundColor,
-    surfaceColor,
-    textColor,
-    surfaceVariant,
-  
-  } = useAppTheme();
+  const { backgroundColor, surfaceColor, textColor, surfaceVariant } =
+    useAppTheme();
   const { budget, isLoading: budgetLoading } = useBudgetQuery();
   const { transactions, isLoading: transactionsLoading } =
     useTransactionQuery();
@@ -168,10 +163,17 @@ export default function Page() {
             style={{
               alignItems: "center",
               justifyContent: "center",
-              padding: 20,
+              padding: 15,
             }}
           >
-            <Card.Title title="Overall Budget Progress" />
+            <Card.Title
+              title="Overall Progress"
+              titleStyle={{
+                fontSize: 18,
+                fontWeight: "bold",
+                textAlign: "center",
+              }}
+            />
             <Card.Content style={{ alignItems: "center", gap: 10 }}>
               <AnimatedCircularProgress
                 size={200}
@@ -195,15 +197,21 @@ export default function Page() {
                           : "#e53935"
                     : "#4caf50"
                 }
-                backgroundColor="white"
+                backgroundColor={surfaceVariant}
               >
                 {(fill: number) => (
-                  <Text style={{ fontSize: 22 }}>{`${Math.round(fill)}%`}</Text>
+                  <Text
+                    style={{ fontSize: 22, fontWeight: "bold" }}
+                  >{`${Math.round(fill)}%`}</Text>
                 )}
               </AnimatedCircularProgress>
-              <Text>{`£${
-                overview ? overview.totalSpent.toFixed(0) : "0.00"
-              } / £${
+              <Text
+                style={{
+                  fontSize: 15,
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >{`£${overview ? overview.totalSpent.toFixed(0) : "0.00"} / £${
                 overview ? overview.totalBudget.toFixed(0) : "0.00"
               }`}</Text>
             </Card.Content>
@@ -212,10 +220,14 @@ export default function Page() {
             <View style={{ marginTop: 20, gap: 15 }}>
               {Object.entries(groupedBudgetSummary).map(
                 ([groupName, groupData]) => (
-                  <Card key={groupName}>
+                  <Card key={groupName} style={{ padding: 15 }}>
                     <Card.Title
                       title={groupName}
-                      titleStyle={{ fontSize: 18, fontWeight: "bold" }}
+                      titleStyle={{
+                        fontSize: 18,
+                        fontWeight: "bold",
+                        textAlign: "center",
+                      }}
                     />
                     <Card.Content style={{ gap: 15, alignItems: "center" }}>
                       <AnimatedCircularProgress
@@ -234,12 +246,24 @@ export default function Page() {
                         backgroundColor={surfaceVariant}
                       >
                         {(fill: number) => (
-                          <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                          <Text
+                            style={{
+                              fontSize: 18,
+                              fontWeight: "bold",
+                              textAlign: "center",
+                            }}
+                          >
                             {`${Math.round(fill)}%`}
                           </Text>
                         )}
                       </AnimatedCircularProgress>
-                      <Text style={{ fontSize: 15, fontWeight: "500" }}>
+                      <Text
+                        style={{
+                          fontSize: 15,
+                          fontWeight: "bold",
+                          textAlign: "center",
+                        }}
+                      >
                         £{groupData.totalSpent.toFixed(0)} / £
                         {groupData.totalBudget.toFixed(0)}
                       </Text>
@@ -275,9 +299,7 @@ export default function Page() {
                                     size={24}
                                     color={textColor}
                                   />
-                                  <Text
-                                    style={{ fontSize: 15, fontWeight: "500" }}
-                                  >
+                                  <Text style={{ fontSize: 15 }}>
                                     {getCategoryDisplayName(name)}
                                   </Text>
                                 </View>
