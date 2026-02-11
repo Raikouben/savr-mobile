@@ -11,7 +11,7 @@ import {
   Divider,
 } from "react-native-paper";
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
-
+import { useAppTheme } from "@/themes/useAppTheme";
 //puit this in the constants file later
 export interface ReportInsights {
   overallFinancialHealth: {
@@ -49,7 +49,7 @@ export default function ReportModal({
   const period = report?.period;
   const income = report?.income;
   const { budget, isLoading: budgetLoading } = useBudgetQuery();
-
+  const { backgroundColor, textColor, textOnPrimary } = useAppTheme();
   useEffect(() => {
     if (visible && report?.id && !report.viewed) {
       markReportAsViewed(report.id);
@@ -64,7 +64,7 @@ export default function ReportModal({
         contentContainerStyle={{
           padding: 10,
           margin: 20,
-          backgroundColor: "#8a77aa",
+          backgroundColor: backgroundColor,
           borderRadius: 12,
           maxHeight: "90%",
         }}

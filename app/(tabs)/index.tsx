@@ -79,6 +79,16 @@ export default function Page() {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (reports && reports.length > 0) {
+      const unviewedReport = reports.find((report: any) => !report.viewed);
+      if (unviewedReport) {
+        setSelectedReportId(unviewedReport.id);
+        setReportModalVisible(true);
+      }
+    }
+  }, [reports]);
+
   const loading = budgetLoading || transactionsLoading;
 
   const budgetSummary = useMemo(() => {
