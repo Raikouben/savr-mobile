@@ -469,7 +469,7 @@ export default function analytics() {
       }}
       showsVerticalScrollIndicator={false}
     >
-      <Text variant="headlineLarge">Analytics</Text>
+      <Text style={{ fontSize: 32, fontWeight: "bold" }}>Analytics</Text>
       <Card style={{ padding: 12 }}>
         <SegmentedButtons
           value={timeRange}
@@ -523,13 +523,13 @@ export default function analytics() {
                   hideDataPoints={true}
                   disableScroll={true}
                   startFillColor={primaryColor}
-                  // endFillColor="#E3F2FD"
+                  endFillColor={primaryColor}
                   startFillColor2={secondaryColor}
-                  // endFillColor2="#FFE5E5"
-                  // startOpacity={1}
-                  // endOpacity={1}
-                  // startOpacity2={1}
-                  // endOpacity2={1}
+                  endFillColor2={secondaryColor}
+                  startOpacity={1}
+                  endOpacity={0.5}
+                  startOpacity2={1}
+                  endOpacity2={0.5}
                   areaChart
                   yAxisColor="#ddd"
                   xAxisColor="transparent"

@@ -145,7 +145,9 @@ export default function Page() {
       }}
       showsVerticalScrollIndicator={false}
     >
-      <Text variant="headlineLarge">Budget Progress</Text>
+      <Text style={{ fontSize: 32, fontWeight: "bold", color: textColor }}>
+        Budget Progress
+      </Text>
       {loading && (
         <View
           style={{

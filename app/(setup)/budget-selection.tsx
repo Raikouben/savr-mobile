@@ -33,7 +33,7 @@ const categories = [
 
 export default function BudgetSelection() {
   const router = useRouter();
-  const { backgroundColor } = useAppTheme();
+  const { backgroundColor, textOnPrimary, textColor } = useAppTheme();
   const {
     getBudgetRecommendation,
     loading: recommenderLoading,
@@ -208,13 +208,15 @@ export default function BudgetSelection() {
               onPress={handleAcceptBudget}
               disabled={budgetLoading}
             >
-              <Text>{budgetLoading ? "Creating..." : "Accept Budget"}</Text>
+              <Text style={{ color: textOnPrimary, fontWeight: "bold" }}>
+                {budgetLoading ? "Creating..." : "Accept Budget"}
+              </Text>
             </Button>
             <Button
               mode="outlined"
               onPress={() => setViewExplanation(!viewExplanation)}
             >
-              <Text>View Explanation</Text>
+              <Text style={{ color: textColor, fontWeight: "bold" }}>View Explanation</Text>
             </Button>
           </Card.Actions>
         </Card>
@@ -229,7 +231,7 @@ export default function BudgetSelection() {
               mode="contained"
               onPress={() => setViewExplanation(!viewExplanation)}
             >
-              <Text>Back to Budget</Text>
+              <Text style={{ color: textOnPrimary, fontWeight: "bold" }}>Back to Budget</Text>
             </Button>
           </Card.Actions>
         </Card>

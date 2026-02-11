@@ -54,7 +54,7 @@ export default function profile() {
       }}
       showsVerticalScrollIndicator={false}
     >
-      <Text variant="headlineLarge">profile</Text>
+      <Text style={{ fontSize: 32, fontWeight: "bold" }}>Profile</Text>
       <Text variant="bodyLarge">🔥 Streak: {user?.streak ?? 0} days</Text>
       <UserDisplay />
       <BudgetDisplay />

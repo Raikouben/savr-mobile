@@ -88,7 +88,14 @@ export default function transactions() {
           keyExtractor={(item) => item.id.toString()}
           ListHeaderComponent={
             <View>
-              <Text variant="headlineLarge" style={{ marginBottom: 20 }}>
+              <Text
+                style={{
+                  fontSize: 32,
+                  fontWeight: "bold",
+                  color: textColor,
+                  marginBottom: 15,
+                }}
+              >
                 Transactions
               </Text>
               <View

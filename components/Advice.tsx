@@ -14,7 +14,7 @@ import {
   Modal,
 } from "react-native-paper";
 import { useEffect, useState } from "react";
-
+import { useAppTheme } from "@/themes/useAppTheme";
 export const AdviceModal = ({
   visible,
   onClose,
@@ -31,6 +31,7 @@ export const AdviceModal = ({
   const { getBudgetAdvice } = useBudget();
   const [advice, setAdvice] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const { backgroundColor, textColor } = useAppTheme();
 
   useEffect(() => {
     const fetchAdvice = async () => {
@@ -39,7 +40,7 @@ export const AdviceModal = ({
         const adviceData = await getBudgetAdvice(
           category,
           budgetAmount,
-          actualSpent
+          actualSpent,
         );
         setAdvice(adviceData.advice || "No advice available.");
       } catch (error) {
@@ -59,17 +60,28 @@ export const AdviceModal = ({
         visible={visible}
         onDismiss={onClose}
         contentContainerStyle={{
-          backgroundColor: "white",
+          backgroundColor: backgroundColor,
           padding: 20,
           margin: 20,
           borderRadius: 8,
         }}
       >
         <View>
-          <Text style={{ color: "black" }}>
+          <Text
+            style={{
+              color: textColor,
+              fontSize: 18,
+              fontWeight: "bold",
+              marginBottom: 10,
+            }}
+          >
             Advice for {getCategoryDisplayName(category)}
           </Text>
-          {loading ? <ActivityIndicator /> : <Text style={{ color: "rgba(98, 79, 168, 0.96)" }}>{advice}</Text>}
+          {loading ? (
+            <ActivityIndicator />
+          ) : (
+            <Text style={{ color: textColor }}>{advice}</Text>
+          )}
         </View>
       </Modal>
     </Portal>
