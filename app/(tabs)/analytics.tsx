@@ -41,7 +41,7 @@ import { tr } from "react-native-paper-dates";
 import { getDateRange } from "@/utils/calculation";
 import { useAppTheme } from "@/themes/useAppTheme";
 export default function analytics() {
-  const { backgroundColor } = useAppTheme();
+  const { backgroundColor, primaryColor, secondaryColor } = useAppTheme();
   const [error, setError] = useState<string | null>(null);
   const [timeRange, setTimeRange] = useState<"week" | "month" | "year">("week");
   const [category, setCategory] = useState<string>("");
@@ -488,11 +488,11 @@ export default function analytics() {
       </Button> */}
         <Button
           style={{ marginTop: 8 }}
-          mode="outlined"
+          mode="contained"
           onPress={resetFilters}
           compact
         >
-          Reset Filters
+          Reset
         </Button>
       </Card>
 
@@ -522,14 +522,14 @@ export default function analytics() {
                   thickness={3}
                   hideDataPoints={true}
                   disableScroll={true}
-                  startFillColor="#4A90E2"
-                  endFillColor="#E3F2FD"
-                  startFillColor2="#FF6B6B"
-                  endFillColor2="#FFE5E5"
-                  startOpacity={0.9}
-                  endOpacity={0.6}
-                  startOpacity2={0.9}
-                  endOpacity2={0.6}
+                  startFillColor={primaryColor}
+                  // endFillColor="#E3F2FD"
+                  startFillColor2={secondaryColor}
+                  // endFillColor2="#FFE5E5"
+                  // startOpacity={1}
+                  // endOpacity={1}
+                  // startOpacity2={1}
+                  // endOpacity2={1}
                   areaChart
                   yAxisColor="#ddd"
                   xAxisColor="transparent"

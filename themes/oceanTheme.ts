@@ -28,10 +28,10 @@ const oceanTheme: MD3Theme = {
     onTertiaryContainer: "#1E4A33",
 
     // Background & Surface (Base colors)
-    background: "#F5F8FC", // base-100
+    background: "#E7EDF7", // base-100
     onBackground: "#2B3A63", // base-content
 
-    surface: "#E7EDF7", // base-200
+    surface: "#F5F8FC", // base-200
     onSurface: "#2B3A63",
     surfaceVariant: "#D5DFF0", // base-300
     onSurfaceVariant: "#2B3A63",

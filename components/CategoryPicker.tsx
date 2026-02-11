@@ -16,7 +16,7 @@ import {
   Surface,
 } from "react-native-paper";
 import Ionicons from "@expo/vector-icons/build/Ionicons";
-
+import { useAppTheme } from "@/themes/useAppTheme";
 interface CategoryPickerProps {
   selectedCategory: string;
   onCategoryChange: (category: string) => void;
@@ -32,51 +32,11 @@ export default function CategoryPicker({
   onCategoryChange,
 }: CategoryPickerProps) {
   const [visible, setVisible] = useState(false);
-
+  const { backgroundColor, textColor } = useAppTheme();
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
   return (
-    // <Menu
-    //   visible={visible}
-    //   onDismiss={closeMenu}
-    //   contentStyle={{ maxHeight: 400 }}
-    //   anchor={
-    //     <Button
-    //       mode="elevated"
-    //       onPress={openMenu}
-    //       icon="chevron-down"
-    //       contentStyle={{ justifyContent: "space-between" }}
-    //       style={{ marginTop: 5 }}
-    //     >
-    //       <Text>
-    //         {selectedCategory
-    //           ? getCategoryDisplayName(selectedCategory)
-    //           : `Select Category`}
-    //       </Text>
-    //     </Button>
-    //   }
-    // >
-    //   <ScrollView style={{ maxHeight: 400 }}>
-    //     {budgetCategories.map((category) => (
-    //       <Menu.Item
-    //         key={category}
-    //         onPress={() => {
-    //           onCategoryChange(category);
-    //           closeMenu();
-    //         }}
-    //         title={getCategoryDisplayName(category)}
-    //         leadingIcon={() => (
-    //           <Ionicons
-    //             name={getCategoryIcon(category) as any}
-    //             size={20}
-    //             color="#ffffff"
-    //           />
-    //         )}
-    //       />
-    //     ))}
-    //   </ScrollView>
-    // </Menu>
     <View>
       <Button
         mode="elevated"
@@ -85,7 +45,7 @@ export default function CategoryPicker({
         contentStyle={{ justifyContent: "space-between" }}
         style={{ marginTop: 5 }}
       >
-        <Text>
+        <Text style={{ color: textColor }}>
           {selectedCategory
             ? getCategoryDisplayName(selectedCategory)
             : `Select Category`}
@@ -107,7 +67,13 @@ export default function CategoryPicker({
           activeOpacity={1}
           onPress={() => setVisible(false)}
         >
-          <Surface elevation={4}>
+          <View
+            style={{
+              backgroundColor: backgroundColor,
+              borderTopLeftRadius: 16,
+              borderTopRightRadius: 16,
+            }}
+          >
             <View
               style={{
                 flexDirection: "row",
@@ -116,7 +82,7 @@ export default function CategoryPicker({
                 padding: 16,
               }}
             >
-              <Text variant="titleLarge">Select Category</Text>
+              <Text variant="titleLarge" style={{ color: textColor }}>Select Category</Text>
               <Button onPress={() => setVisible(false)}>Done</Button>
             </View>
             <Divider />
@@ -133,7 +99,7 @@ export default function CategoryPicker({
                       <Ionicons
                         name={getCategoryIcon(category) as any}
                         size={24}
-                        color="white"
+                        color={textColor}
                         style={{ marginLeft: 8, alignSelf: "center" }}
                       />
                     )}
@@ -147,7 +113,7 @@ export default function CategoryPicker({
                 </View>
               ))}
             </ScrollView>
-          </Surface>
+          </View>
         </TouchableOpacity>
       </Modal>
     </View>

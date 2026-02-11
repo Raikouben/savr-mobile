@@ -29,9 +29,11 @@ import {
   FAB,
   IconButton,
   Divider,
+  Surface,
 } from "react-native-paper";
 export default function transactions() {
-  const { backgroundColor, textColor, textOnPrimary } = useAppTheme();
+  const { backgroundColor, textColor, textOnPrimary, surfaceColor } =
+    useAppTheme();
   const [error, setError] = useState<string | null>(null);
   const [date, setDate] = useState<Date | null>(null);
   const [category, setCategory] = useState<string>("");
@@ -89,7 +91,14 @@ export default function transactions() {
               <Text variant="headlineLarge" style={{ marginBottom: 20 }}>
                 Transactions
               </Text>
-              <View style={{ flexDirection: "row", gap: 10, alignItems: "center", marginBottom: 10 }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  gap: 10,
+                  alignItems: "center",
+                  marginBottom: 10,
+                }}
+              >
                 <DateSelector date={date} onDateChange={setDate} />
                 <CategoryFilter
                   selectedCategory={category}
@@ -102,7 +111,7 @@ export default function transactions() {
                 >
                   <Text
                     style={{
-                      color: textOnPrimary,
+                      color: textColor,
 
                       fontWeight: "bold",
                     }}
@@ -114,8 +123,13 @@ export default function transactions() {
             </View>
           }
           renderItem={({ item }) => (
-            <View>
+            <View style={{ paddingBottom: 25 }}>
               <List.Item
+                style={{
+                  backgroundColor: surfaceColor,
+                  borderRadius: 8,
+                  paddingBottom: 15,
+                }}
                 title={getCategoryDisplayName(item.category)}
                 description={`${new Date(item.date).toLocaleDateString()}${
                   item.description ? ` • ${item.description}` : ""
@@ -124,7 +138,7 @@ export default function transactions() {
                   <Ionicons
                     name={getCategoryIcon(item.category) as any}
                     size={22}
-                    color={textOnPrimary}
+                    color={textColor}
                     style={{ marginLeft: 8, alignSelf: "center" }}
                   />
                 )}
@@ -137,26 +151,25 @@ export default function transactions() {
                       marginRight: -30,
                     }}
                   >
-                    <Text variant="titleMedium">
+                    <Text variant="titleMedium" style={{ color: textColor }}>
                       £{(parseFloat(item.amount) || 0).toFixed(2)}
                     </Text>
                     <IconButton
                       icon="delete"
                       size={20}
-                      iconColor={textOnPrimary}
+                      iconColor={textColor}
                       onPress={() => deleteTransaction(item.id)}
                     />
                   </View>
                 )}
               />
-              <Divider />
             </View>
           )}
         />
       )}
       <FAB
         icon="plus"
-        style={{ position: "absolute", right: 16, bottom: 16 }}
+        style={{ position: "absolute", right: 15, bottom: 50 }}
         onPress={() => setModalVisible(true)}
       />
       {modalVisible && (

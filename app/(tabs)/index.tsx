@@ -45,7 +45,7 @@ export default function Page() {
     surfaceColor,
     textColor,
     surfaceVariant,
-    textOnPrimary,
+  
   } = useAppTheme();
   const { budget, isLoading: budgetLoading } = useBudgetQuery();
   const { transactions, isLoading: transactionsLoading } =
@@ -273,7 +273,7 @@ export default function Page() {
                                   <Ionicons
                                     name={getCategoryIcon(name) as any}
                                     size={24}
-                                    color={textOnPrimary}
+                                    color={textColor}
                                   />
                                   <Text
                                     style={{ fontSize: 15, fontWeight: "500" }}
@@ -291,7 +291,7 @@ export default function Page() {
                                   <Text
                                     style={{
                                       fontSize: 13,
-                                      color: textOnPrimary,
+                                      color: textColor,
                                     }}
                                   >
                                     £{data.actualSpent.toFixed(0)} / £
@@ -311,7 +311,7 @@ export default function Page() {
                                     <Ionicons
                                       name="information-circle-outline"
                                       size={24}
-                                      color={textOnPrimary}
+                                      color={textColor}
                                     />
                                   </TouchableOpacity>
                                 </View>
