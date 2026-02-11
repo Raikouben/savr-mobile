@@ -131,6 +131,7 @@ export default function transactions() {
                   paddingBottom: 15,
                 }}
                 title={getCategoryDisplayName(item.category)}
+                descriptionStyle={{ color: textColor }}
                 description={`${new Date(item.date).toLocaleDateString()}${
                   item.description ? ` • ${item.description}` : ""
                 }`}
