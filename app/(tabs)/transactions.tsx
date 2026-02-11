@@ -13,6 +13,7 @@ import CategoryPicker from "../../components/CategoryPicker";
 import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
 import { getCategoryDisplayName, getCategoryIcon } from "@/constants/config";
 import CategoryFilter from "@/components/CategoryFilter";
+import { useAppTheme } from "@/themes/useAppTheme";
 import {
   ActivityIndicator,
   MD2Colors,
@@ -30,6 +31,7 @@ import {
   Divider,
 } from "react-native-paper";
 export default function transactions() {
+  const { backgroundColor, textColor, textOnPrimary } = useAppTheme();
   const [error, setError] = useState<string | null>(null);
   const [date, setDate] = useState<Date | null>(null);
   const [category, setCategory] = useState<string>("");
@@ -71,7 +73,7 @@ export default function transactions() {
   }, [transactions, date, category]);
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#8a77aa" }}>
+    <View style={{ flex: 1, backgroundColor: backgroundColor }}>
       {loading && (
         <ActivityIndicator animating={true} color={MD2Colors.purple500} />
       )}
@@ -87,16 +89,28 @@ export default function transactions() {
               <Text variant="headlineLarge" style={{ marginBottom: 20 }}>
                 Transactions
               </Text>
-              <View style={{ flexDirection: "row", marginBottom: 10, gap: 10 }}>
+              <View style={{ flexDirection: "row", gap: 10, alignItems: "center", marginBottom: 10 }}>
                 <DateSelector date={date} onDateChange={setDate} />
-                <Button mode="contained" onPress={resetFilters}>
-                  <Text style={{ color: "#000000" }}>Reset Filters</Text>
+                <CategoryFilter
+                  selectedCategory={category}
+                  onCategoryChange={setCategory}
+                />
+                <Button
+                  mode="contained"
+                  style={{ paddingHorizontal: 20, alignSelf: "center" }}
+                  onPress={resetFilters}
+                >
+                  <Text
+                    style={{
+                      color: textOnPrimary,
+
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Reset
+                  </Text>
                 </Button>
               </View>
-              <CategoryFilter
-                selectedCategory={category}
-                onCategoryChange={setCategory}
-              />
             </View>
           }
           renderItem={({ item }) => (
@@ -110,7 +124,7 @@ export default function transactions() {
                   <Ionicons
                     name={getCategoryIcon(item.category) as any}
                     size={22}
-                    color="#ffffff"
+                    color={textOnPrimary}
                     style={{ marginLeft: 8, alignSelf: "center" }}
                   />
                 )}
@@ -129,7 +143,7 @@ export default function transactions() {
                     <IconButton
                       icon="delete"
                       size={20}
-                      iconColor="#ffffff"
+                      iconColor={textOnPrimary}
                       onPress={() => deleteTransaction(item.id)}
                     />
                   </View>

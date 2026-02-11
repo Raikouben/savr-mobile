@@ -7,6 +7,7 @@ import { useBudget } from "@/hooks/useBudget";
 import { useUserQuery } from "@/hooks/queries/authQuery";
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 import { useRouter } from "expo-router";
+import { useAppTheme } from "@/themes/useAppTheme";
 import BudgetDisplay from "@/components/BudgetDisplay";
 import { SignOutButton } from "../../components/SignOutButton";
 import UserDisplay from "@/components/UserDisplay";
@@ -30,6 +31,7 @@ import {
 } from "react-native-paper";
 
 export default function profile() {
+  const { backgroundColor } = useAppTheme();
   const { user, isLoading: userLoading, updateUser } = useUserQuery();
   const { budget, isLoading: budgetLoading } = useBudgetQuery();
   const { getBudgetRecommendation } = useRecommender();
@@ -47,7 +49,7 @@ export default function profile() {
       contentContainerStyle={{
         padding: 20,
         gap: 20,
-        backgroundColor: "#8a77aa",
+        backgroundColor: backgroundColor,
         flexGrow: 1,
       }}
       showsVerticalScrollIndicator={false}

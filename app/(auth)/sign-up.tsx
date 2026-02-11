@@ -7,10 +7,12 @@ import { useState } from "react";
 import { Text, TextInput, Button, Card } from "react-native-paper";
 import { KeyboardAvoidingView } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { useAppTheme } from "@/themes/useAppTheme";
 export default function SignUpScreen() {
   const { isLoaded, signUp, setActive } = useSignUp();
   const { createUser } = useAuth();
   const router = useRouter();
+  const { backgroundColor } = useAppTheme();
 
   const [emailAddress, setEmailAddress] = React.useState("");
   const [password, setPassword] = useState("");
@@ -19,7 +21,7 @@ export default function SignUpScreen() {
   const [code, setCode] = useState("");
   const [signUpError, setSignUpError] = useState<string | null>(null);
   const [verificationError, setVerificationError] = useState<string | null>(
-    null
+    null,
   );
 
   // Handle submission of sign-up form
@@ -45,7 +47,7 @@ export default function SignUpScreen() {
       // See https://clerk.com/docs/guides/development/custom-flows/error-handling
       // for more info on error handling
       setSignUpError(
-        err instanceof Error ? err.message : "An unknown error occurred"
+        err instanceof Error ? err.message : "An unknown error occurred",
       );
       console.error(JSON.stringify(err, null, 2));
     }
@@ -81,7 +83,7 @@ export default function SignUpScreen() {
         // If the status is not complete, check why. User may need to
         // complete further steps.
         setVerificationError(
-          `Verification not complete. Status: ${signUpAttempt.status}`
+          `Verification not complete. Status: ${signUpAttempt.status}`,
         );
         console.error(JSON.stringify(signUpAttempt, null, 2));
       }
@@ -89,7 +91,7 @@ export default function SignUpScreen() {
       // See https://clerk.com/docs/guides/development/custom-flows/error-handling
       // for more info on error handling
       setVerificationError(
-        err instanceof Error ? err.message : "An unknown error occurred"
+        err instanceof Error ? err.message : "An unknown error occurred",
       );
       console.error(JSON.stringify(err, null, 2));
     }
@@ -105,7 +107,7 @@ export default function SignUpScreen() {
           justifyContent: "center",
           alignItems: "center",
           padding: 20,
-          backgroundColor: "#8a77aa",
+          backgroundColor: backgroundColor,
         }}
         behavior="padding"
       >
@@ -151,7 +153,7 @@ export default function SignUpScreen() {
         justifyContent: "center",
         alignItems: "center",
         padding: 20,
-        backgroundColor: "#7852b6",
+        backgroundColor: backgroundColor,
       }}
       behavior="padding"
     >

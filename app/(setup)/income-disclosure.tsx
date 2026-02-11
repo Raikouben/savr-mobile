@@ -6,12 +6,14 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
 import { View } from "react-native";
 import { Text, TextInput, Button, Card } from "react-native-paper";
+import { useAppTheme } from "@/themes/useAppTheme";
 export default function IncomeDisclosure() {
   const router = useRouter();
   const [income, setIncome] = useState<number | null>(null);
   const { user, updateUserIncome, isLoading } = useUserQuery();
   const [submitting, setSubmitting] = useState(false);
   const { edit } = useLocalSearchParams();
+  const { backgroundColor } = useAppTheme();
 
   useEffect(() => {
     if (user?.income != null && income === null) {
@@ -64,7 +66,7 @@ export default function IncomeDisclosure() {
         alignItems: "center",
         padding: 20,
         gap: 20,
-        backgroundColor: "#8a77aa",
+        backgroundColor: backgroundColor,
         flexGrow: 1,
       }}
     >

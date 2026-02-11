@@ -10,8 +10,10 @@ import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
 import { useColorScheme } from "react-native";
 import { PaperProvider } from "react-native-paper";
-import { oceanTheme } from "@/themes/oceanTheme";
+import oceanTheme from "@/themes/oceanTheme";
 import { enGB, registerTranslation } from "react-native-paper-dates";
+import luxuryTheme from "@/themes/luxuryTheme";
+import lightTheme from "@/themes/lightTheme";
 registerTranslation("en-GB", enGB);
 
 const queryClient = new QueryClient();
@@ -31,7 +33,8 @@ function RootLayoutNav() {
   }, [isLoaded, userLoading, budgetLoading, transactionsLoading]);
 
   if (!isLoaded) return null;
-  
+  console.log("Ocean theme loaded:", oceanTheme.colors.background); // Should log "#F5F8FC"
+
   return (
     <SafeView>
       <Slot />
@@ -41,7 +44,7 @@ function RootLayoutNav() {
 
 export default function RootLayout() {
   return (
-    <PaperProvider>
+    <PaperProvider theme={oceanTheme}>
       <QueryClientProvider client={queryClient}>
         <ClerkProvider tokenCache={tokenCache}>
           <RootLayoutNav />

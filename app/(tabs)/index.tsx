@@ -30,6 +30,7 @@ import {
 } from "../../constants/config";
 import { Ionicons } from "@expo/vector-icons";
 import { AdviceModal } from "../../components/Advice";
+import { useAppTheme } from "@/themes/useAppTheme";
 
 const categoryGroups = {
   "Essential Living": ["housing", "utilities", "groceries"],
@@ -39,6 +40,13 @@ const categoryGroups = {
 };
 
 export default function Page() {
+  const {
+    backgroundColor,
+    surfaceColor,
+    textColor,
+    surfaceVariant,
+    textOnPrimary,
+  } = useAppTheme();
   const { budget, isLoading: budgetLoading } = useBudgetQuery();
   const { transactions, isLoading: transactionsLoading } =
     useTransactionQuery();
@@ -137,7 +145,7 @@ export default function Page() {
       contentContainerStyle={{
         padding: 20,
         gap: 20,
-        backgroundColor: "#8a77aa",
+        backgroundColor: backgroundColor,
         flexGrow: 1,
       }}
       showsVerticalScrollIndicator={false}
@@ -223,7 +231,7 @@ export default function Page() {
                                 ? "#ff9800"
                                 : "#e53935"
                         }
-                        backgroundColor="#e0e0e0"
+                        backgroundColor={surfaceVariant}
                       >
                         {(fill: number) => (
                           <Text style={{ fontSize: 18, fontWeight: "bold" }}>
@@ -265,7 +273,7 @@ export default function Page() {
                                   <Ionicons
                                     name={getCategoryIcon(name) as any}
                                     size={24}
-                                    color="#ffffff"
+                                    color={textOnPrimary}
                                   />
                                   <Text
                                     style={{ fontSize: 15, fontWeight: "500" }}
@@ -280,7 +288,12 @@ export default function Page() {
                                     gap: 8,
                                   }}
                                 >
-                                  <Text style={{ fontSize: 13, color: "#ffffff" }}>
+                                  <Text
+                                    style={{
+                                      fontSize: 13,
+                                      color: textOnPrimary,
+                                    }}
+                                  >
                                     £{data.actualSpent.toFixed(0)} / £
                                     {Number(data.budgetAmount).toFixed(0)}
                                   </Text>
@@ -298,7 +311,7 @@ export default function Page() {
                                     <Ionicons
                                       name="information-circle-outline"
                                       size={24}
-                                      color="#ffffff"
+                                      color={textOnPrimary}
                                     />
                                   </TouchableOpacity>
                                 </View>
@@ -306,7 +319,7 @@ export default function Page() {
                               <View
                                 style={{
                                   height: 8,
-                                  backgroundColor: "#ffffff",
+                                  backgroundColor: surfaceColor,
                                   borderRadius: 4,
                                   overflow: "hidden",
                                 }}

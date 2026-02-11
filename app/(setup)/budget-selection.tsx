@@ -15,6 +15,7 @@ import {
   ActivityIndicator,
   Surface,
 } from "react-native-paper";
+import { useAppTheme } from "@/themes/useAppTheme";
 
 const categories = [
   "housing",
@@ -32,6 +33,7 @@ const categories = [
 
 export default function BudgetSelection() {
   const router = useRouter();
+  const { backgroundColor } = useAppTheme();
   const {
     getBudgetRecommendation,
     loading: recommenderLoading,
@@ -121,7 +123,7 @@ export default function BudgetSelection() {
           alignItems: "center",
           justifyContent: "center",
           flex: 1,
-          backgroundColor: "#8a77aa",
+          backgroundColor: backgroundColor,
         }}
       >
         <ActivityIndicator size="large" />
@@ -137,7 +139,7 @@ export default function BudgetSelection() {
       contentContainerStyle={{
         padding: 20,
         gap: 20,
-        backgroundColor: "#8a77aa",
+        backgroundColor: backgroundColor,
         flexGrow: 1,
         alignItems: "center",
         justifyContent: "center",

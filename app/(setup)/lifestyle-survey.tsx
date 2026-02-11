@@ -10,6 +10,7 @@ import {
   RadioButton,
   ActivityIndicator,
 } from "react-native-paper";
+import { useAppTheme } from "@/themes/useAppTheme";
 const lifestyleQuestions = [
   {
     id: "housing_impact",
@@ -126,6 +127,7 @@ const lifestyleQuestions = [
 
 export default function LifestyleSurvey() {
   const router = useRouter();
+  const { backgroundColor } = useAppTheme();
   const [answers, setAnswers] = useState<{ [key: string]: number }>({});
   const {
     surveyAnswers,
@@ -149,7 +151,7 @@ export default function LifestyleSurvey() {
   };
   if (isLoading) {
     return (
-      <View style={{ flex: 1, backgroundColor: "#8a77aa" }}>
+      <View style={{ flex: 1, backgroundColor: backgroundColor }}>
         <ActivityIndicator
           size="large"
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
@@ -173,7 +175,7 @@ export default function LifestyleSurvey() {
   };
 
   const allAnswered = lifestyleQuestions.every(
-    (q) => answers[q.id] !== undefined
+    (q) => answers[q.id] !== undefined,
   );
 
   return (
@@ -182,7 +184,7 @@ export default function LifestyleSurvey() {
         contentContainerStyle={{
           padding: 20,
           gap: 20,
-          backgroundColor: "#8a77aa",
+          backgroundColor: backgroundColor,
           flexGrow: 1,
         }}
         showsVerticalScrollIndicator={false}
@@ -228,8 +230,8 @@ export default function LifestyleSurvey() {
                   ? "Updating..."
                   : "Submitting..."
                 : hasExistingAnswers
-                ? "Update"
-                : "Submit"}
+                  ? "Update"
+                  : "Submit"}
             </Button>
           </TouchableOpacity>
         </View>

@@ -39,26 +39,28 @@ import {
 import CategoryFilter from "@/components/CategoryFilter";
 import { tr } from "react-native-paper-dates";
 import { getDateRange } from "@/utils/calculation";
+import { useAppTheme } from "@/themes/useAppTheme";
 export default function analytics() {
+  const { backgroundColor } = useAppTheme();
   const [error, setError] = useState<string | null>(null);
   const [timeRange, setTimeRange] = useState<"week" | "month" | "year">("week");
   const [category, setCategory] = useState<string>("");
   const [selectedMonthYear, setSelectedMonthYear] = useState<Date>(new Date());
   const [selectedYear, setSelectedYear] = useState<number>(
-    new Date().getFullYear()
+    new Date().getFullYear(),
   );
   const [selectedWeek, setSelectedWeek] = useState<Date>(new Date());
 
   // Comparison mode states
   const [comparisonMode, setComparisonMode] = useState(false);
   const [compareMonthYear, setCompareMonthYear] = useState<Date>(
-    new Date(new Date().setMonth(new Date().getMonth() - 1))
+    new Date(new Date().setMonth(new Date().getMonth() - 1)),
   );
   const [compareYear, setCompareYear] = useState<number>(
-    new Date().getFullYear() - 1
+    new Date().getFullYear() - 1,
   );
   const [compareWeek, setCompareWeek] = useState<Date>(
-    new Date(new Date().setDate(new Date().getDate() - 7))
+    new Date(new Date().setDate(new Date().getDate() - 7)),
   );
 
   const { budget, isLoading: budgetLoading } = useBudgetQuery();
@@ -93,7 +95,7 @@ export default function analytics() {
       timeRange,
       timeRange === "month" ? compareMonthYear : undefined,
       timeRange === "year" ? compareYear : undefined,
-      timeRange === "week" ? compareWeek : undefined
+      timeRange === "week" ? compareWeek : undefined,
     ));
 
     const filtered = transactions.filter((tx: any) => {
@@ -126,7 +128,7 @@ export default function analytics() {
       timeRange,
       timeRange === "month" ? selectedMonthYear : undefined,
       timeRange === "year" ? selectedYear : undefined,
-      timeRange === "week" ? selectedWeek : undefined
+      timeRange === "week" ? selectedWeek : undefined,
     );
     console.log("Final chart data:", data);
     return data;
@@ -146,7 +148,7 @@ export default function analytics() {
       timeRange,
       timeRange === "month" ? compareMonthYear : undefined,
       timeRange === "year" ? compareYear : undefined,
-      timeRange === "week" ? compareWeek : undefined
+      timeRange === "week" ? compareWeek : undefined,
     );
     console.log("Comparison chart data:", data);
     return data;
@@ -167,7 +169,7 @@ export default function analytics() {
       timeRange,
       selectedMonthYear,
       selectedYear,
-      selectedWeek
+      selectedWeek,
     );
 
     const filteredTransactions = transactions.filter((tx: any) => {
@@ -256,7 +258,7 @@ export default function analytics() {
       timeRange,
       selectedMonthYear,
       selectedYear,
-      selectedWeek
+      selectedWeek,
     );
     const filteredTransactions = lineChartTransactions.filter((tx: any) => {
       const txDate = new Date(tx.date);
@@ -264,7 +266,7 @@ export default function analytics() {
     });
     const totalSpent = filteredTransactions.reduce(
       (sum: any, tx: any) => sum + Number(tx.amount),
-      0
+      0,
     );
     const transactionCount = filteredTransactions.length;
     const averageTransaction =
@@ -277,7 +279,7 @@ export default function analytics() {
     });
 
     const topCategoryEntry = Object.entries(categoryTotals).sort(
-      (a, b) => b[1] - a[1]
+      (a, b) => b[1] - a[1],
     )[0];
 
     const topCategory = topCategoryEntry
@@ -299,7 +301,7 @@ export default function analytics() {
 
     const totalSpent = compareStatisticsTransactions.reduce(
       (sum: any, tx: any) => sum + Number(tx.amount),
-      0
+      0,
     );
     const transactionCount = compareStatisticsTransactions.length;
     const averageTransaction =
@@ -312,7 +314,7 @@ export default function analytics() {
     });
 
     const topCategoryEntry = Object.entries(categoryTotals).sort(
-      (a, b) => b[1] - a[1]
+      (a, b) => b[1] - a[1],
     )[0];
 
     const topCategory = topCategoryEntry
@@ -423,8 +425,8 @@ export default function analytics() {
       timeRange === "week"
         ? selectedWeek.getTime()
         : timeRange === "month"
-        ? selectedMonthYear.getTime()
-        : selectedYear;
+          ? selectedMonthYear.getTime()
+          : selectedYear;
 
     if (!comparisonMode) return `${baseKey}-${currentDateKey}`;
 
@@ -432,8 +434,8 @@ export default function analytics() {
       timeRange === "week"
         ? compareWeek.getTime()
         : timeRange === "month"
-        ? compareMonthYear.getTime()
-        : compareYear;
+          ? compareMonthYear.getTime()
+          : compareYear;
 
     return `${baseKey}-${currentDateKey}-${compareKey}`;
   }, [
@@ -454,7 +456,7 @@ export default function analytics() {
       setSelectedMonthYear(new Date());
       setSelectedYear(new Date().getFullYear());
       setCategory("");
-    }, [])
+    }, []),
   );
 
   return (
@@ -462,7 +464,7 @@ export default function analytics() {
       contentContainerStyle={{
         padding: 20,
         gap: 20,
-        backgroundColor: "#8a77aa",
+        backgroundColor: backgroundColor,
         flexGrow: 1,
       }}
       showsVerticalScrollIndicator={false}
@@ -642,7 +644,7 @@ export default function analytics() {
                   {Math.abs(
                     ((statistics.totalSpent - compareStatistics.totalSpent) /
                       compareStatistics.totalSpent) *
-                      100
+                      100,
                   ).toFixed(1)}
                   % vs prev
                 </Text>
@@ -660,7 +662,7 @@ export default function analytics() {
                     : "↑"}
                   £
                   {Math.abs(
-                    statistics.totalSpent - compareStatistics.totalSpent
+                    statistics.totalSpent - compareStatistics.totalSpent,
                   ).toFixed(2)}{" "}
                   vs prev
                 </Text>
@@ -690,7 +692,7 @@ export default function analytics() {
                   : "↓"}
                 {Math.abs(
                   statistics.transactionCount -
-                    compareStatistics.transactionCount
+                    compareStatistics.transactionCount,
                 )}{" "}
                 vs prev
               </Text>
@@ -724,7 +726,7 @@ export default function analytics() {
                     ((statistics.averageTransaction -
                       compareStatistics.averageTransaction) /
                       compareStatistics.averageTransaction) *
-                      100
+                      100,
                   ).toFixed(1)}
                   % vs prev
                 </Text>
@@ -745,7 +747,7 @@ export default function analytics() {
                   £
                   {Math.abs(
                     statistics.averageTransaction -
-                      compareStatistics.averageTransaction
+                      compareStatistics.averageTransaction,
                   ).toFixed(2)}{" "}
                   vs prev
                 </Text>
@@ -773,7 +775,7 @@ export default function analytics() {
                     </Text>
                     <Text variant="bodySmall">
                       {getCategoryDisplayName(
-                        compareStatistics.topCategory.category
+                        compareStatistics.topCategory.category,
                       )}
                     </Text>
                     <Text>
@@ -866,7 +868,7 @@ export default function analytics() {
                     data={barChartData}
                     width={Math.max(
                       Dimensions.get("window").width - 72,
-                      barChartData.length * 60
+                      barChartData.length * 60,
                     )}
                     height={250}
                     barWidth={30}

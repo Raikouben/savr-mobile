@@ -7,9 +7,11 @@ import { useState } from "react";
 import { Text, TextInput, Button, Card } from "react-native-paper";
 import { KeyboardAvoidingView } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { useAppTheme } from "@/themes/useAppTheme";
 export default function Page() {
   const { signIn, setActive, isLoaded } = useSignIn();
   const router = useRouter();
+  const { backgroundColor } = useAppTheme();
 
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
@@ -87,7 +89,7 @@ export default function Page() {
           justifyContent: "center",
           alignItems: "center",
           padding: 20,
-          backgroundColor: "#8a77aa",
+          backgroundColor: backgroundColor,
         }}
         behavior="padding"
       >
@@ -136,7 +138,7 @@ export default function Page() {
         justifyContent: "center",
         alignItems: "center",
         padding: 20,
-        backgroundColor: "#8a77aa",
+        backgroundColor: backgroundColor,
       }}
       behavior="padding"
     >

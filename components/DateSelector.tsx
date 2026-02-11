@@ -39,7 +39,7 @@ export default function DateSelector({
         uppercase={false}
         mode="contained"
       >
-        Pick single date
+        Select Date
       </Button>
       <DatePickerModal
         locale="en-GB"
