@@ -18,6 +18,7 @@ import {
   Modal,
   Dialog,
 } from "react-native-paper";
+import { useAppTheme } from "@/themes/useAppTheme";
 export default function AddTransaction({
   visible,
   onClose,
@@ -36,6 +37,7 @@ export default function AddTransaction({
   const [category, setCategory] = useState("");
   const [loading, setLoading] = useState(false);
   const { createTransaction, isCreating } = useTransactionQuery();
+  const { backgroundColor, textOnPrimary } = useAppTheme();
   const [submitting, setSubmitting] = useState(false);
   const handleDateChange = (event: any, selectedDate: any) => {
     setShowDatePicker(false);
@@ -121,10 +123,12 @@ export default function AddTransaction({
               mode="contained"
               disabled={submitting}
             >
-              <Text>Add Transaction</Text>
+              <Text style={{ color: textOnPrimary, fontWeight: "bold" }}>
+                Add Transaction
+              </Text>
             </Button>
-            <Button mode="outlined" onPress={onClose}>
-              <Text>Cancel</Text>
+            <Button mode="contained-tonal" onPress={onClose}>
+              Cancel
             </Button>
           </Dialog.Actions>
         </Dialog.Content>

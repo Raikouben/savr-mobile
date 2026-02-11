@@ -11,7 +11,8 @@ import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
 import { useColorScheme } from "react-native";
 import { PaperProvider } from "react-native-paper";
 import oceanTheme from "@/themes/oceanTheme";
-import valentineTheme from "@/themes/valentineTheme";
+import velvetTheme from "@/themes/velvetTheme";
+import coffeeTheme from "@/themes/coffeeTheme";
 import { enGB, registerTranslation } from "react-native-paper-dates";
 import luxuryTheme from "@/themes/luxuryTheme";
 import lightTheme from "@/themes/lightTheme";
@@ -45,7 +46,7 @@ function RootLayoutNav() {
 
 export default function RootLayout() {
   return (
-    <PaperProvider theme={valentineTheme}>
+    <PaperProvider theme={coffeeTheme}>
       <QueryClientProvider client={queryClient}>
         <ClerkProvider tokenCache={tokenCache}>
           <RootLayoutNav />

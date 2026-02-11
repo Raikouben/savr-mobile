@@ -10,7 +10,7 @@ import { useAppTheme } from "@/themes/useAppTheme";
 const Tab = createBottomTabNavigator();
 
 export default function TabLayout() {
-  const { textColor, textOnPrimary } = useAppTheme();
+  const { textColor, textOnPrimary, textOnSecondary } = useAppTheme();
   return (
     <Tabs
       screenOptions={{
@@ -22,7 +22,7 @@ export default function TabLayout() {
           labeled={false}
           navigationState={state}
           inactiveColor={textColor}
-          activeColor={textOnPrimary}
+          activeColor={textOnSecondary}
           onTabPress={({ route, preventDefault }) => {
             const event = navigation.emit({
               type: "tabPress",

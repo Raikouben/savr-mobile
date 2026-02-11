@@ -1,6 +1,6 @@
 import { MD3LightTheme, MD3Theme } from "react-native-paper";
 
-const valentineTheme: MD3Theme = {
+const velvetTheme: MD3Theme = {
   ...MD3LightTheme,
   colors: {
     ...MD3LightTheme.colors,
@@ -59,4 +59,4 @@ const valentineTheme: MD3Theme = {
   },
 };
 
-export default valentineTheme;
+export default velvetTheme;
