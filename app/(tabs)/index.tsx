@@ -18,6 +18,7 @@ import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
 import { useUserQuery } from "@/hooks/queries/authQuery";
 import { useReportQuery } from "@/hooks/queries/reportQuery";
 import ReportModal from "../../components/ReportModal";
+import ReportAccordion from "@/components/ReportAccordion";
 import {
   calculateBudgetSummary,
   calculateTotalBudgetComparison,
@@ -49,7 +50,7 @@ export default function Page() {
   const { user, updateUserLoggedInfo } = useUserQuery();
 
   const [adviceModalVisible, setAdviceModalVisible] = useState(false);
-  const [reportModalVisible, setReportModalVisible] = useState(true);
+  const [reportAccordionVisible, setReportAccordionVisible] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<{
     category: string;
     budgetAmount: number;
@@ -399,10 +400,18 @@ export default function Page() {
             />
           )}
           {/* {selectedReportId && ( */}
-          <ReportModal
-            visible={reportModalVisible}
+          <ReportAccordion
+            visible={reportAccordionVisible}
             onClose={() => {
-              setReportModalVisible(false);
+              setReportAccordionVisible(false);
+              setSelectedReportId(null);
+            }}
+            reportId={selectedReportId || 1}
+          />
+          <ReportModal
+            visible={reportAccordionVisible}
+            onClose={() => {
+              setReportAccordionVisible(false);
               setSelectedReportId(null);
             }}
             reportId={selectedReportId || 1}
