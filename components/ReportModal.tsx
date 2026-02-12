@@ -1,5 +1,5 @@
-import { View, ScrollView } from "react-native";
-import React, { useEffect } from "react";
+import { View, ScrollView, Dimensions } from "react-native";
+import React, { useEffect, useState } from "react";
 import { useReportQuery } from "@/hooks/queries/reportQuery";
 import {
   ActivityIndicator,
@@ -12,6 +12,8 @@ import {
 } from "react-native-paper";
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 import { useAppTheme } from "@/themes/useAppTheme";
+import PagerView from 'react-native-pager-view';
+import AnimatedPaginationDots from 'react-native-animated-pagination-dots';
 //puit this in the constants file later
 export interface ReportInsights {
   overallFinancialHealth: {
@@ -50,6 +52,10 @@ export default function ReportModal({
   const income = report?.income;
   const { budget, isLoading: budgetLoading } = useBudgetQuery();
   const { backgroundColor, textColor, textOnPrimary } = useAppTheme();
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const { width: screenWidth } = Dimensions.get('window');
+
   useEffect(() => {
     if (visible && report?.id && !report.viewed) {
       markReportAsViewed(report.id);

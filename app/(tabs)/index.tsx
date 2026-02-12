@@ -49,13 +49,14 @@ export default function Page() {
   const { user, updateUserLoggedInfo } = useUserQuery();
 
   const [adviceModalVisible, setAdviceModalVisible] = useState(false);
-  const [reportModalVisible, setReportModalVisible] = useState(false);
+  const [reportModalVisible, setReportModalVisible] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<{
     category: string;
     budgetAmount: number;
     actualSpent: number;
   } | null>(null);
   const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
+  const [testing, setTesting] = useState(true);
 
   useEffect(() => {
     if (user) {
@@ -79,15 +80,15 @@ export default function Page() {
     }
   }, [user]);
 
-  useEffect(() => {
-    if (reports && reports.length > 0) {
-      const unviewedReport = reports.find((report: any) => !report.viewed);
-      if (unviewedReport) {
-        setSelectedReportId(unviewedReport.id);
-        setReportModalVisible(true);
-      }
-    }
-  }, [reports]);
+  // useEffect(() => {
+  //   if (reports && reports.length > 0) {
+  //     const unviewedReport = reports.find((report: any) => !report.viewed);
+  //     if (unviewedReport) {
+  //       setSelectedReportId(unviewedReport.id);
+  //       setReportModalVisible(true);
+  //     }
+  //   }
+  // }, [reports]);
 
   const loading = budgetLoading || transactionsLoading;
 
@@ -397,16 +398,16 @@ export default function Page() {
               actualSpent={selectedCategory.actualSpent}
             />
           )}
-          {selectedReportId && (
-            <ReportModal
-              visible={reportModalVisible}
-              onClose={() => {
-                setReportModalVisible(false);
-                setSelectedReportId(null);
-              }}
-              reportId={selectedReportId}
-            />
-          )}
+          {/* {selectedReportId && ( */}
+          <ReportModal
+            visible={reportModalVisible}
+            onClose={() => {
+              setReportModalVisible(false);
+              setSelectedReportId(null);
+            }}
+            reportId={selectedReportId || 1}
+          />
+          {/* )} */}
         </View>
       )}
     </ScrollView>
