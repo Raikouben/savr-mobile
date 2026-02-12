@@ -1,23 +1,31 @@
 import { useAppTheme } from "@/themes/useAppTheme";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
-import React, { useState } from "react";
-import { Icon, Text } from "react-native-paper";
+import React from "react";
+import { Icon, Text, TouchableRipple } from "react-native-paper";
 import themes from "@/themes/theme";
+import { useThemeContext } from "@/contexts/ThemeContext";
 
 const themeList = [
-  { name: "Ocean", theme: themes.oceanTheme },
-  { name: "Velvet", theme: themes.velvetTheme },
-  { name: "Coffee", theme: themes.coffeeTheme },
-  { name: "Luxury", theme: themes.luxuryTheme },
+  { name: "Ocean", key: "oceanTheme" as const, theme: themes.oceanTheme },
+  { name: "Velvet", key: "velvetTheme" as const, theme: themes.velvetTheme },
+  { name: "Coffee", key: "coffeeTheme" as const, theme: themes.coffeeTheme },
+  { name: "Luxury", key: "luxuryTheme" as const, theme: themes.luxuryTheme },
+  { name: "Light", key: "lightTheme" as const, theme: themes.lightTheme },
+  {
+    name: "Valentine",
+    key: "valentineTheme" as const,
+    theme: themes.valentineTheme,
+  },
+  { name: "Dark", key: "darkTheme" as const, theme: themes.darkTheme },
 ];
 
 export default function ThemeSelector() {
   const { backgroundColor, textColor, surfaceColor } = useAppTheme();
-  const [selectedTheme, setSelectedTheme] = useState("Coffee");
+  const { themeName, setTheme } = useThemeContext();
 
-  const handleThemeSelect = (themeName: string) => {
-    setSelectedTheme(themeName);
-    console.log("Selected theme:", themeName);
+  const handleThemeSelect = (themeKey: (typeof themeList)[number]["key"]) => {
+    setTheme(themeKey);
+    console.log("Selected theme:", themeKey);
   };
 
   return (
@@ -35,9 +43,9 @@ export default function ThemeSelector() {
       </Text>
       <View style={styles.themeContainer}>
         {themeList.map((themeItem) => (
-          <TouchableOpacity
-            key={themeItem.name}
-            onPress={() => handleThemeSelect(themeItem.name)}
+          <TouchableRipple
+            key={themeItem.key}
+            onPress={() => handleThemeSelect(themeItem.key)}
             style={styles.themeItemContainer}
           >
             <View
@@ -48,7 +56,7 @@ export default function ThemeSelector() {
                 },
               ]}
             >
-              {selectedTheme === themeItem.name && (
+              {themeName === themeItem.key && (
                 <View
                   style={{
                     backgroundColor: themeItem.theme.colors.onSurface,
@@ -75,7 +83,7 @@ export default function ThemeSelector() {
             >
               {themeItem.name}
             </Text> */}
-          </TouchableOpacity>
+          </TouchableRipple>
         ))}
       </View>
     </View>

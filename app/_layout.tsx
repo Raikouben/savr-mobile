@@ -10,12 +10,8 @@ import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
 import { useColorScheme } from "react-native";
 import { PaperProvider } from "react-native-paper";
-import oceanTheme from "@/themes/oceanTheme";
-import velvetTheme from "@/themes/velvetTheme";
-import coffeeTheme from "@/themes/coffeeTheme";
 import { enGB, registerTranslation } from "react-native-paper-dates";
-import luxuryTheme from "@/themes/luxuryTheme";
-import lightTheme from "@/themes/lightTheme";
+import { ThemeProvider, useThemeContext } from "@/contexts/ThemeContext";
 registerTranslation("en-GB", enGB);
 
 const queryClient = new QueryClient();
@@ -34,8 +30,6 @@ function RootLayoutNav() {
     }
   }, [isLoaded, userLoading, budgetLoading, transactionsLoading]);
 
-  if (!isLoaded) return null;
-  console.log("Ocean theme loaded:", oceanTheme.colors.background); // Should log "#F5F8FC"
 
   return (
     <SafeView>
@@ -44,14 +38,24 @@ function RootLayoutNav() {
   );
 }
 
-export default function RootLayout() {
+function ThemedApp() {
+  const { currentTheme } = useThemeContext();
+
   return (
-    <PaperProvider theme={coffeeTheme}>
+    <PaperProvider theme={currentTheme}>
       <QueryClientProvider client={queryClient}>
         <ClerkProvider tokenCache={tokenCache}>
           <RootLayoutNav />
         </ClerkProvider>
       </QueryClientProvider>
     </PaperProvider>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <ThemeProvider>
+      <ThemedApp />
+    </ThemeProvider>
   );
 }
