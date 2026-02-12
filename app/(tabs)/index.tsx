@@ -11,6 +11,7 @@ import {
   List,
   TouchableRipple,
   Divider,
+  ProgressBar,
 } from "react-native-paper";
 import { useState, useMemo, useEffect } from "react";
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
@@ -361,20 +362,21 @@ export default function Page() {
                                   overflow: "hidden",
                                 }}
                               >
-                                <View
-                                  style={{
-                                    height: "100%",
-                                    width: `${Math.min(data.percentageUsed, 100)}%`,
-                                    backgroundColor:
-                                      data.percentageUsed < 50
-                                        ? "#4caf50"
-                                        : data.percentageUsed < 75
-                                          ? "#ffeb3b"
-                                          : data.percentageUsed < 100
-                                            ? "#ff9800"
-                                            : "#e53935",
-                                    borderRadius: 4,
-                                  }}
+                                <ProgressBar
+                                  progress={Math.min(
+                                    data.percentageUsed / 100,
+                                    1,
+                                  )}
+                                  color={
+                                    data.percentageUsed < 50
+                                      ? "#4caf50"
+                                      : data.percentageUsed < 75
+                                        ? "#ffeb3b"
+                                        : data.percentageUsed < 100
+                                          ? "#ff9800"
+                                          : "#e53935"
+                                  }
+                                  style={{ height: 8, borderRadius: 4 }}
                                 />
                               </View>
                             </View>

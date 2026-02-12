@@ -29,6 +29,7 @@ import {
   SegmentedButtons,
   Surface,
 } from "react-native-paper";
+import ThemeSelector from "@/components/ThemeSelector";
 
 export default function profile() {
   const { backgroundColor } = useAppTheme();
@@ -64,6 +65,7 @@ export default function profile() {
       >
         <Text>Updates to lifestyle</Text>
       </Button>
+      <ThemeSelector />
       {/* <TouchableOpacity
         onPress={async () => {
           try {
