@@ -23,8 +23,8 @@ export default function ThemeSelector() {
   const { backgroundColor, textColor, surfaceColor } = useAppTheme();
   const { themeName, setTheme } = useThemeContext();
 
-  const handleThemeSelect = (themeKey: (typeof themeList)[number]["key"]) => {
-    setTheme(themeKey);
+  const handleThemeSelect = async (themeKey: (typeof themeList)[number]["key"]) => {
+    await setTheme(themeKey);
     console.log("Selected theme:", themeKey);
   };
 
