@@ -586,6 +586,16 @@ export default function analytics() {
               disabled={!canNavigateNext()}
               size={20}
             />
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                gap: 4,
+                backgroundColor: primaryColor,
+                padding: 8,
+                borderRadius: 4,
+              }}
+            ></View>
           </View>
           {comparisonMode && (
             <View
@@ -612,6 +622,16 @@ export default function analytics() {
                 onPress={navigateCompareNext}
                 size={20}
               />
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  gap: 4,
+                  backgroundColor: secondaryColor,
+                  padding: 8,
+                  borderRadius: 4,
+                }}
+              ></View>
             </View>
           )}
           <CategoryFilter
