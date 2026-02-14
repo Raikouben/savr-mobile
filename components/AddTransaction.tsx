@@ -24,11 +24,13 @@ export default function AddTransaction({
   onClose,
   onSuccess,
   onSwitchToBulk,
+  onSwitchToSubscription,
 }: {
   visible: boolean;
   onClose: () => void;
   onSuccess?: () => void;
   onSwitchToBulk?: () => void;
+  onSwitchToSubscription?: () => void;
 }) {
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
@@ -84,16 +86,22 @@ export default function AddTransaction({
       <Dialog visible={visible} onDismiss={onClose}>
         <View
           style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
             paddingHorizontal: 24,
           }}
         >
           <Dialog.Title>Add Transaction</Dialog.Title>
-          <Button mode="text" compact onPress={onSwitchToBulk}>
-            Bulk
-          </Button>
+          <View
+            style={{
+              flexDirection: "row",
+            }}
+          >
+            <Button mode="text" compact onPress={onSwitchToSubscription}>
+              Subscription
+            </Button>
+            <Button mode="text" compact onPress={onSwitchToBulk}>
+              Bulk
+            </Button>
+          </View>
         </View>
         <Dialog.Content>
           <DateSelector date={date} onDateChange={setDate} mode="input" />

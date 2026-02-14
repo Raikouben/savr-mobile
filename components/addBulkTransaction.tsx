@@ -33,11 +33,13 @@ export default function addBulkTransaction({
   onClose,
   onSuccess,
   onSwitchToSingle,
+  onSwitchToSubscription,
 }: {
   visible: boolean;
   onClose: () => void;
   onSuccess?: () => void;
   onSwitchToSingle?: () => void;
+  onSwitchToSubscription?: () => void;
 }) {
   //   const [amount, setAmount] = useState("");
   //   const [description, setDescription] = useState("");
@@ -101,16 +103,22 @@ export default function addBulkTransaction({
       >
         <View
           style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
             paddingHorizontal: 24,
           }}
         >
           <Dialog.Title>Add Transactions</Dialog.Title>
-          <Button mode="text" compact onPress={onSwitchToSingle}>
-            Single
-          </Button>
+          <View
+            style={{
+              flexDirection: "row",
+            }}
+          >
+            <Button mode="text" compact onPress={onSwitchToSubscription}>
+              Subscription
+            </Button>
+            <Button mode="text" compact onPress={onSwitchToSingle}>
+              Single
+            </Button>
+          </View>
         </View>
         <Dialog.ScrollArea style={{ paddingHorizontal: 0 }}>
           <ScrollView>

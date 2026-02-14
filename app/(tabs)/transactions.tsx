@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useTransactions } from "../../hooks/useTransactions";
 import AddTransaction from "../../components/AddTransaction";
 import AddBulkTransaction from "@/components/addBulkTransaction";
+import AddSubscription from "@/components/addSubscription";
 import { Ionicons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
 import { useState } from "react";
@@ -39,6 +40,8 @@ export default function transactions() {
   const [category, setCategory] = useState<string>("");
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [bulkModalVisible, setBulkModalVisible] = useState<boolean>(false);
+  const [subscriptionModalVisible, setSubscriptionModalVisible] =
+    useState<boolean>(false);
   const {
     transactions,
     isLoading: loading,
@@ -191,6 +194,10 @@ export default function transactions() {
             setModalVisible(false);
             setBulkModalVisible(true);
           }}
+          onSwitchToSubscription={() => {
+            setModalVisible(false);
+            setSubscriptionModalVisible(true);
+          }}
         />
       )}
       {bulkModalVisible && (
@@ -203,6 +210,27 @@ export default function transactions() {
           onSwitchToSingle={() => {
             setBulkModalVisible(false);
             setModalVisible(true);
+          }}
+          onSwitchToSubscription={() => {
+            setBulkModalVisible(false);
+            setSubscriptionModalVisible(true);
+          }}
+        />
+      )}
+      {subscriptionModalVisible && (
+        <AddSubscription
+          visible={subscriptionModalVisible}
+          onClose={() => setSubscriptionModalVisible(false)}
+          onSuccess={() => {
+            setSubscriptionModalVisible(false);
+          }}
+          onSwitchToTransaction={() => {
+            setSubscriptionModalVisible(false);
+            setModalVisible(true);
+          }}
+          onSwitchToBulk={() => {
+            setSubscriptionModalVisible(false);
+            setBulkModalVisible(true);
           }}
         />
       )}
