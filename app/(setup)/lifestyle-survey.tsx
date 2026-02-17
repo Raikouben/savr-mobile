@@ -2,6 +2,7 @@ import { View, TouchableOpacity, ScrollView } from "react-native";
 import { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
 import { useSurveyQuery } from "@/hooks/queries/surveyQuery";
+import { KeyboardAvoidingView } from "react-native";
 import {
   Text,
   TextInput,
@@ -129,6 +130,7 @@ export default function LifestyleSurvey() {
   const router = useRouter();
   const { backgroundColor } = useAppTheme();
   const [answers, setAnswers] = useState<{ [key: string]: number }>({});
+  const [context, setContext] = useState<string>("");
   const {
     surveyAnswers,
     isLoading,
@@ -141,7 +143,8 @@ export default function LifestyleSurvey() {
 
   useEffect(() => {
     if (surveyAnswers) {
-      setAnswers(surveyAnswers);
+      setAnswers(surveyAnswers.answers || surveyAnswers);
+      setContext(surveyAnswers.context || "");
       setHasExistingAnswers(true);
     }
   }, [surveyAnswers]);
@@ -162,13 +165,15 @@ export default function LifestyleSurvey() {
 
   const handleSubmit = async () => {
     try {
+      const data = { answers, context };
       if (hasExistingAnswers) {
-        await updateSurveyAnswers(answers);
+        await updateSurveyAnswers(data);
       } else {
-        await submitSurveyAnswers(answers);
+        await submitSurveyAnswers(data);
       }
       router.replace("/(setup)/budget-selection");
       setAnswers({});
+      setContext("");
     } catch (error) {
       console.error("Error submitting survey:", error);
     }
@@ -179,14 +184,19 @@ export default function LifestyleSurvey() {
   );
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: backgroundColor }}
+      behavior="padding"
+      keyboardVerticalOffset={60}
+    >
       <ScrollView
         contentContainerStyle={{
+          flexGrow: 1,
           padding: 20,
           gap: 20,
-          backgroundColor: backgroundColor,
-          flexGrow: 1,
+          justifyContent: "center",
         }}
+        keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
         <View>
@@ -219,6 +229,21 @@ export default function LifestyleSurvey() {
               </Card.Content>
             </Card>
           ))}
+          <Card style={{ marginBottom: 16 }}>
+            <Card.Title title="Additional Context (Recommended)" />
+            <Card.Content>
+              <TextInput
+                mode="outlined"
+                label="Any specific financial concerns or goals"
+                value={context}
+                placeholder="E.g., saving for a trip, managing debt, planning for family expenses, etc."
+                onChangeText={(text) => setContext(text)}
+                multiline
+                numberOfLines={5}
+                style={{ minHeight: 100 }}
+              />
+            </Card.Content>
+          </Card>
 
           <TouchableOpacity
             onPress={handleSubmit}
@@ -236,6 +261,6 @@ export default function LifestyleSurvey() {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </View>
+    </KeyboardAvoidingView>
   );
 }

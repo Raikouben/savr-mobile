@@ -7,7 +7,10 @@ export const useRecommender = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const postLifestyleAnswers = async (answers: { [key: string]: number }) => {
+  const postLifestyleAnswers = async (data: {
+    answers: { [key: string]: number };
+    context?: string;
+  }) => {
     setLoading(true);
     setError(null);
     try {
@@ -18,14 +21,14 @@ export const useRecommender = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ answers }),
+        body: JSON.stringify(data),
       });
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(errorText);
       }
-      const data = await response.json();
-      return data;
+      const responseData = await response.json();
+      return responseData;
     } catch (err: any) {
       setError(err.message);
       throw err;
@@ -59,7 +62,10 @@ export const useRecommender = () => {
     }
   };
 
-  const updateLifestyleAnswers = async (answers: { [key: string]: number }) => {
+  const updateLifestyleAnswers = async (data: {
+    answers: { [key: string]: number };
+    context?: string;
+  }) => {
     setLoading(true);
     setError(null);
     try {
@@ -70,14 +76,14 @@ export const useRecommender = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ answers }),
+        body: JSON.stringify(data),
       });
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(errorText);
       }
-      const data = await response.json();
-      return data;
+      const responseData = await response.json();
+      return responseData;
     } catch (err: any) {
       setError(err.message);
       throw err;
@@ -117,7 +123,7 @@ export const useRecommender = () => {
   const getRecommenderExplanation = async (
     income: number,
     budget: { [key: string]: number },
-    meta: { [key: string]: any }
+    meta: { [key: string]: any },
   ) => {
     setLoading(true);
     setError(null);
