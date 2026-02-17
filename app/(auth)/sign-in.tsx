@@ -110,7 +110,7 @@ export default function Page() {
           </Card.Content>
           <Card.Actions>
             <Button mode="contained" onPress={onVerifyPress}>
-              <Text>Verify</Text>
+              Verify
             </Button>
             <Button onPress={() => setPendingVerification(false)}>
               Cancel
