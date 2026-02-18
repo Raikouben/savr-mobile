@@ -1,40 +1,68 @@
-import { View, ScrollView, Dimensions } from "react-native";
+import { View, ScrollView, Dimensions, StyleSheet } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { useReportQuery } from "@/hooks/queries/reportQuery";
 import {
   ActivityIndicator,
   Text,
   Button,
-  Card,
   Portal,
   Modal,
   Divider,
+  ProgressBar,
 } from "react-native-paper";
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 import { useAppTheme } from "@/themes/useAppTheme";
 import PagerView from "react-native-pager-view";
 
-//puit this in the constants file later
 export interface ReportInsights {
-  overallFinancialHealth: {
-    summary: string;
-    savingsRatePercent: number;
+  howAmIGoing: {
+    title: string;
+    overallAssessment: string;
+    wins: Array<{
+      category: string;
+      achievement: string;
+      savingsAmount: number;
+      savingsPercentage: number;
+      strengthDemonstrated: string;
+    }>;
+    growthOpportunities: Array<{
+      category: string;
+      observation: string;
+      potentialImpact: string;
+      strengthToLeverage: string;
+    }>;
   };
-  top3Wins: Array<{
+  whereToNext: {
+    title: string;
+    intro: string;
+    actions: Array<{
+      action: string;
+      category: string;
+      priority: string;
+      expectedImpact: string;
+      strengthToLeverage: string;
+    }>;
+    motivationalClose: string;
+  };
+  whereAmIGoing: {
+    title: string;
+    summary: string;
+    keyGoals: string[];
+    overallProgress: string;
+  };
+  budgetAdjustmentRecommendations: Array<{
     category: string;
-    description: string;
-    amountUnderBudget: number;
-    percentUnderBudget: number;
+    recommendation: string;
   }>;
-  top3AreasForImprovement: Array<{
-    category: string;
-    issue: string;
-    recommendedAction: string;
-    potentialMonthlySavings: number;
-  }>;
-  actionPlan: string[];
-  motivationalClose: string;
 }
+
+const TOTAL_PAGES = 4;
+const PAGE_LABELS = [
+  "How am I doing?",
+  "Where to next?",
+  "Where am I going?",
+  "Budget",
+];
 
 export default function ReportModal({
   visible,
@@ -50,12 +78,28 @@ export default function ReportModal({
   const insights: ReportInsights | null = report?.insights;
   const period = report?.period;
   const income = report?.income;
-  const { budget, isLoading: budgetLoading } = useBudgetQuery();
-  const { backgroundColor, textColor, textOnPrimary } = useAppTheme();
+  const {
+    backgroundColor,
+    surfaceColor,
+    surfaceVariant,
+    primaryColor,
+    secondaryColor,
+    accentColor,
+    successColor,
+    warningColor,
+    errorColor,
+    infoColor,
+    textColor,
+    textSecondaryColor,
+    textOnPrimary,
+    textOnSecondary,
+    backdrop,
+  } = useAppTheme();
+
   const [currentPage, setCurrentPage] = useState(0);
-  const totalPages = 5;
   const pagerRef = useRef(null);
   const screenHeight = Dimensions.get("window").height;
+
   useEffect(() => {
     if (visible && report?.id && !report.viewed) {
       markReportAsViewed(report.id);
@@ -68,248 +112,353 @@ export default function ReportModal({
         visible={visible}
         onDismiss={onClose}
         contentContainerStyle={{
-          padding: 10,
-          margin: 20,
+          marginHorizontal: 16,
+          borderRadius: 16,
+          overflow: "hidden",
+          paddingBottom: 8,
           backgroundColor: backgroundColor,
-          borderRadius: 12,
         }}
       >
         {isLoading ? (
-          <View style={{ padding: 40 }}>
-            <ActivityIndicator animating={true} size="large" />
+          <View>
+            <ActivityIndicator animating size="large" />
           </View>
         ) : error ? (
-          <View style={{ padding: 20 }}>
+          <View>
             <Text variant="titleMedium">Error loading report</Text>
-            <Button
-              onPress={() => refetch()}
-              mode="contained"
-              style={{ marginTop: 10 }}
-            >
+            <Button onPress={() => refetch()} mode="contained">
               Retry
             </Button>
           </View>
         ) : insights ? (
           <View>
-            <View>
-              <Text
-                variant="headlineMedium"
-                style={{ fontWeight: "bold", marginBottom: 4 }}
-              >
-                Report - {period}
+            {/* Header */}
+            <View style={styles.header}>
+              <Text variant="titleLarge" style={styles.headerTitle}>
+                {period}
               </Text>
-              <Text variant="bodySmall" style={{ marginBottom: 12 }}>
+              <Text variant="bodySmall" style={styles.mutedText}>
                 Income: £{income}
               </Text>
             </View>
+
+            {/* Current page label */}
+            <View style={styles.pageLabelRow}>
+              <Text variant="titleSmall" style={{ fontWeight: "700" }}>
+                {PAGE_LABELS[currentPage]}
+              </Text>
+              <Text variant="bodySmall" style={styles.mutedText}>
+                {currentPage + 1} / {TOTAL_PAGES}
+              </Text>
+            </View>
+
+            {/* PagerView */}
             <PagerView
               ref={pagerRef}
               initialPage={0}
               onPageSelected={(e) => setCurrentPage(e.nativeEvent.position)}
-              style={{ height: screenHeight * 0.3 }}
+              style={{ height: screenHeight * 0.48 }}
             >
+              {/* Page 1 — How am I going */}
               <View key="1" collapsable={false}>
-                <ScrollView showsVerticalScrollIndicator={false}>
-                  <Card>
-                    <Card.Content>
-                      <Text
-                        variant="titleMedium"
-                        style={{ fontWeight: "bold", marginBottom: 8 }}
-                      >
-                        Financial Health
-                      </Text>
-                      <Text variant="bodySmall" style={{ lineHeight: 20 }}>
-                        {insights.overallFinancialHealth.summary}
-                      </Text>
-                      <Text
-                        variant="bodySmall"
-                        style={{
-                          marginTop: 8,
-                          fontWeight: "bold",
-                          color: "green",
-                        }}
-                      >
-                        Savings Rate:{" "}
-                        {insights.overallFinancialHealth.savingsRatePercent}%
-                      </Text>
-                    </Card.Content>
-                  </Card>
-                </ScrollView>
-              </View>
-
-              {/* Wins */}
-              <View key="2" collapsable={false} style={{ flex: 1 }}>
                 <ScrollView
                   showsVerticalScrollIndicator={false}
-                  style={{ flex: 1 }}
-                  contentContainerStyle={{
-                    paddingBottom: 20,
-                  }}
+                  contentContainerStyle={styles.pageScroll}
                 >
-                  <Card style={{ marginBottom: 16 }}>
-                    <Card.Content>
-                      <Text
-                        variant="titleMedium"
-                        style={{ fontWeight: "bold", marginBottom: 12 }}
-                      >
-                        Top Wins
-                      </Text>
-                      {insights.top3Wins.map((win, index) => (
-                        <View key={index} style={{ marginBottom: 12 }}>
-                          <Text
-                            variant="titleSmall"
-                            style={{ fontWeight: "bold" }}
-                          >
+                  <Text variant="bodySmall" style={styles.cardBody}>
+                    {insights.howAmIGoing.overallAssessment}
+                  </Text>
+                  {insights.howAmIGoing.wins.length > 0 && (
+                    <Text variant="titleSmall" style={styles.headerTitle}>
+                      Wins
+                    </Text>
+                  )}
+                  {insights.howAmIGoing.wins.map((win, i) => (
+                    <View
+                      key={i}
+                      style={{
+                        borderRadius: 20,
+                        padding: 12,
+                        backgroundColor: surfaceVariant,
+                      }}
+                    >
+                      <View style={styles.rowBetween}>
+                        <View
+                          style={[
+                            styles.chip,
+                            { backgroundColor: "#24a2522f" },
+                          ]}
+                        >
+                          <Text style={[styles.chipText, { color: "#24a252" }]}>
                             {win.category}
                           </Text>
-                          <Text variant="bodySmall" style={{ lineHeight: 18 }}>
-                            {win.description}
-                          </Text>
-                          <Text
-                            variant="bodySmall"
-                            style={{ color: "green", marginTop: 4 }}
-                          >
-                            Saved £{win.amountUnderBudget.toFixed(2)} (
-                            {win.percentUnderBudget.toFixed(1)}%)
-                          </Text>
-                          {index < insights.top3Wins.length - 1 && (
-                            <Divider style={{ marginTop: 12 }} />
-                          )}
                         </View>
-                      ))}
-                    </Card.Content>
-                  </Card>
-                </ScrollView>
-              </View>
-
-              <View key="3" collapsable={false} style={{ flex: 1 }}>
-                <ScrollView
-                  showsVerticalScrollIndicator={false}
-                  style={{ flex: 1 }}
-                  contentContainerStyle={{
-                    paddingBottom: 20,
-                  }}
-                >
-                  <Card style={{ marginBottom: 16 }}>
-                    <Card.Content>
-                      <Text
-                        variant="titleMedium"
-                        style={{ fontWeight: "bold", marginBottom: 12 }}
-                      >
-                        Areas to Improve
-                      </Text>
-                      {insights.top3AreasForImprovement.map((area, index) => (
-                        <View key={index} style={{ marginBottom: 12 }}>
-                          <Text
-                            variant="titleSmall"
-                            style={{ fontWeight: "bold" }}
-                          >
-                            {area.category}
-                          </Text>
-                          <Text variant="bodySmall" style={{ lineHeight: 18 }}>
-                            {area.issue}
-                          </Text>
-                          <Text
-                            variant="bodySmall"
-                            style={{ lineHeight: 18, marginTop: 4 }}
-                          >
-                            {area.recommendedAction}
-                          </Text>
-                          <Text
-                            variant="bodySmall"
-                            style={{ color: "orange", marginTop: 4 }}
-                          >
-                            Could save £
-                            {area.potentialMonthlySavings.toFixed(0)}
-                            /month
-                          </Text>
-                          {index <
-                            insights.top3AreasForImprovement.length - 1 && (
-                            <Divider style={{ marginTop: 12 }} />
-                          )}
-                        </View>
-                      ))}
-                    </Card.Content>
-                  </Card>
-                </ScrollView>
-              </View>
-
-              <View key="4" collapsable={false} style={{ flex: 1 }}>
-                <ScrollView
-                  showsVerticalScrollIndicator={false}
-                  style={{ flex: 1 }}
-                  contentContainerStyle={{
-                    paddingBottom: 20,
-                  }}
-                >
-                  <Card style={{ marginBottom: 16 }}>
-                    <Card.Content>
-                      <Text
-                        variant="titleMedium"
-                        style={{ fontWeight: "bold", marginBottom: 12 }}
-                      >
-                        Action Plan
-                      </Text>
-                      {insights.actionPlan.map((action, index) => (
-                        <Text
-                          key={index}
-                          variant="bodySmall"
-                          style={{ lineHeight: 20, marginBottom: 8 }}
-                        >
-                          {index + 1}. {action}
+                        <Text style={[styles.amountText, { color: "#24a252" }]}>
+                          £{win.savingsAmount} saved
                         </Text>
-                      ))}
-                    </Card.Content>
-                  </Card>
+                      </View>
+                      <Text variant="bodySmall" style={styles.cardBody}>
+                        Achievement: {win.achievement}
+                      </Text>
+                      {/* <ProgressBar
+                        progress={Math.min(win.savingsPercentage / 100, 1)}
+                        color="#4ade80"
+                        style={styles.progressBar}
+                      /> */}
+                      {/* <Text variant="bodySmall" style={styles.mutedText}>
+                        {win.savingsPercentage}% under budget
+                      </Text> */}
+                      <Text variant="bodySmall" style={styles.cardBody}>
+                        Strength Demonstrated: {win.strengthDemonstrated}
+                      </Text>
+                    </View>
+                  ))}
+
+                  {insights.howAmIGoing.growthOpportunities.length > 0 && (
+                    <Text variant="titleSmall" style={styles.headerTitle}>
+                      Growth Opportunities
+                    </Text>
+                  )}
+
+                  {insights.howAmIGoing.growthOpportunities.map((opp, i) => (
+                    <View
+                      key={i}
+                      style={{
+                        borderRadius: 20,
+                        padding: 12,
+                        backgroundColor: surfaceVariant,
+                      }}
+                    >
+                      <View style={styles.rowBetween}>
+                        <View
+                          style={[
+                            styles.chip,
+                            { backgroundColor: "#bf901839" },
+                          ]}
+                        >
+                          <Text style={[styles.chipText, { color: "#bf9018" }]}>
+                            {opp.category}
+                          </Text>
+                        </View>
+                      </View>
+                      <Text variant="bodySmall" style={styles.cardBody}>
+                        Observation: {opp.observation}
+                      </Text>
+                      <Text variant="bodySmall" style={styles.cardBody}>
+                        Strength to Leverage: {opp.strengthToLeverage}
+                      </Text>
+                      <View
+                        style={{
+                          borderRadius: 8,
+                          padding: 10,
+                          borderLeftWidth: 3,
+                          borderLeftColor: secondaryColor,
+                          borderRightWidth: 3,
+                          borderRightColor: secondaryColor,
+                        }}
+                      >
+                        <Text variant="bodySmall" style={styles.hintText}>
+                          {opp.potentialImpact}
+                        </Text>
+                      </View>
+                    </View>
+                  ))}
                 </ScrollView>
               </View>
-              <View key="5" collapsable={false} style={{ flex: 1 }}>
+
+              {/* Page 2 — Where to next */}
+              <View key="2" collapsable={false}>
                 <ScrollView
                   showsVerticalScrollIndicator={false}
-                  style={{ flex: 1 }}
-                  contentContainerStyle={{
-                    paddingBottom: 20,
-                  }}
+                  contentContainerStyle={styles.pageScroll}
                 >
-                  <Card style={{ marginBottom: 16 }}>
-                    <Card.Content>
+                  <Text variant="bodySmall" style={styles.cardBody}>
+                    {insights.whereToNext.intro}
+                  </Text>
+
+                  {insights.whereToNext.actions.map((action, i) => (
+                    <View
+                      key={i}
+                      style={{
+                        borderRadius: 20,
+                        padding: 12,
+                        backgroundColor: surfaceVariant,
+                      }}
+                    >
+                      <View style={styles.rowBetween}>
+                        <View
+                          style={[
+                            styles.chip,
+                            { backgroundColor: "#162cd231" },
+                          ]}
+                        >
+                          <Text style={[styles.chipText, { color: "#818cf8" }]}>
+                            {action.category}
+                          </Text>
+                        </View>
+                        <View
+                          style={[
+                            styles.chip,
+                            { backgroundColor: "#f43f5e20" },
+                          ]}
+                        >
+                          <Text style={[styles.chipText, { color: "#f43f5e" }]}>
+                            {action.priority}
+                          </Text>
+                        </View>
+                      </View>
+                      <Text variant="bodySmall" style={styles.cardBody}>
+                        Impact: {action.expectedImpact}
+                      </Text>
                       <Text
                         variant="bodySmall"
-                        style={{ lineHeight: 20, textAlign: "center" }}
+                        style={[styles.cardBody, { fontWeight: "bold" }]}
                       >
-                        {insights.motivationalClose}
+                        Action: {action.action}
                       </Text>
-                    </Card.Content>
-                  </Card>
+                      <Text variant="bodySmall" style={styles.cardBody}>
+                        Impact: {action.expectedImpact}
+                      </Text>
+                      <View
+                        style={{
+                          borderRadius: 8,
+                          padding: 10,
+                          borderLeftWidth: 3,
+                          borderLeftColor: secondaryColor,
+                          borderRightWidth: 3,
+                          borderRightColor: secondaryColor,
+                        }}
+                      >
+                        <Text variant="bodySmall" style={styles.hintText}>
+                          {action.strengthToLeverage}
+                        </Text>
+                      </View>
+                    </View>
+                  ))}
+
+                  <View>
+                    <Text variant="bodySmall" style={styles.hintText}>
+                      {insights.whereToNext.motivationalClose}
+                    </Text>
+                  </View>
+                </ScrollView>
+              </View>
+
+              {/* Page 3 — Where am I going */}
+              <View key="3" collapsable={false}>
+                <ScrollView
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={styles.pageScroll}
+                >
+                  <Text variant="bodySmall" style={styles.cardBody}>
+                    {insights.whereAmIGoing.summary}
+                  </Text>
+
+                  <Text variant="titleSmall" style={styles.headerTitle}>
+                    Key Goals
+                  </Text>
+
+                  {insights.whereAmIGoing.keyGoals.map((goal, i) => (
+                    <View
+                      key={i}
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "flex-start",
+                        gap: 10,
+                      }}
+                    >
+                      <View
+                        style={{
+                          backgroundColor: textColor,
+                          width: 7,
+                          height: 7,
+                          borderRadius: 99,
+                          marginTop: 6,
+                          flexShrink: 0,
+                        }}
+                      />
+                      <Text variant="bodySmall" style={{ flex: 1 }}>
+                        {goal}
+                      </Text>
+                    </View>
+                  ))}
+
+                  <Divider style={styles.divider} />
+
+                  <Text variant="bodySmall" style={styles.mutedText}>
+                    {insights.whereAmIGoing.overallProgress}
+                  </Text>
+                </ScrollView>
+              </View>
+
+              {/* Page 4 — Budget Adjustments */}
+              <View key="4" collapsable={false}>
+                <ScrollView
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={styles.pageScroll}
+                >
+                  <Text variant="bodySmall" style={styles.cardBody}>
+                    Based on this month's spending, here are some suggested
+                    budget tweaks.
+                  </Text>
+
+                  {insights.budgetAdjustmentRecommendations.map((rec, i) => {
+                    const isIncrease = rec.recommendation
+                      .toLowerCase()
+                      .includes("increase");
+                    const accentColor = isIncrease ? "#bf9018" : "#24a252";
+                    return (
+                      <View
+                        key={i}
+                        style={{
+                          borderRadius: 20,
+                          padding: 12,
+                          backgroundColor: surfaceVariant,
+                        }}
+                      >
+                        <View style={styles.rowBetween}>
+                          <View
+                            style={[
+                              styles.chip,
+                              { backgroundColor: accentColor + "20" },
+                            ]}
+                          >
+                            <Text
+                              style={[styles.chipText, { color: accentColor }]}
+                            >
+                              {rec.category}
+                            </Text>
+                          </View>
+                          <Text
+                            style={[styles.amountText, { color: accentColor }]}
+                          >
+                            {isIncrease ? "↑ Increase" : "↓ Reduce"}
+                          </Text>
+                        </View>
+                        <Text variant="bodySmall" style={styles.cardBody}>
+                          {rec.recommendation}
+                        </Text>
+                      </View>
+                    );
+                  })}
                 </ScrollView>
               </View>
             </PagerView>
-            <View
-              style={{
-                paddingHorizontal: 20,
-                paddingBottom: 10,
-                paddingTop: 10,
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  paddingBottom: 10,
-                }}
-              >
-                {Array.from({ length: totalPages }).map((_, index) => (
+
+            {/* Dots + close */}
+            <View style={styles.footer}>
+              <View style={styles.dotsRow}>
+                {Array.from({ length: TOTAL_PAGES }).map((_, i) => (
                   <View
-                    key={index}
-                    style={{
-                      width: index === currentPage ? 10 : 8,
-                      height: index === currentPage ? 10 : 8,
-                      borderRadius: index === currentPage ? 5 : 4,
-                      backgroundColor:
-                        index === currentPage ? textColor : "#ccc",
-                      marginHorizontal: 4,
-                    }}
+                    key={i}
+                    style={[
+                      styles.dot,
+                      {
+                        width: i === currentPage ? 18 : 7,
+                        backgroundColor:
+                          i === currentPage ? textColor : textColor + "33",
+                      },
+                    ]}
                   />
                 ))}
               </View>
@@ -319,9 +468,9 @@ export default function ReportModal({
             </View>
           </View>
         ) : (
-          <View style={{ padding: 20 }}>
+          <View>
             <Text variant="bodyLarge">No insights available.</Text>
-            <Button onPress={onClose} mode="outlined" style={{ marginTop: 10 }}>
+            <Button onPress={onClose} mode="outlined">
               Close
             </Button>
           </View>
@@ -330,3 +479,53 @@ export default function ReportModal({
     </Portal>
   );
 }
+
+const styles = StyleSheet.create({
+  header: { paddingHorizontal: 16, paddingTop: 16, paddingBottom: 4 },
+  headerTitle: { fontWeight: "bold" },
+
+  pageLabelRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  pageScroll: { paddingHorizontal: 16, paddingBottom: 24, gap: 10 },
+  mutedText: { opacity: 0.55, lineHeight: 20 },
+
+  card: {
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#ffffff14",
+    backgroundColor: "#ffffff08",
+    padding: 12,
+    gap: 6,
+  },
+
+  rowBetween: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  chip: { paddingHorizontal: 10, paddingVertical: 3, borderRadius: 999 },
+  chipText: { fontSize: 12, fontWeight: "bold" },
+
+  amountText: { fontSize: 13, fontWeight: "bold" },
+
+  cardBody: { lineHeight: 18 },
+
+  hintText: { lineHeight: 18, opacity: 0.7 },
+
+  divider: { opacity: 0.15, marginVertical: 4 },
+
+  footer: { paddingHorizontal: 16, paddingTop: 6, paddingBottom: 12, gap: 10 },
+  dotsRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 6,
+  },
+  dot: { height: 7, borderRadius: 999 },
+});

@@ -12,6 +12,7 @@ import { useColorScheme } from "react-native";
 import { PaperProvider } from "react-native-paper";
 import { enGB, registerTranslation } from "react-native-paper-dates";
 import { ThemeProvider, useThemeContext } from "@/contexts/ThemeContext";
+import { useReportQuery } from "@/hooks/queries/reportQuery";
 registerTranslation("en-GB", enGB);
 
 const queryClient = new QueryClient();
@@ -23,13 +24,25 @@ function RootLayoutNav() {
   const { isLoading: userLoading } = useUserQuery();
   const { budget, isLoading: budgetLoading } = useBudgetQuery();
   const { isLoading: transactionsLoading } = useTransactionQuery();
+  const { isLoading: reportLoading } = useReportQuery();
 
   useEffect(() => {
-    if (isLoaded && !userLoading && !budgetLoading && !transactionsLoading) {
+    if (
+      isLoaded &&
+      !userLoading &&
+      !budgetLoading &&
+      !transactionsLoading &&
+      !reportLoading
+    ) {
       SplashScreen.hideAsync();
     }
-  }, [isLoaded, userLoading, budgetLoading, transactionsLoading]);
-
+  }, [
+    isLoaded,
+    userLoading,
+    budgetLoading,
+    transactionsLoading,
+    reportLoading,
+  ]);
 
   return (
     <SafeView>

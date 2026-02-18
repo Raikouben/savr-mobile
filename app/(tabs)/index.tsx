@@ -417,21 +417,21 @@ export default function Page() {
             />
           )}
           {/* {selectedReportId && ( */}
-          <ReportAccordion
+          {/* <ReportAccordion
             visible={reportAccordionVisible}
             onClose={() => {
               setReportAccordionVisible(false);
               setSelectedReportId(null);
             }}
             reportId={selectedReportId || 1}
-          />
+          /> */}
           <ReportModal
             visible={reportAccordionVisible}
             onClose={() => {
               setReportAccordionVisible(false);
               setSelectedReportId(null);
             }}
-            reportId={selectedReportId || 1}
+            reportId={selectedReportId || 79}
           />
           {/* )} */}
         </View>

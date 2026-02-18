@@ -20,5 +20,6 @@ export const useAppTheme = () => {
     textSecondaryColor: colors.onSurfaceVariant,
     textOnPrimary: colors.onPrimary,
     textOnSecondary: colors.onSecondary,
+    backdrop: colors.backdrop,
   };
 };
