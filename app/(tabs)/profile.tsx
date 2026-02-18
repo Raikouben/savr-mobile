@@ -30,6 +30,7 @@ import {
   Surface,
 } from "react-native-paper";
 import ThemeSelector from "@/components/ThemeSelector";
+import HistoricalReport from "@/components/HistoricalReport";
 
 export default function profile() {
   const { backgroundColor, textOnPrimary, textColor } = useAppTheme();
@@ -67,6 +68,7 @@ export default function profile() {
           Updates to lifestyle
         </Text>
       </Button>
+      <HistoricalReport />
       <ThemeSelector />
       {/* <TouchableOpacity
         onPress={async () => {
