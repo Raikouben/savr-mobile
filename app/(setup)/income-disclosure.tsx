@@ -71,7 +71,14 @@ export default function IncomeDisclosure() {
       }}
     >
       <Card style={{ width: "100%", maxWidth: 400 }}>
-        <Card.Title title="Income disclosure" />
+        <Card.Title
+          title="Income Disclosure"
+          titleStyle={{
+            fontSize: 18,
+            fontWeight: "bold",
+            textAlign: "center",
+          }}
+        />
         <TextInput
           mode="outlined"
           label="Monthly Income (£)"

@@ -128,7 +128,7 @@ const lifestyleQuestions = [
 
 export default function LifestyleSurvey() {
   const router = useRouter();
-  const { backgroundColor } = useAppTheme();
+  const { backgroundColor, textColor } = useAppTheme();
   const [answers, setAnswers] = useState<{ [key: string]: number }>({});
   const [context, setContext] = useState<string>("");
   const {
@@ -200,7 +200,9 @@ export default function LifestyleSurvey() {
         showsVerticalScrollIndicator={false}
       >
         <View>
-          <Text variant="headlineLarge">Lifestyle Survey</Text>
+          <Text style={{ fontSize: 32, fontWeight: "bold", color: textColor }}>
+            Lifestyle Survey
+          </Text>
           <Text variant="bodyMedium" style={{ marginBottom: 16 }}>
             Please answer the following questions to help us understand your
             lifestyle better.

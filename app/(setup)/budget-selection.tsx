@@ -85,6 +85,12 @@ export default function BudgetSelection() {
     }, 0);
   };
 
+  const calculateRemaining = () => {
+    const income = parseFloat(user?.income || "0");
+    const total = calculateTotal();
+    return income - total;
+  };
+
   const handleAcceptBudget = async () => {
     try {
       const now = new Date();
@@ -127,7 +133,7 @@ export default function BudgetSelection() {
         }}
       >
         <ActivityIndicator size="large" />
-        <Text style={{ marginTop: 16, color: "white" }}>
+        <Text style={{ marginTop: 16, color: textColor }}>
           Loading your personalized budget...
         </Text>
       </View>
@@ -150,6 +156,11 @@ export default function BudgetSelection() {
         <Card>
           <Card.Title
             title={isEditing ? "Edit Budget" : "Budget Overview"}
+            titleStyle={{
+              fontSize: 18,
+              fontWeight: "bold",
+              textAlign: "center",
+            }}
             right={(props) => (
               <IconButton
                 {...props}
@@ -159,14 +170,24 @@ export default function BudgetSelection() {
             )}
           />
           <Card.Content>
-            <Text variant="titleMedium" style={{ marginBottom: 10 }}>
-              Total: £{calculateTotal().toFixed(2)}
-            </Text>
             {user?.income && (
               <Text variant="titleMedium" style={{ marginBottom: 10 }}>
                 Income: £{parseFloat(user.income)}
               </Text>
             )}
+            <Text variant="titleMedium" style={{ marginBottom: 10 }}>
+              Total Allocated: £{calculateTotal().toFixed(2)}
+            </Text>
+            <Text
+              variant="titleMedium"
+              style={{
+                marginBottom: 10,
+                color: calculateRemaining() < 0 ? "#ff6b6b" : "#51cf66",
+                fontWeight: "bold",
+              }}
+            >
+              Remaining: £{calculateRemaining().toFixed(2)}
+            </Text>
 
             {categories.map((category) => (
               <View key={category} style={{ marginBottom: 10 }}>
@@ -216,7 +237,9 @@ export default function BudgetSelection() {
               mode="outlined"
               onPress={() => setViewExplanation(!viewExplanation)}
             >
-              <Text style={{ color: textColor, fontWeight: "bold" }}>View Explanation</Text>
+              <Text style={{ color: textColor, fontWeight: "bold" }}>
+                View Explanation
+              </Text>
             </Button>
           </Card.Actions>
         </Card>
@@ -231,7 +254,9 @@ export default function BudgetSelection() {
               mode="contained"
               onPress={() => setViewExplanation(!viewExplanation)}
             >
-              <Text style={{ color: textOnPrimary, fontWeight: "bold" }}>Back to Budget</Text>
+              <Text style={{ color: textOnPrimary, fontWeight: "bold" }}>
+                Back to Budget
+              </Text>
             </Button>
           </Card.Actions>
         </Card>
