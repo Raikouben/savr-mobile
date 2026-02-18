@@ -61,28 +61,19 @@ export default function BudgetDisplay() {
   const handleSubmit = async () => {
     if (!budget) return;
 
+    const categoryValues = Object.fromEntries(
+      categories.map((cat) => [cat, parseFloat(budgetForm[cat] || "0")]),
+    ) as Record<(typeof categories)[number], number>;
+
     const data = {
       start_date: budget.start_date,
       end_date: budget.end_date,
-      housing: budget.housing,
-      utilities: budget.utilities,
-      transportation: budget.transportation,
-      groceries: budget.groceries,
-      eating_out: budget.eating_out,
-      shopping: budget.shopping,
-      health: budget.health,
-      entertainment: budget.entertainment,
-      savings: budget.savings,
-      debt: budget.debt,
-      miscellaneous: budget.miscellaneous,
-      total_budget: budget.total_budget,
+      ...categoryValues,
+      total_budget: categories.reduce(
+        (sum, cat) => sum + categoryValues[cat],
+        0,
+      ),
     };
-
-    categories.forEach((cat) => {
-      const value = parseFloat(budgetForm[cat] || "0");
-      data[cat] = value;
-      data.total_budget += value;
-    });
 
     await updateBudget(data);
     setEditable(false);

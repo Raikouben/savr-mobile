@@ -146,7 +146,7 @@ export default function LifestyleSurvey({}: LifestyleSurveyProps) {
 
   const handleSubmit = async () => {
     try {
-      await submitSurveyAnswers(answers);
+      await submitSurveyAnswers({ answers });
       router.replace("/(tabs)");
       setCurrentIndex(0);
       setAnswers({});
