@@ -21,6 +21,7 @@ import {
   Surface,
 } from "react-native-paper";
 import { useAppTheme } from "@/themes/useAppTheme";
+import { useUserQuery } from "@/hooks/queries/authQuery";
 const categories = [
   "housing",
   "utilities",
@@ -40,6 +41,7 @@ export default function BudgetDisplay() {
   const [editable, setEditable] = useState(false);
   const [budgetForm, setBudgetForm] = useState<any>({});
   const { surfaceColor, textOnPrimary, surfaceVariant } = useAppTheme();
+  const { user } = useUserQuery();
   useEffect(() => {
     if (editable && budget) {
       const form: any = {};
@@ -86,6 +88,12 @@ export default function BudgetDisplay() {
     setEditable(false);
   };
 
+  const calculateRemaining = () => {
+    const income = parseFloat(user?.income || "0");
+    const total = calculateTotal();
+    return income - total;
+  };
+
   if (isLoading || !budget) return <Text>Loading...</Text>;
 
   return (
@@ -99,12 +107,26 @@ export default function BudgetDisplay() {
             onPress={() => setEditable(!editable)}
           />
         )}
+        titleStyle={{
+          fontSize: 18,
+          fontWeight: "bold",
+        }}
       />
 
       {editable ? (
         <Card.Content>
-          <Text variant="headlineSmall" style={{ marginBottom: 10 }}>
-            Total: £{calculateTotal().toFixed(2)}
+          <Text variant="titleMedium" style={{ marginBottom: 10 }}>
+            Total Allocated: £{calculateTotal().toFixed(2)}
+          </Text>
+          <Text
+            variant="titleMedium"
+            style={{
+              marginBottom: 10,
+              color: calculateRemaining() < 0 ? "#ff6b6b" : "#51cf66",
+              fontWeight: "bold",
+            }}
+          >
+            Remaining: £{calculateRemaining().toFixed(2)}
           </Text>
           {categories.map((category) => (
             <View key={category} style={{ marginBottom: 10 }}>

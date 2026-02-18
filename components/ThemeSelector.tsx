@@ -3,6 +3,7 @@ import { View, TouchableOpacity, StyleSheet } from "react-native";
 import React from "react";
 import { Icon, Text, TouchableRipple } from "react-native-paper";
 import themes from "@/themes/theme";
+import { Card } from "react-native-paper";
 import { useThemeContext } from "@/contexts/ThemeContext";
 
 const themeList = [
@@ -10,37 +11,29 @@ const themeList = [
   { name: "Velvet", key: "velvetTheme" as const, theme: themes.velvetTheme },
   { name: "Coffee", key: "coffeeTheme" as const, theme: themes.coffeeTheme },
   { name: "Luxury", key: "luxuryTheme" as const, theme: themes.luxuryTheme },
-  { name: "Light", key: "lightTheme" as const, theme: themes.lightTheme },
-  {
-    name: "Valentine",
-    key: "valentineTheme" as const,
-    theme: themes.valentineTheme,
-  },
-  { name: "Dark", key: "darkTheme" as const, theme: themes.darkTheme },
 ];
 
 export default function ThemeSelector() {
   const { backgroundColor, textColor, surfaceColor } = useAppTheme();
   const { themeName, setTheme } = useThemeContext();
 
-  const handleThemeSelect = async (themeKey: (typeof themeList)[number]["key"]) => {
+  const handleThemeSelect = async (
+    themeKey: (typeof themeList)[number]["key"],
+  ) => {
     await setTheme(themeKey);
     console.log("Selected theme:", themeKey);
   };
 
   return (
-    <View
-      style={{
-        backgroundColor: surfaceColor,
-        padding: 20,
-      }}
-    >
-      <Text
-        variant="titleMedium"
-        style={{ color: textColor, marginBottom: 16 }}
-      >
-        Select Theme
-      </Text>
+    <Card style={{ padding: 16, overflow: "hidden" }}>
+      <Card.Title
+        title="Select your preferred theme"
+        titleStyle={{
+          fontSize: 18,
+          fontWeight: "bold",
+          textAlign: "center",
+        }}
+      />
       <View style={styles.themeContainer}>
         {themeList.map((themeItem) => (
           <TouchableRipple
@@ -86,7 +79,7 @@ export default function ThemeSelector() {
           </TouchableRipple>
         ))}
       </View>
-    </View>
+    </Card>
   );
 }
 

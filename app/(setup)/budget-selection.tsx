@@ -159,7 +159,6 @@ export default function BudgetSelection() {
             titleStyle={{
               fontSize: 18,
               fontWeight: "bold",
-              textAlign: "center",
             }}
             right={(props) => (
               <IconButton

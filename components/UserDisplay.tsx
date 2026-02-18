@@ -62,6 +62,10 @@ export default function UserDisplay() {
             onPress={() => setEditable(!editable)}
           />
         )}
+        titleStyle={{
+          fontSize: 18,
+          fontWeight: "bold",
+        }}
       />
       <Card.Content style={{ gap: 16 }}>
         {editable ? (

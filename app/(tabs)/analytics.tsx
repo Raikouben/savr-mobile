@@ -501,7 +501,14 @@ export default function analytics() {
 
       <View style={{ gap: 20 }}>
         <Card style={{ padding: 16, overflow: "hidden" }}>
-          <Card.Title title="Spending Over Time" />
+          <Card.Title
+            title="Spending Over Time"
+            titleStyle={{
+              fontSize: 18,
+              fontWeight: "bold",
+              textAlign: "center",
+            }}
+          />
           <Card.Content>
             <View style={{ overflow: "hidden" }}>
               {chartData.some((item) => item.value > 0) ? (
@@ -810,7 +817,14 @@ export default function analytics() {
       {/* FIX SCREEN REPOSITION BECUASE OF PIE CAHRT*/}
       <View style={{ gap: 20 }}>
         <Card style={{ padding: 16, overflow: "hidden" }}>
-          <Card.Title title="Proportion of Spending by Category" />
+          <Card.Title
+            title="Proportion of Spending"
+            titleStyle={{
+              fontSize: 18,
+              fontWeight: "bold",
+              textAlign: "center",
+            }}
+          />
           <Card.Content style={{ alignItems: "center" }}>
             <View style={{ overflow: "hidden", alignItems: "center" }}>
               {categoryData.length > 0 ? (
@@ -879,10 +893,17 @@ export default function analytics() {
           </View>
         </Card>
         <Card style={{ padding: 16, overflow: "hidden" }}>
-          <Card.Title title="Spending by Category" />
-          <Card.Content>
+          <Card.Title
+            title="Spending by Category"
+            titleStyle={{
+              fontSize: 18,
+              fontWeight: "bold",
+              textAlign: "center",
+            }}
+          />
+          <Card.Content style={{ alignItems: "center" }}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <View style={{ overflow: "hidden" }}>
+              <View style={{ overflow: "hidden", alignItems: "center" }}>
                 {categoryData.length > 0 ? (
                   <BarChart
                     data={barChartData}

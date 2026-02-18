@@ -32,7 +32,7 @@ import {
 import ThemeSelector from "@/components/ThemeSelector";
 
 export default function profile() {
-  const { backgroundColor } = useAppTheme();
+  const { backgroundColor, textOnPrimary, textColor } = useAppTheme();
   const { user, isLoading: userLoading, updateUser } = useUserQuery();
   const { budget, isLoading: budgetLoading } = useBudgetQuery();
   const { getBudgetRecommendation } = useRecommender();
@@ -60,10 +60,12 @@ export default function profile() {
       <UserDisplay />
       <BudgetDisplay />
       <Button
-        mode="elevated"
+        mode="contained"
         onPress={() => router.push("../(setup)/income-disclosure?edit=true")}
       >
-        <Text>Updates to lifestyle</Text>
+        <Text style={{ color: textOnPrimary, fontWeight: "bold" }}>
+          Updates to lifestyle
+        </Text>
       </Button>
       <ThemeSelector />
       {/* <TouchableOpacity
