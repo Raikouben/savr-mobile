@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import DateSelector from "./DateSelector";
 import CategoryPicker from "./CategoryPicker";
 import { useSubscriptionQuery } from "@/hooks/queries/subscriptionQuery";
+import MerchantSearch from "./MerchantSearch";
+import { merchantCategoryMap } from "@/constants/config";
 import {
   Text,
   TextInput,
@@ -98,13 +100,23 @@ export default function AddSubscription({
         </View>
         <Dialog.Content>
           <ScrollView showsVerticalScrollIndicator={false}>
+            <MerchantSearch
+              onSelect={(merchant) => {
+                if (!name) setName(merchant.name);
+                setCategory(
+                  merchantCategoryMap[
+                    merchant.category as keyof typeof merchantCategoryMap
+                  ],
+                );
+              }}
+            />
             <TextInput
               mode="outlined"
               label="Subscription Name"
               placeholder="e.g., Netflix, Spotify"
               value={name}
               onChangeText={setName}
-              style={{ marginBottom: 8 }}
+              // style={{ marginBottom: 8 }}
             />
 
             <TextInput

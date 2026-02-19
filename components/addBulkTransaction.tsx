@@ -5,6 +5,8 @@ import CategoryPicker from "./CategoryPicker";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
+import MerchantSearch from "./MerchantSearch";
+import { merchantCategoryMap } from "@/constants/config";
 import { KeyboardAvoidingView } from "react-native";
 import {
   ActivityIndicator,
@@ -148,6 +150,21 @@ export default function addBulkTransaction({
                             date: newDate || new Date(),
                           })
                         }
+                      />
+                    </View>
+
+                    <View style={{ marginBottom: 8 }}>
+                      <MerchantSearch
+                        onSelect={(merchant) => {
+                          updateDraftTransaction(index, {
+                            ...tx,
+                            description: tx.description || merchant.name,
+                            category:
+                              merchantCategoryMap[
+                                merchant.category as keyof typeof merchantCategoryMap
+                              ],
+                          });
+                        }}
                       />
                     </View>
 
