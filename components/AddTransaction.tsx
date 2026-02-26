@@ -19,6 +19,7 @@ import {
   Portal,
   Modal,
   Dialog,
+  IconButton,
 } from "react-native-paper";
 import { useAppTheme } from "@/themes/useAppTheme";
 export default function AddTransaction({
@@ -89,21 +90,26 @@ export default function AddTransaction({
         <View
           style={{
             paddingHorizontal: 24,
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 8,
           }}
         >
-          <Dialog.Title>Add Transaction</Dialog.Title>
-          <View
+          <Text
             style={{
-              flexDirection: "row",
+              fontSize: 18,
+              fontWeight: "bold",
+              flex: 1,
             }}
           >
-            <Button mode="text" compact onPress={onSwitchToSubscription}>
-              Subscription
-            </Button>
-            <Button mode="text" compact onPress={onSwitchToBulk}>
-              Bulk
-            </Button>
-          </View>
+            Add Transactions
+          </Text>
+          <IconButton icon="sync" size={20} onPress={onSwitchToSubscription} />
+          <IconButton
+            icon="format-list-bulleted"
+            size={20}
+            onPress={onSwitchToBulk}
+          />
         </View>
         <Dialog.Content>
           <DateSelector date={date} onDateChange={setDate} mode="input" />
@@ -138,21 +144,17 @@ export default function AddTransaction({
             selectedCategory={category}
             onCategoryChange={setCategory}
           />
-          <Dialog.Actions style={{ marginTop: 10 }}>
-            <Button
-              onPress={handleSubmit}
-              mode="contained"
-              disabled={submitting}
-            >
-              <Text style={{ color: textOnPrimary, fontWeight: "bold" }}>
-                Add Transaction
-              </Text>
-            </Button>
-            <Button mode="contained-tonal" onPress={onClose}>
-              Cancel
-            </Button>
-          </Dialog.Actions>
         </Dialog.Content>
+        <Dialog.Actions style={{ marginTop: 10 }}>
+          <Button onPress={handleSubmit} mode="contained" disabled={submitting}>
+            <Text style={{ color: textOnPrimary, fontWeight: "bold" }}>
+              Add Transaction
+            </Text>
+          </Button>
+          <Button mode="contained-tonal" onPress={onClose}>
+            Cancel
+          </Button>
+        </Dialog.Actions>
       </Dialog>
     </Portal>
   );

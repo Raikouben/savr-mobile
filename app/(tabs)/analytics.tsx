@@ -41,7 +41,8 @@ import { tr } from "react-native-paper-dates";
 import { getDateRange } from "@/utils/calculation";
 import { useAppTheme } from "@/themes/useAppTheme";
 export default function analytics() {
-  const { backgroundColor, primaryColor, secondaryColor } = useAppTheme();
+  const { backgroundColor, primaryColor, secondaryColor, surfaceVariant } =
+    useAppTheme();
   const [error, setError] = useState<string | null>(null);
   const [timeRange, setTimeRange] = useState<"week" | "month" | "year">("week");
   const [category, setCategory] = useState<string>("");
@@ -645,174 +646,109 @@ export default function analytics() {
             selectedCategory={category}
             onCategoryChange={setCategory}
           />
-        </Card>
-        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
-          <Card style={{ flex: 1, minWidth: "45%", padding: 12 }}>
-            <Text variant="labelMedium" style={{ opacity: 0.7 }}>
-              Total Spent
-            </Text>
-            <Text variant="headlineSmall">
-              £{statistics.totalSpent.toFixed(2)}
-            </Text>
-            {comparisonMode && compareStatistics && (
-              <View>
-                <Text
-                  variant="bodySmall"
-                  style={{
-                    color:
-                      compareStatistics.totalSpent > statistics.totalSpent
-                        ? "#4CAF50"
-                        : "#F44336",
-                  }}
-                >
-                  {compareStatistics.totalSpent > statistics.totalSpent
-                    ? "↓"
-                    : "↑"}
-                  {Math.abs(
-                    ((statistics.totalSpent - compareStatistics.totalSpent) /
-                      compareStatistics.totalSpent) *
-                      100,
-                  ).toFixed(1)}
-                  % vs prev
+          <View
+            style={{
+              padding: 8,
+              backgroundColor: surfaceVariant,
+              borderRadius: 4,
+              marginTop: 12,
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-around",
+                alignItems: "flex-start",
+              }}
+            >
+              <View style={{ alignItems: "center", flex: 1 }}>
+                <Text variant="labelSmall" style={{ opacity: 0.7 }}>
+                  Total Spent
                 </Text>
-                <Text
-                  variant="bodySmall"
-                  style={{
-                    color:
-                      compareStatistics.totalSpent > statistics.totalSpent
-                        ? "#4CAF50"
-                        : "#F44336",
-                  }}
-                >
-                  {compareStatistics.totalSpent > statistics.totalSpent
-                    ? "↓"
-                    : "↑"}
-                  £
-                  {Math.abs(
-                    statistics.totalSpent - compareStatistics.totalSpent,
-                  ).toFixed(2)}{" "}
-                  vs prev
+                <Text variant="titleMedium">
+                  £{statistics.totalSpent.toFixed(2)}
                 </Text>
-              </View>
-            )}
-          </Card>
-          {/* I THINK COMBINE TRANSACTION AND AVERAGE TO MATCH TOP CATEGORY SIZE*/}
-          <Card style={{ flex: 1, minWidth: "45%", padding: 12 }}>
-            <Text variant="labelMedium" style={{ opacity: 0.7 }}>
-              Transactions
-            </Text>
-            <Text variant="headlineSmall">{statistics.transactionCount}</Text>
-            {comparisonMode && compareStatistics && (
-              <Text
-                variant="bodySmall"
-                style={{
-                  color:
-                    statistics.transactionCount >
-                    compareStatistics.transactionCount
-                      ? "#F44336"
-                      : "#4CAF50",
-                }}
-              >
-                {statistics.transactionCount >
-                compareStatistics.transactionCount
-                  ? "↑"
-                  : "↓"}
-                {Math.abs(
-                  statistics.transactionCount -
-                    compareStatistics.transactionCount,
-                )}{" "}
-                vs prev
-              </Text>
-            )}
-          </Card>
-
-          <Card style={{ flex: 1, minWidth: "45%", padding: 12 }}>
-            <Text variant="labelMedium" style={{ opacity: 0.7 }}>
-              Average
-            </Text>
-            <Text variant="headlineSmall">
-              £{statistics.averageTransaction.toFixed(2)}
-            </Text>
-            {comparisonMode && compareStatistics && (
-              <View>
-                <Text
-                  variant="bodySmall"
-                  style={{
-                    color:
-                      compareStatistics.averageTransaction >
-                      statistics.averageTransaction
-                        ? "#4CAF50"
-                        : "#F44336",
-                  }}
-                >
-                  {compareStatistics.averageTransaction >
-                  statistics.averageTransaction
-                    ? "↓"
-                    : "↑"}
-                  {Math.abs(
-                    ((statistics.averageTransaction -
-                      compareStatistics.averageTransaction) /
-                      compareStatistics.averageTransaction) *
-                      100,
-                  ).toFixed(1)}
-                  % vs prev
-                </Text>
-                <Text
-                  variant="bodySmall"
-                  style={{
-                    color:
-                      compareStatistics.averageTransaction >
-                      statistics.averageTransaction
-                        ? "#4CAF50"
-                        : "#F44336",
-                  }}
-                >
-                  {compareStatistics.averageTransaction >
-                  statistics.averageTransaction
-                    ? "↓"
-                    : "↑"}
-                  £
-                  {Math.abs(
-                    statistics.averageTransaction -
-                      compareStatistics.averageTransaction,
-                  ).toFixed(2)}{" "}
-                  vs prev
-                </Text>
-              </View>
-            )}
-          </Card>
-
-          {statistics.topCategory && (
-            <Card style={{ flex: 1, minWidth: "45%", padding: 12 }}>
-              <Text variant="labelMedium" style={{ opacity: 0.7 }}>
-                Top Category
-              </Text>
-              <Text variant="titleMedium">
-                {getCategoryDisplayName(statistics.topCategory.category)}
-              </Text>
-              <Text variant="bodyMedium">
-                £{statistics.topCategory.amount.toFixed(2)}
-              </Text>
-              {comparisonMode &&
-                compareStatistics &&
-                compareStatistics.topCategory && (
-                  <View>
-                    <Text variant="labelMedium" style={{ opacity: 0.7 }}>
-                      Prev Top Category
+                {comparisonMode && compareStatistics && (
+                  <View style={{ alignItems: "center" }}>
+                    <Text
+                      variant="bodySmall"
+                      style={{
+                        color:
+                          compareStatistics.totalSpent > statistics.totalSpent
+                            ? "#4CAF50"
+                            : "#F44336",
+                      }}
+                    >
+                      {compareStatistics.totalSpent > statistics.totalSpent
+                        ? "↓"
+                        : "↑"}
+                      {Math.abs(
+                        ((statistics.totalSpent -
+                          compareStatistics.totalSpent) /
+                          compareStatistics.totalSpent) *
+                          100,
+                      ).toFixed(1)}
+                      % vs prev
                     </Text>
-                    <Text variant="bodySmall">
-                      {getCategoryDisplayName(
-                        compareStatistics.topCategory.category,
-                      )}
-                    </Text>
-                    <Text>
-                      £{compareStatistics.topCategory.amount.toFixed(2)}
+                    <Text
+                      variant="bodySmall"
+                      style={{
+                        color:
+                          compareStatistics.totalSpent > statistics.totalSpent
+                            ? "#4CAF50"
+                            : "#F44336",
+                      }}
+                    >
+                      {compareStatistics.totalSpent > statistics.totalSpent
+                        ? "↓"
+                        : "↑"}
+                      £
+                      {Math.abs(
+                        statistics.totalSpent - compareStatistics.totalSpent,
+                      ).toFixed(2)}{" "}
+                      vs prev
                     </Text>
                   </View>
                 )}
-            </Card>
-          )}
-        </View>
+              </View>
+              <View
+                style={{
+                  width: 1,
+                  backgroundColor: "#e5e7eb",
+                  alignSelf: "stretch",
+                }}
+              />
+              <View style={{ alignItems: "center", flex: 1 }}>
+                <Text variant="labelSmall" style={{ opacity: 0.7 }}>
+                  Transactions
+                </Text>
+                <Text variant="titleMedium">{statistics.transactionCount}</Text>
+                {comparisonMode && compareStatistics && (
+                  <Text
+                    variant="bodySmall"
+                    style={{
+                      color:
+                        statistics.transactionCount >
+                        compareStatistics.transactionCount
+                          ? "#F44336"
+                          : "#4CAF50",
+                    }}
+                  >
+                    {statistics.transactionCount >
+                    compareStatistics.transactionCount
+                      ? "↑"
+                      : "↓"}
+                    {Math.abs(
+                      statistics.transactionCount -
+                        compareStatistics.transactionCount,
+                    )}{" "}
+                    vs prev
+                  </Text>
+                )}
+              </View>
+            </View>
+          </View>
+        </Card>
       </View>
       {/* FIX SCREEN REPOSITION BECUASE OF PIE CAHRT*/}
       <View style={{ gap: 20 }}>

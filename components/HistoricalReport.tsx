@@ -30,7 +30,7 @@ export default function HistoricalReport() {
           onPress={() => setAccordionExpanded(!accordionExpanded)}
           style={{
             backgroundColor: surfaceColor,
-            elevation: 2,
+            elevation: 1,
             borderRadius: 8,
           }}
         >

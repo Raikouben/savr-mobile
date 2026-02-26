@@ -106,23 +106,24 @@ export default function addBulkTransaction({
         <View
           style={{
             paddingHorizontal: 24,
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 8,
           }}
         >
-          <Dialog.Title>Add Transactions</Dialog.Title>
-          <View
+          <Text
             style={{
-              flexDirection: "row",
+              fontSize: 18,
+              fontWeight: "bold",
+              flex: 1,
             }}
           >
-            <Button mode="text" compact onPress={onSwitchToSubscription}>
-              Subscription
-            </Button>
-            <Button mode="text" compact onPress={onSwitchToSingle}>
-              Single
-            </Button>
-          </View>
+            Add Bulk Transactions
+          </Text>
+          <IconButton icon="sync" size={20} onPress={onSwitchToSubscription} />
+          <IconButton icon="plus" size={20} onPress={onSwitchToSingle} />
         </View>
-        <Dialog.ScrollArea style={{ paddingHorizontal: 0 }}>
+        <Dialog.ScrollArea style={{ paddingHorizontal: 15 }}>
           <ScrollView>
             {draftTransactions.map((tx, index) => (
               <Card key={index} style={{ margin: 12 }}>
@@ -215,7 +216,7 @@ export default function addBulkTransaction({
             ))}
 
             <Button
-              mode="text"
+              mode="contained"
               icon="plus"
               onPress={() =>
                 addDraftTransaction({
@@ -232,7 +233,6 @@ export default function addBulkTransaction({
         </Dialog.ScrollArea>
 
         <Dialog.Actions>
-          <Button onPress={onClose}>Cancel</Button>
           <Button
             mode="contained"
             onPress={handleSubmit}
@@ -240,6 +240,9 @@ export default function addBulkTransaction({
             loading={isCreatingBulk}
           >
             {isCreatingBulk ? "Saving" : "Save All"}
+          </Button>
+          <Button mode="contained-tonal" onPress={onClose}>
+            Cancel
           </Button>
         </Dialog.Actions>
       </Dialog>

@@ -37,7 +37,6 @@ export function aggregateByTimeRange(
   }
 
   // STEP 2: Group transactions and sum by time period
-  // (Skip the filtering step - just check dates while grouping)
   const totals: { [key: string]: number } = {};
 
   for (const tx of transactions) {

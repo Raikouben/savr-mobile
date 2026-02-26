@@ -12,6 +12,7 @@ import {
   Portal,
   Dialog,
   SegmentedButtons,
+  IconButton,
 } from "react-native-paper";
 import { useAppTheme } from "@/themes/useAppTheme";
 
@@ -86,17 +87,26 @@ export default function AddSubscription({
         <View
           style={{
             paddingHorizontal: 24,
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 8,
           }}
         >
-          <Dialog.Title>Add Subscription</Dialog.Title>
-          <View style={{ flexDirection: "row" }}>
-            <Button mode="text" compact onPress={onSwitchToTransaction}>
-              Transaction
-            </Button>
-            <Button mode="text" compact onPress={onSwitchToBulk}>
-              Bulk
-            </Button>
-          </View>
+          <Text
+            style={{
+              fontSize: 18,
+              fontWeight: "bold",
+              flex: 1,
+            }}
+          >
+            Add Subscription
+          </Text>
+          <IconButton icon="plus" size={20} onPress={onSwitchToTransaction} />
+          <IconButton
+            icon="format-list-bulleted"
+            size={20}
+            onPress={onSwitchToBulk}
+          />
         </View>
         <Dialog.Content>
           <ScrollView showsVerticalScrollIndicator={false}>
@@ -155,22 +165,17 @@ export default function AddSubscription({
               label="Next Billing Date"
             />
           </ScrollView>
-
-          <Dialog.Actions style={{ marginTop: 10 }}>
-            <Button
-              onPress={handleSubmit}
-              mode="contained"
-              disabled={submitting}
-            >
-              <Text style={{ color: textOnPrimary, fontWeight: "bold" }}>
-                Add Subscription
-              </Text>
-            </Button>
-            <Button mode="contained-tonal" onPress={onClose}>
-              Cancel
-            </Button>
-          </Dialog.Actions>
         </Dialog.Content>
+        <Dialog.Actions style={{ marginTop: 10 }}>
+          <Button onPress={handleSubmit} mode="contained" disabled={submitting}>
+            <Text style={{ color: textOnPrimary, fontWeight: "bold" }}>
+              Add Subscription
+            </Text>
+          </Button>
+          <Button mode="contained-tonal" onPress={onClose}>
+            Cancel
+          </Button>
+        </Dialog.Actions>
       </Dialog>
     </Portal>
   );
