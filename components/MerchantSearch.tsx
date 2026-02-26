@@ -14,22 +14,13 @@ import { merchants, categoryConfig } from "@/constants/config";
 type CategoryKey = keyof typeof categoryConfig;
 
 function fuzzyMatch(query: string, text: string) {
-  const q = query.toLowerCase();
-  const t = text.toLowerCase();
-  if (t.includes(q)) return true;
-  let qi = 0;
-  for (let i = 0; i < t.length && qi < q.length; i++) {
-    if (t[i] === q[qi]) qi++;
-  }
-  return qi === q.length;
+  return text.toLowerCase().includes(query.toLowerCase());
 }
 
 function scoreMatch(query: string, text: string) {
   const q = query.toLowerCase();
   const t = text.toLowerCase();
-  if (t.startsWith(q)) return 3;
-  if (t.includes(q)) return 2;
-  return 1;
+  return t.startsWith(q) ? 2 : 1;
 }
 
 export default function MerchantSearch({
