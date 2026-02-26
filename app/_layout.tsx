@@ -13,6 +13,7 @@ import { PaperProvider } from "react-native-paper";
 import { enGB, registerTranslation } from "react-native-paper-dates";
 import { ThemeProvider, useThemeContext } from "@/contexts/ThemeContext";
 import { useReportQuery } from "@/hooks/queries/reportQuery";
+import { useNotifications } from "@/hooks/useNotifications";
 registerTranslation("en-GB", enGB);
 
 const queryClient = new QueryClient();
@@ -22,6 +23,8 @@ SplashScreen.preventAutoHideAsync();
 function RootLayoutNav() {
   const { isLoaded, isSignedIn } = useAuth();
   const { isLoading: userLoading } = useUserQuery();
+
+  // useNotifications(20, 0);
   const { budget, isLoading: budgetLoading } = useBudgetQuery();
   const { isLoading: transactionsLoading } = useTransactionQuery();
   const { isLoading: reportLoading } = useReportQuery();
