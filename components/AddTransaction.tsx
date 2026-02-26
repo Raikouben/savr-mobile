@@ -6,7 +6,7 @@ import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
 import MerchantSearch from "./MerchantSearch";
-import { merchantCategoryMap } from "@/constants/config";
+
 import {
   ActivityIndicator,
   MD2Colors,
@@ -116,11 +116,7 @@ export default function AddTransaction({
           <MerchantSearch
             onSelect={(merchant) => {
               if (!description) setDescription(merchant.name);
-              setCategory(
-                merchantCategoryMap[
-                  merchant.category as keyof typeof merchantCategoryMap
-                ],
-              );
+              setCategory(merchant.category);
             }}
           />
 

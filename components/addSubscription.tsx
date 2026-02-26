@@ -4,7 +4,7 @@ import DateSelector from "./DateSelector";
 import CategoryPicker from "./CategoryPicker";
 import { useSubscriptionQuery } from "@/hooks/queries/subscriptionQuery";
 import MerchantSearch from "./MerchantSearch";
-import { merchantCategoryMap } from "@/constants/config";
+
 import {
   Text,
   TextInput,
@@ -113,11 +113,7 @@ export default function AddSubscription({
             <MerchantSearch
               onSelect={(merchant) => {
                 if (!name) setName(merchant.name);
-                setCategory(
-                  merchantCategoryMap[
-                    merchant.category as keyof typeof merchantCategoryMap
-                  ],
-                );
+                setCategory(merchant.category);
               }}
             />
             <TextInput

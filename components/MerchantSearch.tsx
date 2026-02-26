@@ -9,9 +9,9 @@ import {
   TouchableRipple,
   Card,
 } from "react-native-paper";
-import { merchants, categoryColors } from "@/constants/config";
+import { merchants, categoryConfig } from "@/constants/config";
 
-type CategoryKey = keyof typeof categoryColors;
+type CategoryKey = keyof typeof categoryConfig;
 
 function fuzzyMatch(query: string, text: string) {
   const q = query.toLowerCase();
@@ -100,7 +100,7 @@ export default function MerchantSearch({
             scrollEnabled={false}
             ItemSeparatorComponent={() => <Divider />}
             renderItem={({ item }) => {
-              const c = categoryColors[item.category as CategoryKey];
+              const c = categoryConfig[item.category as CategoryKey];
               return (
                 <TouchableRipple onPress={() => handleSelect(item)}>
                   <View
@@ -115,10 +115,10 @@ export default function MerchantSearch({
                     <Text variant="bodyMedium">{item.name}</Text>
                     <Chip
                       compact
-                      style={{ backgroundColor: c?.bg }}
-                      textStyle={{ color: c?.text, fontSize: 11 }}
+                      style={{ backgroundColor: c?.badge?.bg }}
+                      textStyle={{ color: c?.badge?.text, fontSize: 11 }}
                     >
-                      {item.category}
+                      {c?.displayName ?? item.category}
                     </Chip>
                   </View>
                 </TouchableRipple>
