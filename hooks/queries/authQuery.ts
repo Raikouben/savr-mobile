@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../useAuth";
+import { useAuth as useClerkAuth } from "@clerk/clerk-expo";
 
 export const useUserQuery = () => {
   const {
@@ -9,11 +10,13 @@ export const useUserQuery = () => {
     updateUserLoggedInfo,
     resetStreak,
   } = useAuth();
+  const { isSignedIn } = useClerkAuth();
   const queryClient = useQueryClient();
 
   const query = useQuery({
     queryKey: ["user"],
     queryFn: getUser,
+    enabled: !!isSignedIn,
     staleTime: 0, // Always refetch on mount
     refetchOnMount: true,
   });

@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSubscription } from "../useSubscription";
+import { useAuth } from "@clerk/clerk-expo";
 
 export const useSubscriptionQuery = (subscriptionId?: number) => {
   const {
@@ -8,11 +9,13 @@ export const useSubscriptionQuery = (subscriptionId?: number) => {
     updateSubscription,
     deleteSubscription,
   } = useSubscription();
+  const { isSignedIn } = useAuth();
   const queryClient = useQueryClient();
 
   const query = useQuery({
     queryKey: ["subscriptions"],
     queryFn: getSubscriptions,
+    enabled: !!isSignedIn,
   });
 
   const createSubscriptionMutation = useMutation({

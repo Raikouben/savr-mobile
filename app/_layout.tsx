@@ -24,7 +24,7 @@ function RootLayoutNav() {
   const { isLoaded, isSignedIn } = useAuth();
   const { isLoading: userLoading } = useUserQuery();
 
-  // useNotifications(20, 0);
+  useNotifications(20, 0);
   const { budget, isLoading: budgetLoading } = useBudgetQuery();
   const { isLoading: transactionsLoading } = useTransactionQuery();
   const { isLoading: reportLoading } = useReportQuery();
@@ -59,11 +59,14 @@ function ThemedApp() {
 
   return (
     <PaperProvider theme={currentTheme}>
-      <QueryClientProvider client={queryClient}>
-        <ClerkProvider tokenCache={tokenCache}>
+      <ClerkProvider
+        publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!}
+        tokenCache={tokenCache}
+      >
+        <QueryClientProvider client={queryClient}>
           <RootLayoutNav />
-        </ClerkProvider>
-      </QueryClientProvider>
+        </QueryClientProvider>
+      </ClerkProvider>
     </PaperProvider>
   );
 }

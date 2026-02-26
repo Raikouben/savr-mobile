@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTransactions } from "../useTransactions";
+import { useAuth } from "@clerk/clerk-expo";
 
 export const useTransactionQuery = () => {
   const {
@@ -8,11 +9,13 @@ export const useTransactionQuery = () => {
     createBulkTransactions,
     deleteTransaction,
   } = useTransactions();
+  const { isSignedIn } = useAuth();
   const queryClient = useQueryClient();
 
   const query = useQuery({
     queryKey: ["transactions"],
     queryFn: getTransactions,
+    enabled: !!isSignedIn,
   });
 
   const createMutation = useMutation({

@@ -1,14 +1,16 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useBudget } from "../useBudget";
-import { isClerkAPIResponseError } from "@clerk/clerk-expo";
+import { useAuth } from "@clerk/clerk-expo";
 
 export const useBudgetQuery = () => {
   const { getBudget, updateBudget, createBudget, getPastBudgets } = useBudget();
+  const { isSignedIn } = useAuth();
   const queryClient = useQueryClient();
 
   const query = useQuery({
     queryKey: ["budget"],
     queryFn: getBudget,
+    enabled: !!isSignedIn,
     retry: false, // Don't retry on 404 errors
   });
 
@@ -22,6 +24,7 @@ export const useBudgetQuery = () => {
   const getPastBudgetsQuery = useQuery({
     queryKey: ["pastBudgets"],
     queryFn: getPastBudgets,
+    enabled: !!isSignedIn,
     retry: false, // Don't retry on 404 errors
   });
 

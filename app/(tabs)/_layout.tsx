@@ -10,7 +10,15 @@ import { useAppTheme } from "@/themes/useAppTheme";
 const Tab = createBottomTabNavigator();
 
 export default function TabLayout() {
+  const { isSignedIn, isLoaded } = useAuth();
   const { textColor, textOnPrimary, textOnSecondary } = useAppTheme();
+
+  if (!isLoaded) return null;
+
+  if (!isSignedIn) {
+    return <Redirect href={"/(auth)/sign-in"} />;
+  }
+
   return (
     <Tabs
       screenOptions={{
