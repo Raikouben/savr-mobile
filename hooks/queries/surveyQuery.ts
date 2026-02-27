@@ -9,6 +9,7 @@ export const useSurveyQuery = () => {
   const query = useQuery({
     queryKey: ["lifestyleSurvey"],
     queryFn: getLifestyleAnswers,
+    retry: false, // Don't retry on 404 errors
   });
 
   const createMutation = useMutation({
