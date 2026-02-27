@@ -10,7 +10,8 @@ const themeList = [
   { name: "Ocean", key: "oceanTheme" as const, theme: themes.oceanTheme },
   { name: "Velvet", key: "velvetTheme" as const, theme: themes.velvetTheme },
   { name: "Coffee", key: "coffeeTheme" as const, theme: themes.coffeeTheme },
-  { name: "Luxury", key: "luxuryTheme" as const, theme: themes.luxuryTheme },
+  { name: "Light", key: "lightTheme" as const, theme: themes.lightTheme },
+  { name: "Purple", key: "purpleTheme" as const, theme: themes.purpleTheme },
 ];
 
 export default function ThemeSelector() {

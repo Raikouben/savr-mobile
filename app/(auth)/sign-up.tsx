@@ -128,7 +128,7 @@ export default function SignUpScreen() {
           </Card.Content>
           <Card.Actions>
             <Button mode="contained" onPress={onVerifyPress}>
-              <Text>Verify</Text>
+              Verify
             </Button>
           </Card.Actions>
         </Card>
@@ -189,14 +189,14 @@ export default function SignUpScreen() {
         </Card.Content>
         <Card.Actions>
           <Button mode="contained" onPress={onSignUpPress}>
-            <Text>Sign up</Text>
+            Sign up
           </Button>
 
           <Button
-            mode="outlined"
+            mode="contained-tonal"
             onPress={() => router.push("/(auth)/sign-in")}
           >
-            <Text>Sign in</Text>
+            Sign in
           </Button>
         </Card.Actions>
       </Card>

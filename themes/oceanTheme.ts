@@ -1,73 +1,62 @@
-import { MD3LightTheme } from "react-native-paper";
-import type { MD3Theme } from "react-native-paper";
+import { MD3LightTheme, MD3Theme } from "react-native-paper";
 
-const oceanTheme: MD3Theme = {
+const velvetTheme: MD3Theme = {
   ...MD3LightTheme,
-  dark: false,
-  roundness: 2,
-  version: 3,
   colors: {
     ...MD3LightTheme.colors,
+    // Base colors
+    // base-100 card color
+    // base-200 is background
+    background: "#e0e7ff", // base-200 - background
+    surface: "#edf1fe", // base-100 - card color
+    surfaceVariant: "#c6d2ff", // base-300
+    onSurface: "#2f2982", // base-content
+    onSurfaceVariant: "#2f2982",
 
-    // Primary (Yellow)
-    primary: "#E8C64A",
-    onPrimary: "#4B3A1E",
-    primaryContainer: "#F5E8A8",
-    onPrimaryContainer: "#4B3A1E",
+    // Primary colors (Valentine pink/red)
+    primary: "#000000", // primary - valentine pink
+    onPrimary: "#ffffff", // primary-content - white
+    primaryContainer: "#8c4fff", // lighter variant of primary
+    onPrimaryContainer: "#f2f0fc",
 
-    // Secondary (Blue)
-    secondary: "#6FB7D8",
-    onSecondary: "#2C4555",
-    secondaryContainer: "#B7DCF0",
-    onSecondaryContainer: "#2C4555",
+    // Secondary colors (Purple)
+    secondary: "#8c4fff", // secondary - purple
+    onSecondary: "#f2f0fc", // secondary-content - light
+    secondaryContainer: "#8c4fff",
+    onSecondaryContainer: "#f2f0fc",
 
-    // Tertiary/Accent (Green)
-    tertiary: "#6FE36B",
-    onTertiary: "#1E4A33",
-    tertiaryContainer: "#B7F5B5",
-    onTertiaryContainer: "#1E4A33",
+    // // Tertiary/Accent colors (Light blue)
+    // tertiary: "#82bfff", // accent - light blue
+    // onTertiary: "#1e3a5f", // accent-content - dark blue
+    // tertiaryContainer: "#d4e8ff",
+    // onTertiaryContainer: "#0c1e32",
 
-    // Background & Surface (Base colors)
-    background: "#E7EDF7", // base-100
-    onBackground: "#2B3A63", // base-content
+    // Neutral colors
+    outline: "#3527a9", // neutral
+    outlineVariant: "#90baff", // neutral-content
 
-    surface: "#F5F8FC", // base-200
-    onSurface: "#2B3A63",
-    surfaceVariant: "#D5DFF0", // base-300
-    onSurfaceVariant: "#2B3A63",
-    surfaceDisabled: "rgba(43, 58, 99, 0.12)",
-    onSurfaceDisabled: "rgba(43, 58, 99, 0.38)",
+    // Status colors
+    error: "#d14949", // error - red
+    onError: "#fef7f0", // error-content - light
+    errorContainer: "#ffdad6",
+    onErrorContainer: "#410002",
 
-    // Error
-    error: "#E04B6A",
-    onError: "#4A1C22",
-    errorContainer: "#F5C5D0",
-    onErrorContainer: "#4A1C22",
+    // Surface tints for elevation
+    surfaceDisabled: "#f4ecf7",
+    onSurfaceDisabled: "#9d8a95",
 
-    // Outline
-    outline: "#2B3A63",
-    outlineVariant: "#D5DFF0",
-
-    // Inverse
-    inverseSurface: "#2B3A63", // neutral
-    inverseOnSurface: "#F5F8FC", // neutral-content
-    inversePrimary: "#E8C64A",
-
-    // Additional semantic colors
-    backdrop: "rgba(43, 58, 99, 0.4)",
+    // Backdrop for modals/overlays
+    backdrop: "rgba(117, 81, 107, 0.4)",
 
     elevation: {
       level0: "transparent",
-      level1: "#F5F8FC", // base-100
-      level2: "#E7EDF7", // base-200
-      level3: "#D5DFF0", // base-300
-      level4: "#CBD8EC",
-      level5: "#C1D0E8",
+      level1: "#edf1fe", // base-100
+      level2: "#e0e7ff", // base-200
+      level3: "#c6d2ff", // base-300
+      level4: "#d4a3c0", // base-400
+      level5: "#c483a8", // base-500
     },
-
-    shadow: "#2B3A63",
-    scrim: "#2B3A63",
   },
 };
 
-export default oceanTheme;
+export default velvetTheme;

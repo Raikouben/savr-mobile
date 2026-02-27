@@ -87,6 +87,7 @@ export default function transactions() {
         <FlatList
           showsVerticalScrollIndicator={false}
           style={{ padding: 20 }}
+          contentContainerStyle={{ paddingBottom: 20 }}
           data={filteredTransactions}
           keyExtractor={(item) => item.id.toString()}
           ListHeaderComponent={
@@ -133,12 +134,14 @@ export default function transactions() {
             </View>
           }
           renderItem={({ item }) => (
-            <View style={{ paddingBottom: 25 }}>
+            <View style={{ paddingBottom: 10 }}>
               <List.Item
                 style={{
                   backgroundColor: surfaceColor,
                   borderRadius: 8,
                   paddingBottom: 15,
+                  borderColor: textColor,
+                  borderWidth: 2,
                 }}
                 title={getCategoryDisplayName(item.category)}
                 descriptionStyle={{ color: textColor }}

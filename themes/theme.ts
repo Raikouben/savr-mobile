@@ -4,6 +4,7 @@ import luxuryTheme from "./luxuryTheme";
 import lightTheme from "./lightTheme";
 import valentineTheme from "./valentineTheme";
 import darkTheme from "./darkTheme";
+import purpleTheme from "./purpleTheme";
 
 const coffeeTheme: MD3Theme = {
   ...MD3LightTheme,
@@ -109,4 +110,5 @@ export default {
   lightTheme,
   valentineTheme,
   darkTheme,
+  purpleTheme,
 };

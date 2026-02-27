@@ -16,7 +16,8 @@ type ThemeName =
   | "luxuryTheme"
   | "lightTheme"
   | "valentineTheme"
-  | "darkTheme";
+  | "darkTheme"
+  | "purpleTheme";
 
 interface ThemeContextType {
   currentTheme: MD3Theme;
@@ -29,7 +30,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 const KEY = "savr_selected_theme";
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [themeName, setThemeName] = useState<ThemeName>("coffeeTheme");
+  const [themeName, setThemeName] = useState<ThemeName>("lightTheme");
   const [isLoading, setIsLoading] = useState(true);
 
   // Load saved theme on app start
@@ -37,7 +38,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     const loadTheme = async () => {
       try {
         const savedTheme = await SecureStore.getItemAsync(KEY);
-        setThemeName((savedTheme as ThemeName) || "coffeeTheme");
+        setThemeName((savedTheme as ThemeName) || "lightTheme");
       } catch (error) {
         console.error("Failed to load theme:", error);
       } finally {
