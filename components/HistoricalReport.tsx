@@ -9,9 +9,24 @@ export default function HistoricalReport() {
   const { reports, isLoading } = useReportQuery();
   const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
   const [accordionExpanded, setAccordionExpanded] = useState(false);
-  const { surfaceColor, backgroundColor } = useAppTheme();
+  const { surfaceColor, backgroundColor, textColor } = useAppTheme();
 
-  if (isLoading) return <ActivityIndicator animating={true} />;
+  if (isLoading)
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: backgroundColor,
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 12,
+        }}
+      >
+        <ActivityIndicator size="large" />
+
+        <Text style={{ color: textColor }}>Loading reports...</Text>
+      </View>
+    );
   if (!reports || reports.length === 0) return null;
 
   const lastFour = [...reports]

@@ -78,7 +78,18 @@ export const AdviceModal = ({
             Advice for {getCategoryDisplayName(category)}
           </Text>
           {loading ? (
-            <ActivityIndicator />
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: backgroundColor,
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 12,
+              }}
+            >
+              <ActivityIndicator animating={true} />
+              <Text style={{ color: textColor }}>Loading advice...</Text>
+            </View>
           ) : (
             <Text style={{ color: textColor }}>{advice}</Text>
           )}

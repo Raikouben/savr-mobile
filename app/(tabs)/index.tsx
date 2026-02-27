@@ -164,12 +164,15 @@ export default function Page() {
       {loading && (
         <View
           style={{
+            flex: 1,
+            backgroundColor: backgroundColor,
             alignItems: "center",
             justifyContent: "center",
-            flex: 1,
+            gap: 12,
           }}
         >
           <ActivityIndicator size="large" animating={true} />
+          <Text style={{ color: textColor }}>Loading budget...</Text>
         </View>
       )}
       {!loading && (

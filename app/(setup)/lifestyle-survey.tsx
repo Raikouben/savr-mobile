@@ -154,11 +154,17 @@ export default function LifestyleSurvey() {
   };
   if (isLoading) {
     return (
-      <View style={{ flex: 1, backgroundColor: backgroundColor }}>
-        <ActivityIndicator
-          size="large"
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        />
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: backgroundColor,
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 12,
+        }}
+      >
+        <ActivityIndicator size="large" />
+        <Text style={{ color: textColor }}>Loading survey data...</Text>
       </View>
     );
   }

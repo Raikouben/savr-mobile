@@ -80,7 +80,18 @@ export default function transactions() {
   return (
     <View style={{ flex: 1, backgroundColor: backgroundColor }}>
       {loading && (
-        <ActivityIndicator animating={true} color={MD2Colors.purple500} />
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: backgroundColor,
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 12,
+          }}
+        >
+          <ActivityIndicator animating={true} />
+          <Text style={{ color: textColor }}>Loading transactions...</Text>
+        </View>
       )}
       {error && <Text>{error}</Text>}
       {transactions && (

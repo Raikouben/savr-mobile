@@ -120,8 +120,18 @@ export default function ReportModal({
         }}
       >
         {isLoading ? (
-          <View>
-            <ActivityIndicator animating size="large" />
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: backgroundColor,
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 12,
+            }}
+          >
+            <ActivityIndicator size="large" />
+
+            <Text style={{ color: textColor }}>Generating your report...</Text>
           </View>
         ) : error ? (
           <View>
