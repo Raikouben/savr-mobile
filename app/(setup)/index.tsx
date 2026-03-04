@@ -7,13 +7,14 @@ import { useAuth } from "@/hooks/useAuth";
 import { View } from "react-native";
 import { Text, TextInput, Button, Card } from "react-native-paper";
 import { useAppTheme } from "@/themes/useAppTheme";
+import { ActivityIndicator } from "react-native-paper";
 export default function IncomeDisclosure() {
   const router = useRouter();
   const [income, setIncome] = useState<number | null>(null);
   const { user, updateUserIncome, isLoading } = useUserQuery();
   const [submitting, setSubmitting] = useState(false);
   const { edit } = useLocalSearchParams();
-  const { backgroundColor } = useAppTheme();
+  const { backgroundColor, textColor } = useAppTheme();
 
   useEffect(() => {
     if (user?.income != null && income === null) {
@@ -21,18 +22,23 @@ export default function IncomeDisclosure() {
     }
   }, [user?.income]);
 
-  useEffect(() => {
-    if (edit) {
-      return;
-    } else if (!isLoading && user?.income != null) {
-      console.log("Income already set, redirecting to lifestyle survey");
-      router.replace("/(setup)/lifestyle-survey");
-    }
-  }, [isLoading, edit]);
+  // if (isLoading) {
+  //   return (
+  //     <View
+  //       style={{
+  //         flex: 1,
+  //         backgroundColor: backgroundColor,
+  //         alignItems: "center",
+  //         justifyContent: "center",
+  //         gap: 12,
+  //       }}
+  //     >
+  //       <ActivityIndicator size="large" />
 
-  if (isLoading) {
-    return <Text>Loading...</Text>;
-  }
+  //       <Text style={{ color: textColor }}>Loading income disclosure...</Text>
+  //     </View>
+  //   );
+  // }
 
   console.log("User data:", JSON.stringify(user));
   console.log("User income:", user?.income);
