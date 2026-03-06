@@ -60,7 +60,7 @@ export default function ThemeSelector() {
                 >
                   <Icon
                     source="check-circle"
-                    size={60}
+                    size={50}
                     color={themeItem.theme.colors.surface}
                   />
                 </View>
@@ -89,14 +89,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 16,
+    alignItems: "center",
+    justifyContent: "center",
   },
   themeItemContainer: {
     alignItems: "center",
     marginBottom: 8,
   },
   themeCircle: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     borderRadius: 30,
     shadowColor: "#000",
     shadowOffset: {
