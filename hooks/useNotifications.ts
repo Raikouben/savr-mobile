@@ -8,7 +8,6 @@ export const NOTIFICATIONS_ENABLED_KEY = "savr-notifications-enabled";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
     shouldShowBanner: true,
     shouldShowList: false,
     shouldPlaySound: false,
@@ -29,11 +28,10 @@ async function requestPermissions(): Promise<boolean> {
   return status === "granted";
 }
 
-export async function scheduleDailyReminder(
-  hour: number = 20,
-  minute: number = 0,
-  streak: number = 0,
-) {
+const REMINDER_HOUR = 14;
+const REMINDER_MINUTE = 50;
+
+export async function scheduleDailyReminder(streak: number = 0) {
   const granted = await requestPermissions();
   if (!granted) return;
 
@@ -51,8 +49,8 @@ export async function scheduleDailyReminder(
     },
     trigger: {
       type: Notifications.SchedulableTriggerInputTypes.DAILY,
-      hour,
-      minute,
+      hour: REMINDER_HOUR,
+      minute: REMINDER_MINUTE,
     },
   });
 }
@@ -63,16 +61,15 @@ export async function cancelDailyReminder() {
   ).catch(() => {});
 }
 
-export function useNotifications(hour: number = 20, minute: number = 0) {
+export function useNotifications() {
   const { user } = useUserQuery();
 
   useEffect(() => {
     SecureStore.getItemAsync(NOTIFICATIONS_ENABLED_KEY).then((val) => {
-      // Default to enabled if no preference has been saved yet
       const isEnabled = val === null || val === "true";
       if (isEnabled) {
-        scheduleDailyReminder(hour, minute, user?.streak ?? 0);
+        scheduleDailyReminder(user?.streak ?? 0);
       }
     });
-  }, [hour, minute, user?.streak]);
+  }, [user?.streak]);
 }

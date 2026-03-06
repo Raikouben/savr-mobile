@@ -9,15 +9,7 @@ import { useAppTheme } from "@/themes/useAppTheme";
 import * as SecureStore from "expo-secure-store";
 import { useState, useEffect } from "react";
 
-interface NotificationToggleProps {
-  hour?: number;
-  minute?: number;
-}
-
-export default function NotificationToggle({
-  hour = 22,
-  minute = 0,
-}: NotificationToggleProps) {
+export default function NotificationToggle() {
   const { textColor } = useAppTheme();
   const { user } = useUserQuery();
   const [enabled, setEnabled] = useState(true);
@@ -31,7 +23,7 @@ export default function NotificationToggle({
   const handleToggle = async (value: boolean) => {
     await SecureStore.setItemAsync(NOTIFICATIONS_ENABLED_KEY, String(value));
     if (value) {
-      await scheduleDailyReminder(hour, minute, user?.streak ?? 0);
+      await scheduleDailyReminder(user?.streak ?? 0);
     } else {
       await cancelDailyReminder();
     }

@@ -28,7 +28,7 @@ function RootLayoutNav() {
   const { isLoaded, isSignedIn } = useAuth();
   const { isLoading: userLoading } = useUserQuery();
 
-  useNotifications(22, 18);
+  useNotifications();
   const { isLoading: budgetLoading } = useBudgetQuery();
   const { isLoading: transactionsLoading } = useTransactionQuery();
   const { isLoading: reportLoading } = useReportQuery();
