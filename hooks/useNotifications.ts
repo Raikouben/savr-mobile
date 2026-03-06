@@ -13,7 +13,6 @@ Notifications.setNotificationHandler({
   }),
 });
 
-const { user, updateUserLoggedInfo } = useUserQuery();
 const NOTIFICATION_IDENTIFIER = "savr-daily-reminder";
 
 async function requestPermissions(): Promise<boolean> {
@@ -30,11 +29,11 @@ async function requestPermissions(): Promise<boolean> {
 export async function scheduleDailyReminder(
   hour: number = 20,
   minute: number = 0,
+  streak: number = 0,
 ) {
   const granted = await requestPermissions();
   if (!granted) return;
 
-  const streak = user?.streak ?? 0;
   const message =
     streak > 0
       ? `You're on a ${streak}-day streak! Keep it going by logging today's spending! 🔥`
@@ -62,7 +61,9 @@ export async function cancelDailyReminder() {
 }
 
 export function useNotifications(hour: number = 20, minute: number = 0) {
+  const { user } = useUserQuery();
+
   useEffect(() => {
-    scheduleDailyReminder(hour, minute);
-  }, [hour, minute]);
+    scheduleDailyReminder(hour, minute, user?.streak ?? 0);
+  }, [hour, minute, user?.streak]);
 }
