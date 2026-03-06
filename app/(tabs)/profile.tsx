@@ -58,6 +58,10 @@ export default function profile() {
     >
       <Text style={{ fontSize: 32, fontWeight: "bold" }}>Profile</Text>
       <Text variant="bodyLarge">🔥 Streak: {user?.streak ?? 0} days</Text>
+      <IconButton
+        icon="bell"
+        onPress={() => router.push("../(setup)/profile-settings")}
+      />
       <UserDisplay />
       <BudgetDisplay />
       <Button

@@ -13,7 +13,7 @@ export default function TabLayout() {
   const { isSignedIn, isLoaded } = useAuth();
   const { textColor, textOnPrimary, textOnSecondary } = useAppTheme();
 
-  if (!isLoaded) return null;
+  // if (!isLoaded) return null;
 
   if (!isSignedIn) {
     return <Redirect href={"/(auth)/sign-in"} />;

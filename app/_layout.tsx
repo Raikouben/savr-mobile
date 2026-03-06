@@ -8,7 +8,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useUserQuery } from "@/hooks/queries/authQuery";
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
-import { useColorScheme } from "react-native";
+import { useColorScheme, View } from "react-native";
 import { PaperProvider } from "react-native-paper";
 import { enGB, registerTranslation } from "react-native-paper-dates";
 import { ThemeProvider, useThemeContext } from "@/contexts/ThemeContext";
@@ -16,6 +16,8 @@ import { useReportQuery } from "@/hooks/queries/reportQuery";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useSurveyQuery } from "@/hooks/queries/surveyQuery";
 import { useSubscriptionQuery } from "@/hooks/queries/subscriptionQuery";
+import { Text, ActivityIndicator } from "react-native-paper";
+import { useAppTheme } from "@/themes/useAppTheme";
 registerTranslation("en-GB", enGB);
 
 const queryClient = new QueryClient();
@@ -27,28 +29,48 @@ function RootLayoutNav() {
   const { isLoading: userLoading } = useUserQuery();
 
   useNotifications(22, 18);
-  const { budget, isLoading: budgetLoading } = useBudgetQuery();
+  const { isLoading: budgetLoading } = useBudgetQuery();
   const { isLoading: transactionsLoading } = useTransactionQuery();
   const { isLoading: reportLoading } = useReportQuery();
   const { isLoading: surveyLoading } = useSurveyQuery();
   const { isLoading: subscriptionLoading } = useSubscriptionQuery();
+  const { backgroundColor, textColor } = useAppTheme();
+
+  const allLoaded =
+    isLoaded &&
+    !(
+      isSignedIn &&
+      (userLoading ||
+        budgetLoading ||
+        transactionsLoading ||
+        reportLoading ||
+        surveyLoading ||
+        subscriptionLoading)
+    );
+
   useEffect(() => {
-    if (
-      isLoaded &&
-      !userLoading &&
-      !budgetLoading &&
-      !transactionsLoading &&
-      !reportLoading
-    ) {
+    if (allLoaded) {
       SplashScreen.hideAsync();
     }
-  }, [
-    isLoaded,
-    userLoading,
-    budgetLoading,
-    transactionsLoading,
-    reportLoading,
-  ]);
+  }, [allLoaded]);
+
+  // Keep Slot unmounted while loading so no route is evaluated yet.
+  // The splash screen covers the screen during this time.
+  if (!allLoaded)
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: backgroundColor,
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 12,
+        }}
+      >
+        <ActivityIndicator size="large" animating={true} />
+        <Text style={{ color: textColor }}>Loading Data...</Text>
+      </View>
+    );
 
   return (
     <SafeView>
