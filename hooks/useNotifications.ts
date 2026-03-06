@@ -1,7 +1,10 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 import { useUserQuery } from "./queries/authQuery";
+import * as SecureStore from "expo-secure-store";
+
+export const NOTIFICATIONS_ENABLED_KEY = "savr-notifications-enabled";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -64,6 +67,12 @@ export function useNotifications(hour: number = 20, minute: number = 0) {
   const { user } = useUserQuery();
 
   useEffect(() => {
-    scheduleDailyReminder(hour, minute, user?.streak ?? 0);
+    SecureStore.getItemAsync(NOTIFICATIONS_ENABLED_KEY).then((val) => {
+      // Default to enabled if no preference has been saved yet
+      const isEnabled = val === null || val === "true";
+      if (isEnabled) {
+        scheduleDailyReminder(hour, minute, user?.streak ?? 0);
+      }
+    });
   }, [hour, minute, user?.streak]);
 }
