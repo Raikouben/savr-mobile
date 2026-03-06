@@ -28,6 +28,7 @@ import { AnimatedCircularProgress } from "react-native-circular-progress";
 import {
   budgetCategories,
   getCategoryIcon,
+  getCategoryColor,
   getCategoryDisplayName,
 } from "../../constants/config";
 import { Ionicons } from "@expo/vector-icons";
@@ -295,7 +296,7 @@ export default function Page() {
                             style={{
                               borderRadius: 20,
                               padding: 12,
-                              backgroundColor: surfaceVariant,
+                              backgroundColor: getCategoryColor(name) + "15",
                             }}
                           >
                             <View style={{ gap: 8 }}>
@@ -313,11 +314,23 @@ export default function Page() {
                                     gap: 10,
                                   }}
                                 >
-                                  <Ionicons
-                                    name={getCategoryIcon(name) as any}
-                                    size={24}
-                                    color={textColor}
-                                  />
+                                  <View
+                                    style={{
+                                      width: 36,
+                                      height: 36,
+                                      borderRadius: 8,
+                                      backgroundColor:
+                                        getCategoryColor(name) + "22",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                    }}
+                                  >
+                                    <Ionicons
+                                      name={getCategoryIcon(name) as any}
+                                      size={20}
+                                      color={getCategoryColor(name)}
+                                    />
+                                  </View>
                                   <Text style={{ fontSize: 15 }}>
                                     {getCategoryDisplayName(name)}
                                   </Text>

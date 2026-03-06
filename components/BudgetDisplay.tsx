@@ -1,8 +1,14 @@
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
-import { getCategoryDisplayName } from "@/constants/config";
-import { useState, useEffect } from "react";
+import {
+  getCategoryDisplayName,
+  getCategoryIcon,
+  getCategoryColor,
+  categoryConfig,
+} from "@/constants/config";
+import { useState, useEffect, useMemo } from "react";
 import { View, TouchableOpacity, ScrollView } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
+import { Ionicons } from "@expo/vector-icons";
 import {
   ActivityIndicator,
   MD2Colors,
@@ -19,6 +25,7 @@ import {
   ToggleButton,
   SegmentedButtons,
   Surface,
+  Divider,
 } from "react-native-paper";
 import { useAppTheme } from "@/themes/useAppTheme";
 import { useUserQuery } from "@/hooks/queries/authQuery";
@@ -40,8 +47,10 @@ export default function BudgetDisplay() {
   const { budget, isLoading, updateBudget, isUpdating } = useBudgetQuery();
   const [editable, setEditable] = useState(false);
   const [budgetForm, setBudgetForm] = useState<any>({});
-  const { surfaceColor, textOnPrimary, surfaceVariant } = useAppTheme();
+  const { surfaceColor, textOnPrimary, surfaceVariant, textColor } =
+    useAppTheme();
   const { user } = useUserQuery();
+
   useEffect(() => {
     if (editable && budget) {
       const form: any = {};
@@ -52,11 +61,16 @@ export default function BudgetDisplay() {
     }
   }, [editable, budget]);
 
-  const calculateTotal = () => {
+  const calculateTotal = useMemo(() => {
     return categories.reduce((sum, cat) => {
       return sum + parseFloat(budgetForm[cat] || "0");
     }, 0);
-  };
+  }, [budgetForm]);
+
+  const calculateRemaining = useMemo(() => {
+    const income = parseFloat(user?.income || "0");
+    return income - calculateTotal;
+  }, [user?.income, calculateTotal]);
 
   const handleSubmit = async () => {
     if (!budget) return;
@@ -79,12 +93,6 @@ export default function BudgetDisplay() {
     setEditable(false);
   };
 
-  const calculateRemaining = () => {
-    const income = parseFloat(user?.income || "0");
-    const total = calculateTotal();
-    return income - total;
-  };
-
   if (isLoading || !budget) return <Text>Loading...</Text>;
 
   return (
@@ -98,26 +106,23 @@ export default function BudgetDisplay() {
             onPress={() => setEditable(!editable)}
           />
         )}
-        titleStyle={{
-          fontSize: 18,
-          fontWeight: "bold",
-        }}
+        titleStyle={{ fontSize: 18, fontWeight: "bold" }}
       />
 
       {editable ? (
         <Card.Content>
-          <Text variant="titleMedium" style={{ marginBottom: 10 }}>
-            Total Allocated: £{calculateTotal().toFixed(2)}
+          <Text variant="titleMedium" style={{ marginBottom: 4 }}>
+            Total Allocated: £{calculateTotal.toFixed(2)}
           </Text>
           <Text
             variant="titleMedium"
             style={{
-              marginBottom: 10,
-              color: calculateRemaining() < 0 ? "#ff6b6b" : "#51cf66",
+              marginBottom: 12,
+              color: calculateRemaining < 0 ? "#ff6b6b" : "#51cf66",
               fontWeight: "bold",
             }}
           >
-            Remaining: £{calculateRemaining().toFixed(2)}
+            Remaining: £{calculateRemaining.toFixed(2)}
           </Text>
           {categories.map((category) => (
             <View key={category} style={{ marginBottom: 10 }}>
@@ -144,13 +149,73 @@ export default function BudgetDisplay() {
           </Card.Actions>
         </Card.Content>
       ) : (
-        <Card.Content>
-          <Text variant="headlineSmall">Total: £{budget.total_budget}</Text>
-          {categories.map((category) => (
-            <Text key={category}>
-              {getCategoryDisplayName(category)}: £{budget[category]}
+        <Card.Content style={{ paddingHorizontal: 0 }}>
+          {categories.map((category, index) => {
+            const color = getCategoryColor(category);
+            const icon = getCategoryIcon(category);
+            const name = getCategoryDisplayName(category);
+            const amount = Number(budget[category]);
+            return (
+              <View key={category}>
+                <List.Item
+                  title={name}
+                  titleStyle={{ color: textColor, fontSize: 14 }}
+                  left={() => (
+                    <View
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: 8,
+                        backgroundColor: color + "22",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        marginLeft: 8,
+                        alignSelf: "center",
+                      }}
+                    >
+                      <Ionicons name={icon as any} size={18} color={color} />
+                    </View>
+                  )}
+                  right={() => (
+                    <Text
+                      style={{
+                        alignSelf: "center",
+                        color: textColor,
+                        fontWeight: "600",
+                        fontSize: 14,
+                        marginRight: 8,
+                      }}
+                    >
+                      £{amount.toFixed(2)}
+                    </Text>
+                  )}
+                />
+                {index < categories.length - 1 && (
+                  <Divider style={{ marginHorizontal: 16 }} />
+                )}
+              </View>
+            );
+          })}
+          <Divider style={{ marginTop: 4 }} bold />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              paddingHorizontal: 16,
+              paddingVertical: 12,
+            }}
+          >
+            <Text
+              style={{ fontWeight: "bold", fontSize: 15, color: textColor }}
+            >
+              Total
             </Text>
-          ))}
+            <Text
+              style={{ fontWeight: "bold", fontSize: 15, color: textColor }}
+            >
+              £{Number(budget.total_budget).toFixed(2)}
+            </Text>
+          </View>
         </Card.Content>
       )}
     </Card>
