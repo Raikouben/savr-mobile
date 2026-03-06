@@ -1,19 +1,35 @@
-import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
-import { tokenCache } from "@clerk/clerk-expo/token-cache";
-import { Redirect, Slot, Stack, useLocalSearchParams } from "expo-router";
-import { useEffect } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useUserQuery } from "@/hooks/queries/authQuery";
+import { useAuth } from "@clerk/clerk-expo";
+import { Redirect, Stack, useLocalSearchParams } from "expo-router";
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
+import { ActivityIndicator, Text } from "react-native-paper";
+import { View } from "react-native";
+import { useAppTheme } from "@/themes/useAppTheme";
 
 export default function Setup() {
-  const { budget } = useBudgetQuery();
+  const { isLoaded, isSignedIn } = useAuth();
+  const { budget, isLoading } = useBudgetQuery();
   const { edit } = useLocalSearchParams();
+  const { backgroundColor, textColor } = useAppTheme();
+
+  if (!isLoaded || (isSignedIn && isLoading))
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: backgroundColor,
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 12,
+        }}
+      >
+        <ActivityIndicator size="large" animating={true} />
+        <Text style={{ color: textColor }}>Loading Data...</Text>
+      </View>
+    );
+
   if (edit !== "true" && budget) {
-    console.log("Budget found, redirecting to main app");
     return <Redirect href={"/(tabs)"} />;
   }
 
-  console.log("In setup layout, no budget found");
   return <Stack screenOptions={{ headerShown: false }} />;
 }

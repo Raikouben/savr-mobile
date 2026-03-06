@@ -14,6 +14,8 @@ import { enGB, registerTranslation } from "react-native-paper-dates";
 import { ThemeProvider, useThemeContext } from "@/contexts/ThemeContext";
 import { useReportQuery } from "@/hooks/queries/reportQuery";
 import { useNotifications } from "@/hooks/useNotifications";
+import { useSurveyQuery } from "@/hooks/queries/surveyQuery";
+import { useSubscriptionQuery } from "@/hooks/queries/subscriptionQuery";
 registerTranslation("en-GB", enGB);
 
 const queryClient = new QueryClient();
@@ -28,7 +30,8 @@ function RootLayoutNav() {
   const { budget, isLoading: budgetLoading } = useBudgetQuery();
   const { isLoading: transactionsLoading } = useTransactionQuery();
   const { isLoading: reportLoading } = useReportQuery();
-
+  const { isLoading: surveyLoading } = useSurveyQuery();
+  const { isLoading: subscriptionLoading } = useSubscriptionQuery();
   useEffect(() => {
     if (
       isLoaded &&

@@ -428,14 +428,14 @@ export default function Page() {
             }}
             reportId={selectedReportId || 1}
           /> */}
-          <ReportModal
+          {/* <ReportModal
             visible={reportAccordionVisible}
             onClose={() => {
               setReportAccordionVisible(false);
               setSelectedReportId(null);
             }}
             reportId={selectedReportId || 79}
-          />
+          /> */}
           {/* )} */}
         </View>
       )}
