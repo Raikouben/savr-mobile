@@ -141,10 +141,7 @@ export function aggregateByTimeRange(
     } else if (range === "month") {
       label = String(txDate.getUTCDate());
     } else {
-      label = txDate.toLocaleDateString("en-US", {
-        month: "short",
-        timeZone: "UTC",
-      });
+      label = String(txDate.getUTCMonth()); // 0–11
     }
 
     if (!totals[label]) totals[label] = 0;
@@ -168,22 +165,9 @@ export function aggregateByTimeRange(
       });
     }
   } else {
-    const monthLabels = [
-      "J",
-      "F",
-      "M",
-      "A",
-      "M",
-      "J",
-      "J",
-      "A",
-      "S",
-      "O",
-      "N",
-      "D",
-    ];
-    for (const month of monthLabels) {
-      chartData.push({ value: totals[month] || 0, label: month });
+    const monthLabels = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
+    for (let i = 0; i < 12; i++) {
+      chartData.push({ value: totals[String(i)] || 0, label: monthLabels[i] });
     }
   }
 

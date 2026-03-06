@@ -517,10 +517,10 @@ export default function analytics() {
                   key={lineChartKey}
                   data={chartData}
                   data2={comparisonMode ? compareChartData : undefined}
-                  width={Dimensions.get("window").width - 72}
+                  // width={Dimensions.get("window").width - 72}
                   height={250}
                   spacing={
-                    timeRange === "week" ? 40 : timeRange === "month" ? 10 : 30
+                    timeRange === "week" ? 40 : timeRange === "month" ? 14 : 36
                   }
                   initialSpacing={10}
                   color="transparent"
@@ -529,7 +529,7 @@ export default function analytics() {
                   yAxisLabelWidth={35}
                   thickness={3}
                   hideDataPoints={true}
-                  disableScroll={true}
+                  disableScroll={false}
                   startFillColor={primaryColor}
                   endFillColor={primaryColor}
                   startFillColor2={secondaryColor}

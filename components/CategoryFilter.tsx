@@ -26,7 +26,7 @@ export default function CategoryFilter({
         mode="contained"
         onPress={() => setVisible(true)}
         icon="chevron-down"
-        contentStyle={{ justifyContent: "space-between" }}
+        contentStyle={{ justifyContent: "center" }}
       >
         <Text style={{ color: textOnPrimary, fontWeight: "bold" }}>
           {selectedCategory
