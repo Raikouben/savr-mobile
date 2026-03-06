@@ -373,7 +373,7 @@ export default function Page() {
                               <View
                                 style={{
                                   height: 8,
-                                  backgroundColor: surfaceColor,
+                                  backgroundColor: "white",
                                   borderRadius: 4,
                                   overflow: "hidden",
                                 }}

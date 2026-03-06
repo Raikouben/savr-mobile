@@ -40,10 +40,10 @@ export const categoryConfig = {
     badge: { bg: "#fef2f2", text: "#991b1b", border: "#fecaca" },
   },
   utilities: {
-    color: "#F97316",
+    color: "#06B6D4",
     icon: "flash-outline",
     displayName: "Utilities",
-    badge: { bg: "#fff7ed", text: "#c2410c", border: "#fed7aa" },
+    badge: { bg: "#ecfeff", text: "#164e63", border: "#a5f3fc" },
   },
   transportation: {
     color: "#F59E0B",
@@ -52,16 +52,16 @@ export const categoryConfig = {
     badge: { bg: "#fffbeb", text: "#92400e", border: "#fde68a" },
   },
   groceries: {
-    color: "#EAB308",
+    color: "#8B5CF6",
     icon: "basket-outline",
     displayName: "Groceries",
-    badge: { bg: "#fefce8", text: "#854d0e", border: "#fef08a" },
+    badge: { bg: "#f5f3ff", text: "#4c1d95", border: "#ddd6fe" },
   },
   eating_out: {
-    color: "#84CC16",
+    color: "#F97316",
     icon: "restaurant-outline",
     displayName: "Eating Out",
-    badge: { bg: "#f7fee7", text: "#3f6212", border: "#d9f99d" },
+    badge: { bg: "#fff7ed", text: "#c2410c", border: "#fed7aa" },
   },
   shopping: {
     color: "#10B981",
@@ -70,10 +70,10 @@ export const categoryConfig = {
     badge: { bg: "#ecfdf5", text: "#065f46", border: "#a7f3d0" },
   },
   health: {
-    color: "#14B8A6",
+    color: "#EC4899",
     icon: "fitness-outline",
     displayName: "Health",
-    badge: { bg: "#f0fdfa", text: "#134e4a", border: "#99f6e4" },
+    badge: { bg: "#fdf2f8", text: "#831843", border: "#fbcfe8" },
   },
   entertainment: {
     color: "#3B82F6",
@@ -82,10 +82,10 @@ export const categoryConfig = {
     badge: { bg: "#eff6ff", text: "#1e40af", border: "#bfdbfe" },
   },
   savings: {
-    color: "#6366F1",
+    color: "#84CC16",
     icon: "wallet-outline",
     displayName: "Savings",
-    badge: { bg: "#eef2ff", text: "#3730a3", border: "#c7d2fe" },
+    badge: { bg: "#f7fee7", text: "#3f6212", border: "#d9f99d" },
   },
   debt: {
     color: "#9333EA",
@@ -94,10 +94,10 @@ export const categoryConfig = {
     badge: { bg: "#faf5ff", text: "#6b21a8", border: "#e9d5ff" },
   },
   miscellaneous: {
-    color: "#EC4899",
+    color: "#94A3B8",
     icon: "ellipsis-horizontal-circle-outline",
     displayName: "Other",
-    badge: { bg: "#fdf2f8", text: "#831843", border: "#fbcfe8" },
+    badge: { bg: "#f8fafc", text: "#334155", border: "#cbd5e1" },
   },
 };
 
