@@ -165,7 +165,20 @@ export function aggregateByTimeRange(
       });
     }
   } else {
-    const monthLabels = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
+    const monthLabels = [
+      "J",
+      "F",
+      "M",
+      "A",
+      "M",
+      "J",
+      "J",
+      "A",
+      "S",
+      "O",
+      "N",
+      "D",
+    ];
     for (let i = 0; i < 12; i++) {
       chartData.push({ value: totals[String(i)] || 0, label: monthLabels[i] });
     }
