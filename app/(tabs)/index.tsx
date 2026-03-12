@@ -23,7 +23,7 @@ import ReportAccordion from "@/components/ReportAccordion";
 import {
   calculateBudgetSummary,
   calculateTotalBudgetComparison,
-} from "../../utils/calculation";
+} from "../../utils/budgetHelper";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import {
   budgetCategories,

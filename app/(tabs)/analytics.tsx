@@ -13,10 +13,10 @@ import { useState } from "react";
 import { useTransactions } from "@/hooks/useTransactions";
 import { useMemo } from "react";
 import CategoryPicker from "@/components/CategoryPicker";
-import { aggregateByTimeRange, formatChartLabel } from "@/utils/calculation";
+// import { aggregateByTimeRange, formatChartLabel } from "@/utils/calculation";
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
-import { yAxisConfig, categoriseSpending } from "@/utils/analyticsHelper";
+import { yAxisConfig, categoriseSpending, aggregateByTimeRange } from "@/utils/analyticsHelper";
 import { getCategoryDisplayName } from "@/constants/config";
 import {
   ActivityIndicator,
@@ -38,7 +38,7 @@ import {
 } from "react-native-paper";
 import CategoryFilter from "@/components/CategoryFilter";
 import { tr } from "react-native-paper-dates";
-import { getDateRange } from "@/utils/calculation";
+import { getDateRange } from "@/utils/analyticsHelper";
 import { useAppTheme } from "@/themes/useAppTheme";
 export default function analytics() {
   const { backgroundColor, primaryColor, secondaryColor, surfaceVariant } =

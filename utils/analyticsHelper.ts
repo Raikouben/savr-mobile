@@ -4,7 +4,7 @@ export function aggregateByTimeRange(
   range: "week" | "month" | "year",
   selectedMonthYear?: Date,
   selectedYear?: number,
-  selectedWeek?: Date
+  selectedWeek?: Date,
 ) {
   const now = new Date();
 
@@ -105,7 +105,7 @@ export function formatChartLabel(
   key: string,
   range: "week" | "month" | "year",
   index: number,
-  total: number
+  total: number,
 ): string {
   if (range === "week") {
     return key; // Mon, Tue, etc.
@@ -172,7 +172,7 @@ export function categoriseSpending(transactions: any[]): CategorisedSpending[] {
   // Calculate total for percentages
   const total = Object.values(categoryTotals).reduce(
     (sum, val) => sum + val,
-    0
+    0,
   );
 
   // Return array with category, amount, and percentage
@@ -182,4 +182,41 @@ export function categoriseSpending(transactions: any[]): CategorisedSpending[] {
     percentage: total > 0 ? (amount / total) * 100 : 0,
     color: getCategoryColor(category),
   }));
+}
+
+export function getDateRange(
+  range: "week" | "month" | "year",
+  selectedMonthYear?: Date,
+  selectedYear?: number,
+  selectedWeek?: Date,
+): { startDate: Date; endDate: Date } {
+  const now = new Date();
+  let startDate: Date;
+  let endDate: Date;
+
+  if (range === "week") {
+    const targetWeek = selectedWeek || now;
+    const dayOfWeek = targetWeek.getDay();
+    const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+
+    startDate = new Date(targetWeek);
+    startDate.setDate(targetWeek.getDate() - daysToMonday);
+    startDate.setHours(0, 0, 0, 0);
+
+    endDate = new Date(startDate);
+    endDate.setDate(startDate.getDate() + 6);
+    endDate.setHours(23, 59, 59, 999);
+  } else if (range === "month") {
+    const targetDate = selectedMonthYear || now;
+    startDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), 1);
+    endDate = new Date(targetDate.getFullYear(), targetDate.getMonth() + 1, 0);
+    endDate.setHours(23, 59, 59, 999);
+  } else {
+    const targetYear = selectedYear || now.getFullYear();
+    startDate = new Date(targetYear, 0, 1);
+    endDate = new Date(targetYear, 11, 31);
+    endDate.setHours(23, 59, 59, 999);
+  }
+
+  return { startDate, endDate };
 }
