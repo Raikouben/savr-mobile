@@ -16,19 +16,19 @@ jest.mock("@/constants/config", () => ({
   categoryConfig: {
     groceries: {
       displayName: "Groceries",
-      badge: { bg: "#E8F5E9", text: "#2E7D32" },
+      badge: { bg: "#f5f3ff", text: "#4c1d95", border: "#ddd6fe" },
     },
     eating_out: {
       displayName: "Eating Out",
-      badge: { bg: "#FFF3E0", text: "#E65100" },
+      badge: { bg: "#fff7ed", text: "#c2410c", border: "#fed7aa" },
     },
     entertainment: {
       displayName: "Entertainment",
-      badge: { bg: "#E3F2FD", text: "#1565C0" },
+      badge: { bg: "#eff6ff", text: "#1e40af", border: "#bfdbfe" },
     },
     shopping: {
       displayName: "Shopping",
-      badge: { bg: "#ECEFF1", text: "#263238" },
+      badge: { bg: "#ecfdf5", text: "#065f46", border: "#a7f3d0" },
     },
   },
 }));

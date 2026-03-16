@@ -1,5 +1,10 @@
 import React from "react";
-import { render, fireEvent, waitFor } from "@testing-library/react-native";
+import {
+  render,
+  fireEvent,
+  waitFor,
+  screen,
+} from "@testing-library/react-native";
 import SignIn from "./sign-in";
 
 const mockReplace = jest.fn();
@@ -28,19 +33,21 @@ describe("Sign In", () => {
   });
 
   it("logs in successfully with correct credentials", async () => {
+    //defining the expected value for sucessful login
     mockCreate.mockResolvedValueOnce({
       status: "complete",
       createdSessionId: "session_123",
     });
 
-    const { getByText, getAllByTestId } = render(<SignIn />);
+    render(<SignIn />);
 
-    const [emailInput, passwordInput] = getAllByTestId("text-input-outlined");
+    const emailInput = screen.getByTestId("email-input");
+    const passwordInput = screen.getByTestId("password-input");
 
     fireEvent.changeText(emailInput, "maharjankozmo@gmail.com");
     fireEvent.changeText(passwordInput, "agua");
 
-    fireEvent.press(getByText("Continue"));
+    fireEvent.press(screen.getByText("Continue"));
 
     await waitFor(() => {
       expect(mockCreate).toHaveBeenCalledWith({
@@ -57,14 +64,15 @@ describe("Sign In", () => {
   it("shows an error message with incorrect credentials", async () => {
     mockCreate.mockRejectedValueOnce(new Error("Invalid email or password"));
 
-    const { getByText, getAllByTestId } = render(<SignIn />);
+    render(<SignIn />);
 
-    const [emailInput, passwordInput] = getAllByTestId("text-input-outlined");
+    const emailInput = screen.getByTestId("email-input");
+    const passwordInput = screen.getByTestId("password-input");
 
     fireEvent.changeText(emailInput, "wrong@example.com");
     fireEvent.changeText(passwordInput, "wrongpassword");
 
-    fireEvent.press(getByText("Continue"));
+    fireEvent.press(screen.getByText("Continue"));
 
     await waitFor(() => {
       expect(mockCreate).toHaveBeenCalledWith({
@@ -73,7 +81,7 @@ describe("Sign In", () => {
       });
       expect(mockSetActive).not.toHaveBeenCalled();
       expect(mockReplace).not.toHaveBeenCalled();
-      expect(getByText("Invalid email or password")).toBeTruthy();
+      expect(screen.getByText("Invalid email or password")).toBeTruthy();
     });
   });
 });

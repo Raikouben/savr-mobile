@@ -148,6 +148,7 @@ export default function Page() {
           {error ? <Text>{error}</Text> : null}
 
           <TextInput
+            testID="email-input"
             mode="outlined"
             label="Email"
             autoCapitalize="none"
@@ -158,6 +159,7 @@ export default function Page() {
           />
 
           <TextInput
+            testID="password-input"
             mode="outlined"
             label="Password"
             secureTextEntry
