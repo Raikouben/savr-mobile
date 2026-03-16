@@ -21,8 +21,8 @@ import { useReportQuery } from "@/hooks/queries/reportQuery";
 import ReportModal from "../../components/ReportModal";
 import ReportAccordion from "@/components/ReportAccordion";
 import {
-  calculateBudgetSummary,
-  calculateTotalBudgetComparison,
+  calculateCategoryBudgetUsage,
+  calculateTotalBudgetUsage,
 } from "../../utils/budgetHelper";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import {
@@ -97,12 +97,12 @@ export default function Page() {
 
   const budgetSummary = useMemo(() => {
     if (!budget || !transactions) return null;
-    return calculateBudgetSummary(budget, transactions);
+    return calculateCategoryBudgetUsage(budget, transactions);
   }, [budget, transactions]);
 
   const overview = useMemo(() => {
     if (!budget || !transactions) return null;
-    return calculateTotalBudgetComparison(budget, transactions);
+    return calculateTotalBudgetUsage(budget, transactions);
   }, [budget, transactions]);
 
   const groupedBudgetSummary = useMemo(() => {

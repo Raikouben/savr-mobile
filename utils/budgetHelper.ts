@@ -1,5 +1,5 @@
 import { budgetCategories } from "@/constants/config";
-export function calculateBudgetSummary(budget: any, transactions: any[]) {
+export function calculateCategoryBudgetUsage(budget: any, transactions: any[]) {
   const now = new Date();
   const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
   const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
@@ -39,7 +39,7 @@ export function calculateBudgetSummary(budget: any, transactions: any[]) {
   return summary;
 }
 
-export function calculateTotalBudgetComparison(
+export function calculateTotalBudgetUsage(
   budget: any,
   transactions: any[],
 ) {

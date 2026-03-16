@@ -1,17 +1,46 @@
 import {
-  calculateBudgetSummary,
-  calculateTotalBudgetComparison,
+  calculateCategoryBudgetUsage,
+  calculateTotalBudgetUsage,
 } from "./budgetHelper";
 
-const transaction = (date: Date, amount: number, category = "Food") => ({
-  date,
+const tx = (date: Date, amount: number, category: string) => ({
+  date: date.toISOString(),
   amount,
   category,
 });
 
-const transactions = [
-  transaction(new Date(2024, 0, 5), 50, "Food"),
-  transaction(new Date(2024, 0, 10), 30, "Transport"),
-  transaction(new Date(2024, 0, 15), 20, "Entertainment"),
-  transaction(new Date(2024, 0, 20), 100, "Housing"),
-];
+describe("calculateCategoryBudgetUsage", () => {
+  it("calculates budget breakdown for a category", () => {
+    const budget = { groceries: 100 };
+    const transactions = [tx(new Date(), 30, "groceries")];
+    const result = calculateCategoryBudgetUsage(budget, transactions);
+
+    expect(result.groceries).toEqual({
+      budgetAmount: 100,
+      actualSpent: 30,
+      difference: 70,
+      percentageUsed: 30,
+    });
+  });
+
+  it("excludes transactions outside the current month", () => {
+    const now = new Date();
+    const budget = { groceries: 100 };
+    const transactions = [
+      tx(new Date(now.getFullYear(), now.getMonth(), 15), 30, "groceries"),
+      tx(new Date(now.getFullYear(), now.getMonth() - 1, 15), 20, "groceries"),
+    ];
+    const result = calculateCategoryBudgetUsage(budget, transactions);
+    expect(result.groceries.actualSpent).toBe(30);
+  });
+});
+
+describe("calculateTotalBudgetUsage", () => {
+  it("calculates total budget usage correctly", () => {
+    const budget = { total_budget: 200 };
+    const transactions = [tx(new Date(), 30, "groceries")];
+    const result = calculateTotalBudgetUsage(budget, transactions);
+    expect(result.totalBudget).toBe(200);
+    expect(result.totalSpent).toBe(30);
+  });
+});
