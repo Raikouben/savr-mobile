@@ -62,6 +62,12 @@
         "projectId": "d9734902-a4e4-4586-9420-e2774bd63b78"
       }
     },
-    "owner": "raikouben"
+    "owner": "raikouben",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/d9734902-a4e4-4586-9420-e2774bd63b78"
+    }
   }
 }
