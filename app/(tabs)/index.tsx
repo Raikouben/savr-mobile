@@ -352,6 +352,7 @@ export default function Page() {
                                     {Number(data.budgetAmount).toFixed(0)}
                                   </Text>
                                   <TouchableOpacity
+                                    testID="category-info-button"
                                     onPress={() => {
                                       setSelectedCategory({
                                         category: name,
