@@ -113,7 +113,7 @@ export default function profile() {
         <BudgetDisplay />
         <Button
           mode="contained"
-          onPress={() => router.push("../(setup)/income-disclosure?edit=true")}
+          onPress={() => router.push("../(setup)?edit=true")}
         >
           Update lifestyle & income
         </Button>
