@@ -12,7 +12,12 @@ import { useMemo } from "react";
 import DateSelector from "../../components/DateSelector";
 import CategoryPicker from "../../components/CategoryPicker";
 import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
-import { getCategoryDisplayName, getCategoryIcon } from "@/constants/config";
+import {
+  getCategoryDisplayName,
+  getCategoryIcon,
+  categoryConfig,
+  getCategoryColor,
+} from "@/constants/config";
 import CategoryFilter from "@/components/CategoryFilter";
 import { useAppTheme } from "@/themes/useAppTheme";
 import {
@@ -148,11 +153,11 @@ export default function transactions() {
             <View style={{ paddingBottom: 10 }}>
               <List.Item
                 style={{
-                  backgroundColor: surfaceColor,
+                  backgroundColor: getCategoryColor(item.category) + "22",
                   borderRadius: 8,
                   paddingBottom: 15,
-                  borderColor: textColor,
-                  borderWidth: 2,
+                  borderColor: getCategoryColor(item.category),
+                  borderWidth: 1,
                 }}
                 title={getCategoryDisplayName(item.category)}
                 descriptionStyle={{ color: textColor }}
@@ -160,12 +165,32 @@ export default function transactions() {
                   item.description ? ` • ${item.description}` : ""
                 }`}
                 left={(props) => (
-                  <Ionicons
-                    name={getCategoryIcon(item.category) as any}
-                    size={22}
-                    color={textColor}
-                    style={{ marginLeft: 8, alignSelf: "center" }}
-                  />
+                  <View
+                    style={{
+                      width: 36,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      paddingVertical: 10,
+                      paddingLeft: 10,
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: 8,
+                        // backgroundColor: getCategoryColor(item.category) + "22",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Ionicons
+                        name={getCategoryIcon(item.category) as any}
+                        size={20}
+                        color={getCategoryColor(item.category)}
+                      />
+                    </View>
+                  </View>
                 )}
                 right={() => (
                   <View

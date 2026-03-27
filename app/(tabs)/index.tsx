@@ -62,26 +62,32 @@ export default function Page() {
   const [testing, setTesting] = useState(true);
 
   useEffect(() => {
-    if (user) {
-      const today = new Date().toDateString();
-      const lastLogged = user.last_logged
-        ? new Date(user.last_logged).toDateString()
-        : null;
+    if (!user || !transactions || transactionsLoading) return;
 
-      if (lastLogged !== today) {
-        const newStreak = user.streak + 1;
-        const newDaysLogged = user.days_logged + 1;
+    const today = new Date().toDateString();
+    const lastLogged = user.last_logged
+      ? new Date(user.last_logged).toDateString()
+      : null;
 
-        updateUserLoggedInfo({
-          last_logged: new Date().toISOString(),
-          days_logged: newDaysLogged,
-          streak: newStreak,
-        }).catch((error) => {
-          console.error("Failed to update logged info:", error);
-        });
-      }
+    const hasTransactionToday = transactions.some((tx: any) => {
+      if (!tx?.date) return false;
+      const txDate = new Date(tx.date).toDateString();
+      return txDate === today;
+    });
+
+    if (lastLogged !== today && hasTransactionToday) {
+      const newStreak = user.streak + 1;
+      const newDaysLogged = user.days_logged + 1;
+
+      updateUserLoggedInfo({
+        last_logged: new Date().toISOString(),
+        days_logged: newDaysLogged,
+        streak: newStreak,
+      }).catch((error) => {
+        console.error("Failed to update logged info:", error);
+      });
     }
-  }, [user]);
+  }, [user, transactions, transactionsLoading, updateUserLoggedInfo]);
 
   // useEffect(() => {
   //   if (reports && reports.length > 0) {
