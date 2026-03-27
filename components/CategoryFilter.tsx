@@ -81,31 +81,31 @@ export default function CategoryFilter({
                       setVisible(false);
                     }}
                     left={(props) => (
-                  <View
-                    style={{
-                      width: 36,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      paddingLeft: 10,
-                    }}
-                  >
-                    <View
-                      style={{
-                        width: 36,
-                        height: 36,
-                        borderRadius: 8,
-                        backgroundColor: getCategoryColor(category) + "22",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Ionicons
-                        name={getCategoryIcon(category) as any}
-                        size={20}
-                        color={getCategoryColor(category)}
-                      />
-                    </View>
-                  </View>
+                      <View
+                        style={{
+                          width: 36,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          paddingLeft: 10,
+                        }}
+                      >
+                        <View
+                          style={{
+                            width: 36,
+                            height: 36,
+                            borderRadius: 8,
+                            backgroundColor: getCategoryColor(category) + "22",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Ionicons
+                            name={getCategoryIcon(category) as any}
+                            size={20}
+                            color={getCategoryColor(category)}
+                          />
+                        </View>
+                      </View>
                     )}
                     right={(props) =>
                       selectedCategory === category ? (
