@@ -93,6 +93,9 @@ export const AdviceModal = ({
           ) : (
             <Text style={{ color: textColor }}>{advice}</Text>
           )}
+          <Button mode="contained" onPress={onClose}>
+            Close
+          </Button>
         </View>
       </Modal>
     </Portal>
