@@ -5,6 +5,8 @@ import {
   budgetCategories,
   getCategoryIcon,
   getCategoryDisplayName,
+  getCategoryColor,
+  categoryConfig,
 } from "../constants/config";
 import {
   Button,
@@ -98,12 +100,31 @@ export default function CategoryPicker({
                       setVisible(false);
                     }}
                     left={(props) => (
-                      <Ionicons
-                        name={getCategoryIcon(category) as any}
-                        size={24}
-                        color={textColor}
-                        style={{ marginLeft: 8, alignSelf: "center" }}
-                      />
+                      <View
+                        style={{
+                          width: 36,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          paddingLeft: 10,
+                        }}
+                      >
+                        <View
+                          style={{
+                            width: 36,
+                            height: 36,
+                            borderRadius: 8,
+                            backgroundColor: getCategoryColor(category) + "22",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Ionicons
+                            name={getCategoryIcon(category) as any}
+                            size={20}
+                            color={getCategoryColor(category)}
+                          />
+                        </View>
+                      </View>
                     )}
                     right={(props) =>
                       selectedCategory === category ? (
