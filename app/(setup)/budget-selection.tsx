@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter, Redirect } from "expo-router";
 import { getCategoryDisplayName } from "../../constants/config";
 import { View, TouchableOpacity, ScrollView } from "react-native";
 import { useRecommender } from "@/hooks/useRecommender";
 import { useBudget } from "@/hooks/useBudget";
 import { useUserQuery } from "@/hooks/queries/authQuery";
+import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 import { IconButton, MD2Colors } from "react-native-paper";
 import {
   Text,
@@ -40,6 +41,7 @@ export default function BudgetSelection() {
     getRecommenderExplanation,
   } = useRecommender();
   const { createBudget, loading: budgetLoading } = useBudget();
+  const { budget, isLoading: budgetQueryLoading } = useBudgetQuery();
   const [viewExplanation, setViewExplanation] = useState(false);
   const { user } = useUserQuery();
   const [explanation, setExplanation] = useState<string | null>(null);
@@ -48,6 +50,11 @@ export default function BudgetSelection() {
     {},
   );
   const [isEditing, setIsEditing] = useState(false);
+
+  // If setup is already complete (user has budget), redirect to tabs
+  if (!budgetQueryLoading && budget) {
+    return <Redirect href={"/(tabs)"} />;
+  }
 
   useEffect(() => {
     const fetchRecommendation = async () => {

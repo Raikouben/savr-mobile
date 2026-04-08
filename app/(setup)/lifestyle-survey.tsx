@@ -1,7 +1,8 @@
 import { View, TouchableOpacity, ScrollView } from "react-native";
 import { useState, useEffect } from "react";
-import { useRouter } from "expo-router";
+import { useRouter, Redirect } from "expo-router";
 import { useSurveyQuery } from "@/hooks/queries/surveyQuery";
+import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 import { KeyboardAvoidingView } from "react-native";
 import {
   Text,
@@ -131,6 +132,7 @@ export default function LifestyleSurvey() {
   const { backgroundColor, textColor } = useAppTheme();
   const [answers, setAnswers] = useState<{ [key: string]: number }>({});
   const [context, setContext] = useState<string>("");
+  const { budget, isLoading: budgetLoading } = useBudgetQuery();
   const {
     surveyAnswers,
     isLoading,
@@ -140,6 +142,11 @@ export default function LifestyleSurvey() {
   } = useSurveyQuery();
 
   const [hasExistingAnswers, setHasExistingAnswers] = useState(false);
+
+  // If setup is already complete (user has budget), redirect to tabs
+  if (!budgetLoading && budget) {
+    return <Redirect href={"/(tabs)"} />;
+  }
 
   useEffect(() => {
     if (surveyAnswers) {

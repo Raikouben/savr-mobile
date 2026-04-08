@@ -2,19 +2,26 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useUserQuery } from "@/hooks/queries/authQuery";
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 import { useState, useEffect } from "react";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter, Redirect } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
 import { View } from "react-native";
 import { Text, TextInput, Button, Card } from "react-native-paper";
 import { useAppTheme } from "@/themes/useAppTheme";
 import { ActivityIndicator } from "react-native-paper";
+
 export default function IncomeDisclosure() {
   const router = useRouter();
   const [income, setIncome] = useState<number | null>(null);
-  const { user, updateUserIncome, isLoading } = useUserQuery();
+  const { user, updateUserIncome, isLoading: userLoading } = useUserQuery();
+  const { budget, isLoading: budgetLoading } = useBudgetQuery();
   const [submitting, setSubmitting] = useState(false);
   const { edit } = useLocalSearchParams();
   const { backgroundColor, textColor } = useAppTheme();
+
+  // If setup is already complete (user has budget), redirect to tabs
+  if (!budgetLoading && budget) {
+    return <Redirect href={"/(tabs)"} />;
+  }
 
   useEffect(() => {
     if (user?.income != null && income === null) {
@@ -53,16 +60,14 @@ export default function IncomeDisclosure() {
     }
     try {
       console.log("Submitting income:", income);
-      const result = await updateUserIncome(income);
-      console.log("Update result:", result);
+      await updateUserIncome(income);
+      router.push("/(setup)/lifestyle-survey");
     } catch (error) {
-      setSubmitting(false);
       console.error("Error updating income:", error);
       alert("There was an error updating your income. Please try again.");
-      return;
+    } finally {
+      setSubmitting(false);
     }
-    setSubmitting(false);
-    router.replace("/(setup)/lifestyle-survey");
   };
   return (
     <View

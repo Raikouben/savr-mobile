@@ -36,17 +36,7 @@ function RootLayoutNav() {
   const { isLoading: subscriptionLoading } = useSubscriptionQuery();
   const { backgroundColor, textColor } = useAppTheme();
 
-  const allLoaded =
-    isLoaded &&
-    !(
-      isSignedIn &&
-      (userLoading ||
-        budgetLoading ||
-        transactionsLoading ||
-        reportLoading ||
-        surveyLoading ||
-        subscriptionLoading)
-    );
+  const allLoaded = isLoaded && !(isSignedIn && userLoading);
 
   useEffect(() => {
     if (allLoaded) {
