@@ -47,15 +47,26 @@ export function aggregateByTimeRange(
 
     let label: string;
     if (range === "week") {
-      const dayNames = ["S", "M", "T", "W", "T", "F", "S"];
+      const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
       label = dayNames[txDate.getUTCDay()];
     } else if (range === "month") {
       label = String(txDate.getUTCDate());
     } else {
-      label = txDate.toLocaleDateString("en-US", {
-        month: "short",
-        timeZone: "UTC",
-      });
+      const monthNames = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+      label = monthNames[txDate.getUTCMonth()];
     }
 
     if (!totals[label]) totals[label] = 0;
@@ -66,7 +77,7 @@ export function aggregateByTimeRange(
   const chartData: Array<{ value: number; label: string }> = [];
 
   if (range === "week") {
-    const weekDays = ["M", "T", "W", "T", "F", "S", "S"];
+    const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
     for (const day of weekDays) {
       chartData.push({ value: totals[day] || 0, label: day });
     }
@@ -80,18 +91,18 @@ export function aggregateByTimeRange(
     }
   } else {
     const monthLabels = [
-      "J",
-      "F",
-      "M",
-      "A",
-      "M",
-      "J",
-      "J",
-      "A",
-      "S",
-      "O",
-      "N",
-      "D",
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
     ];
     for (const month of monthLabels) {
       chartData.push({ value: totals[month] || 0, label: month });
