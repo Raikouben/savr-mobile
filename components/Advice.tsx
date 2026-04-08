@@ -85,13 +85,14 @@ export const AdviceModal = ({
                 alignItems: "center",
                 justifyContent: "center",
                 gap: 12,
+                padding: 20,
               }}
             >
               <ActivityIndicator animating={true} />
               <Text style={{ color: textColor }}>Loading advice...</Text>
             </View>
           ) : (
-            <Text style={{ color: textColor }}>{advice}</Text>
+            <Text style={{ color: textColor, marginBottom: 15 }}>{advice}</Text>
           )}
           <Button mode="contained" onPress={onClose}>
             Close
