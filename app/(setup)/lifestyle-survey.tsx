@@ -13,6 +13,7 @@ import {
   ActivityIndicator,
 } from "react-native-paper";
 import { useAppTheme } from "@/themes/useAppTheme";
+import { useLocalSearchParams } from "expo-router";
 const lifestyleQuestions = [
   {
     id: "housing_impact",
@@ -133,6 +134,7 @@ export default function LifestyleSurvey() {
   const [answers, setAnswers] = useState<{ [key: string]: number }>({});
   const [context, setContext] = useState<string>("");
   const { budget, isLoading: budgetLoading } = useBudgetQuery();
+  const { edit } = useLocalSearchParams();
   const {
     surveyAnswers,
     isLoading,
@@ -144,7 +146,7 @@ export default function LifestyleSurvey() {
   const [hasExistingAnswers, setHasExistingAnswers] = useState(false);
 
   // If setup is already complete (user has budget), redirect to tabs
-  if (!budgetLoading && budget) {
+  if (!budgetLoading && budget && String(edit) !== "true") {
     return <Redirect href={"/(tabs)"} />;
   }
 
@@ -184,7 +186,10 @@ export default function LifestyleSurvey() {
       } else {
         await submitSurveyAnswers(data);
       }
-      router.replace("/(setup)/budget-selection");
+      router.push({
+        pathname: "/(setup)/budget-selection",
+        params: { edit: "true" },
+      });
       setAnswers({});
       setContext("");
     } catch (error) {

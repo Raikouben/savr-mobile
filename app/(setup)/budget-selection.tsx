@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import { useLocalSearchParams, useRouter, Redirect } from "expo-router";
 import { getCategoryDisplayName } from "../../constants/config";
-import { View, TouchableOpacity, ScrollView } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  ScrollView,
+  KeyboardAvoidingView,
+} from "react-native";
 import { useRecommender } from "@/hooks/useRecommender";
 import { useBudget } from "@/hooks/useBudget";
 import { useUserQuery } from "@/hooks/queries/authQuery";
@@ -50,9 +55,10 @@ export default function BudgetSelection() {
     {},
   );
   const [isEditing, setIsEditing] = useState(false);
+  const { edit } = useLocalSearchParams();
 
   // If setup is already complete (user has budget), redirect to tabs
-  if (!budgetQueryLoading && budget) {
+  if (!budgetQueryLoading && budget && String(edit) !== "true") {
     return <Redirect href={"/(tabs)"} />;
   }
 
@@ -148,125 +154,131 @@ export default function BudgetSelection() {
   }
 
   return (
-    <ScrollView
-      contentContainerStyle={{
-        padding: 20,
-        gap: 20,
-        backgroundColor: backgroundColor,
-        flexGrow: 1,
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-      showsVerticalScrollIndicator={false}
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: backgroundColor }}
+      behavior="padding"
+      keyboardVerticalOffset={60}
     >
-      {!viewExplanation && explanation ? (
-        <Card>
-          <Card.Title
-            title={isEditing ? "Edit Budget" : "Budget Overview"}
-            titleStyle={{
-              fontSize: 18,
-              fontWeight: "bold",
-            }}
-            right={(props) => (
-              <IconButton
-                {...props}
-                icon={isEditing ? "close" : "pencil"}
-                onPress={() => setIsEditing(!isEditing)}
-              />
-            )}
-          />
-          <Card.Content>
-            {user?.income && (
-              <Text variant="titleMedium" style={{ marginBottom: 10 }}>
-                Income: £{parseFloat(user.income)}
-              </Text>
-            )}
-            <Text variant="titleMedium" style={{ marginBottom: 10 }}>
-              Total Allocated: £{calculateTotal().toFixed(2)}
-            </Text>
-            <Text
-              variant="titleMedium"
-              style={{
-                marginBottom: 10,
-                color: calculateRemaining() < 0 ? "#ff6b6b" : "#51cf66",
+      <ScrollView
+        contentContainerStyle={{
+          padding: 20,
+          gap: 20,
+          backgroundColor: backgroundColor,
+          flexGrow: 1,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        showsVerticalScrollIndicator={false}
+      >
+        {!viewExplanation && explanation ? (
+          <Card>
+            <Card.Title
+              title={isEditing ? "Edit Budget" : "Budget Overview"}
+              titleStyle={{
+                fontSize: 18,
                 fontWeight: "bold",
               }}
-            >
-              Remaining: £{calculateRemaining().toFixed(2)}
-            </Text>
+              right={(props) => (
+                <IconButton
+                  {...props}
+                  icon={isEditing ? "close" : "pencil"}
+                  onPress={() => setIsEditing(!isEditing)}
+                />
+              )}
+            />
+            <Card.Content>
+              {user?.income && (
+                <Text variant="titleMedium" style={{ marginBottom: 10 }}>
+                  Income: £{parseFloat(user.income)}
+                </Text>
+              )}
+              <Text variant="titleMedium" style={{ marginBottom: 10 }}>
+                Total Allocated: £{calculateTotal().toFixed(2)}
+              </Text>
+              <Text
+                variant="titleMedium"
+                style={{
+                  marginBottom: 10,
+                  color: calculateRemaining() < 0 ? "#ff6b6b" : "#51cf66",
+                  fontWeight: "bold",
+                }}
+              >
+                Remaining: £{calculateRemaining().toFixed(2)}
+              </Text>
 
-            {categories.map((category) => (
-              <View key={category} style={{ marginBottom: 10 }}>
-                {isEditing ? (
-                  <TextInput
-                    mode="outlined"
-                    placeholder="Amount"
-                    //THIS LABEL DOESNT IMMEDIATELY LOAD
-                    label={getCategoryDisplayName(category)}
-                    value={budgetValues[category]}
-                    onChangeText={(text) =>
-                      setBudgetValues({ ...budgetValues, [category]: text })
-                    }
-                    keyboardType="decimal-pad"
-                    left={<TextInput.Affix text="£" />}
-                  />
-                ) : (
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      paddingVertical: 8,
-                    }}
-                  >
-                    <Text variant="bodyLarge">
-                      {getCategoryDisplayName(category)}
-                    </Text>
-                    <Text variant="bodyLarge" style={{ fontWeight: "600" }}>
-                      £{parseFloat(budgetValues[category] || "0").toFixed(2)}
-                    </Text>
-                  </View>
-                )}
-              </View>
-            ))}
-          </Card.Content>
-          <Card.Actions>
-            <Button
-              mode="contained"
-              onPress={handleAcceptBudget}
-              disabled={budgetLoading}
-            >
-              <Text style={{ color: textOnPrimary, fontWeight: "bold" }}>
-                {budgetLoading ? "Creating..." : "Accept Budget"}
-              </Text>
-            </Button>
-            <Button
-              mode="outlined"
-              onPress={() => setViewExplanation(!viewExplanation)}
-            >
-              <Text style={{ color: textColor, fontWeight: "bold" }}>
-                View Explanation
-              </Text>
-            </Button>
-          </Card.Actions>
-        </Card>
-      ) : (
-        <Card>
-          <Card.Title title="Budget Explanation" />
-          <Card.Content>
-            <Text>{explanation}</Text>
-          </Card.Content>
-          <Card.Actions>
-            <Button
-              mode="contained"
-              onPress={() => setViewExplanation(!viewExplanation)}
-            >
-              <Text style={{ color: textOnPrimary, fontWeight: "bold" }}>
-                Back to Budget
-              </Text>
-            </Button>
-          </Card.Actions>
-        </Card>
-      )}
-    </ScrollView>
+              {categories.map((category) => (
+                <View key={category} style={{ marginBottom: 10 }}>
+                  {isEditing ? (
+                    <TextInput
+                      mode="outlined"
+                      placeholder="Amount"
+                      //THIS LABEL DOESNT IMMEDIATELY LOAD
+                      label={getCategoryDisplayName(category)}
+                      value={budgetValues[category]}
+                      onChangeText={(text) =>
+                        setBudgetValues({ ...budgetValues, [category]: text })
+                      }
+                      keyboardType="decimal-pad"
+                      left={<TextInput.Affix text="£" />}
+                    />
+                  ) : (
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        paddingVertical: 8,
+                      }}
+                    >
+                      <Text variant="bodyLarge">
+                        {getCategoryDisplayName(category)}
+                      </Text>
+                      <Text variant="bodyLarge" style={{ fontWeight: "600" }}>
+                        £{parseFloat(budgetValues[category] || "0").toFixed(2)}
+                      </Text>
+                    </View>
+                  )}
+                </View>
+              ))}
+            </Card.Content>
+            <Card.Actions>
+              <Button
+                mode="contained"
+                onPress={handleAcceptBudget}
+                disabled={budgetLoading}
+              >
+                <Text style={{ color: textOnPrimary, fontWeight: "bold" }}>
+                  {budgetLoading ? "Creating..." : "Accept Budget"}
+                </Text>
+              </Button>
+              <Button
+                mode="outlined"
+                onPress={() => setViewExplanation(!viewExplanation)}
+              >
+                <Text style={{ color: textColor, fontWeight: "bold" }}>
+                  View Explanation
+                </Text>
+              </Button>
+            </Card.Actions>
+          </Card>
+        ) : (
+          <Card>
+            <Card.Title title="Budget Explanation" />
+            <Card.Content>
+              <Text>{explanation}</Text>
+            </Card.Content>
+            <Card.Actions>
+              <Button
+                mode="contained"
+                onPress={() => setViewExplanation(!viewExplanation)}
+              >
+                <Text style={{ color: textOnPrimary, fontWeight: "bold" }}>
+                  Back to Budget
+                </Text>
+              </Button>
+            </Card.Actions>
+          </Card>
+        )}
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

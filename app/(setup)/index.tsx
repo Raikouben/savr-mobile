@@ -2,7 +2,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useUserQuery } from "@/hooks/queries/authQuery";
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 import { useState, useEffect } from "react";
-import { useLocalSearchParams, useRouter, Redirect } from "expo-router";
+import {
+  Redirect,
+  useLocalSearchParams,
+  useRouter,
+  useSegments,
+} from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
 import { View } from "react-native";
 import { Text, TextInput, Button, Card } from "react-native-paper";
@@ -19,7 +24,7 @@ export default function IncomeDisclosure() {
   const { backgroundColor, textColor } = useAppTheme();
 
   // If setup is already complete (user has budget), redirect to tabs
-  if (!budgetLoading && budget) {
+  if (!budgetLoading && budget && String(edit) !== "true") {
     return <Redirect href={"/(tabs)"} />;
   }
 
@@ -52,22 +57,14 @@ export default function IncomeDisclosure() {
 
   console.log("No income set, displaying income disclosure form");
   const handleSubmit = async () => {
+    if (income === null) return;
     setSubmitting(true);
-    if (income == null || income <= 0) {
-      setSubmitting(false);
-      alert("Please enter a valid income greater than 0");
-      return;
-    }
-    try {
-      console.log("Submitting income:", income);
-      await updateUserIncome(income);
-      router.push("/(setup)/lifestyle-survey");
-    } catch (error) {
-      console.error("Error updating income:", error);
-      alert("There was an error updating your income. Please try again.");
-    } finally {
-      setSubmitting(false);
-    }
+    await updateUserIncome(income);
+    setSubmitting(false);
+    router.push({
+      pathname: "/(setup)/lifestyle-survey",
+      params: { edit: "true" },
+    });
   };
   return (
     <View

@@ -1,5 +1,5 @@
 import { useAuth } from "@clerk/clerk-expo";
-import { Redirect, Stack } from "expo-router";
+import { Redirect, Stack, useLocalSearchParams } from "expo-router";
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 import { ActivityIndicator, Text } from "react-native-paper";
 import { View } from "react-native";
@@ -9,6 +9,7 @@ export default function Setup() {
   const { isLoaded, isSignedIn } = useAuth();
   const { budget, isLoading } = useBudgetQuery();
   const { backgroundColor, textColor } = useAppTheme();
+  const { edit } = useLocalSearchParams();
 
   if (!isLoaded || (isSignedIn && isLoading))
     return (
@@ -29,6 +30,10 @@ export default function Setup() {
   // If user is not authenticated, redirect to sign in
   if (!isSignedIn) {
     return <Redirect href={"/(auth)/sign-in"} />;
+  }
+
+  if (budget && String(edit) !== "true") {
+    return <Redirect href={"/(tabs)"} />;
   }
 
   return <Stack screenOptions={{ headerShown: false }} />;
