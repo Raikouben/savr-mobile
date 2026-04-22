@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   KeyboardAvoidingView,
+  StyleSheet,
 } from "react-native";
 import { useRecommender } from "@/hooks/useRecommender";
 import { useBudget } from "@/hooks/useBudget";
@@ -20,8 +21,18 @@ import {
   RadioButton,
   ActivityIndicator,
   Surface,
+  Divider,
 } from "react-native-paper";
 import { useAppTheme } from "@/themes/useAppTheme";
+
+export interface BudgetOverview {
+  opening: string;
+  insights: {
+    category: string;
+    explanation: string;
+  }[];
+  summary: string;
+}
 
 const categories = [
   "housing",
@@ -39,7 +50,8 @@ const categories = [
 
 export default function BudgetSelection() {
   const router = useRouter();
-  const { backgroundColor, textOnPrimary, textColor } = useAppTheme();
+  const { backgroundColor, textOnPrimary, textColor, surfaceVariant } =
+    useAppTheme();
   const {
     getBudgetRecommendation,
     loading: recommenderLoading,
@@ -49,7 +61,7 @@ export default function BudgetSelection() {
   const { budget, isLoading: budgetQueryLoading } = useBudgetQuery();
   const [viewExplanation, setViewExplanation] = useState(false);
   const { user } = useUserQuery();
-  const [explanation, setExplanation] = useState<string | null>(null);
+  const [explanation, setExplanation] = useState<BudgetOverview | null>(null);
   const [recommendation, setRecommendation] = useState<any>(null);
   const [budgetValues, setBudgetValues] = useState<{ [key: string]: string }>(
     {},
@@ -170,8 +182,58 @@ export default function BudgetSelection() {
         }}
         showsVerticalScrollIndicator={false}
       >
-        {!viewExplanation && explanation ? (
-          <Card>
+        {viewExplanation && explanation ? (
+          <Card
+            style={[
+              styles.explanationContainer,
+              { width: "100%", backgroundColor: backgroundColor },
+            ]}
+          >
+            <View style={styles.header}>
+              <Text variant="titleLarge" style={styles.headerTitle}>
+                Your Budget Explanation
+              </Text>
+            </View>
+
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.pageScroll}
+            >
+              <Text variant="bodyMedium" style={styles.subtitle}>
+                {explanation.opening}
+              </Text>
+
+              <Divider style={styles.divider} />
+
+              {explanation.insights.map((insight, i) => (
+                <View
+                  key={i}
+                  style={[styles.card, { backgroundColor: surfaceVariant }]}
+                >
+                  <Text variant="titleSmall" style={styles.tipTitle}>
+                    {getCategoryDisplayName(insight.category)}
+                  </Text>
+                  <Text variant="bodySmall" style={styles.cardBody}>
+                    {insight.explanation}
+                  </Text>
+                </View>
+              ))}
+
+              <Divider style={styles.divider} />
+
+              <Text variant="bodyMedium" style={styles.subtitle}>
+                {explanation.summary}
+              </Text>
+            </ScrollView>
+
+            <View style={styles.footer}>
+              <Button mode="contained" onPress={() => setViewExplanation(false)}>
+                Back to Budget
+              </Button>
+            </View>
+          </Card>
+        ) : (
+          <Card style={{ width: "100%" }}>
             <Card.Title
               title={isEditing ? "Edit Budget" : "Budget Overview"}
               titleStyle={{
@@ -212,7 +274,6 @@ export default function BudgetSelection() {
                     <TextInput
                       mode="outlined"
                       placeholder="Amount"
-                      //THIS LABEL DOESNT IMMEDIATELY LOAD
                       label={getCategoryDisplayName(category)}
                       value={budgetValues[category]}
                       onChangeText={(text) =>
@@ -246,34 +307,14 @@ export default function BudgetSelection() {
                 onPress={handleAcceptBudget}
                 disabled={budgetLoading}
               >
-                <Text style={{ color: textOnPrimary, fontWeight: "bold" }}>
-                  {budgetLoading ? "Creating..." : "Accept Budget"}
-                </Text>
+                {budgetLoading ? "Creating..." : "Accept Budget"}
               </Button>
               <Button
                 mode="outlined"
-                onPress={() => setViewExplanation(!viewExplanation)}
+                onPress={() => setViewExplanation(true)}
+                disabled={!explanation}
               >
-                <Text style={{ color: textColor, fontWeight: "bold" }}>
-                  View Explanation
-                </Text>
-              </Button>
-            </Card.Actions>
-          </Card>
-        ) : (
-          <Card>
-            <Card.Title title="Budget Explanation" />
-            <Card.Content>
-              <Text>{explanation}</Text>
-            </Card.Content>
-            <Card.Actions>
-              <Button
-                mode="contained"
-                onPress={() => setViewExplanation(!viewExplanation)}
-              >
-                <Text style={{ color: textOnPrimary, fontWeight: "bold" }}>
-                  Back to Budget
-                </Text>
+                View Explanation
               </Button>
             </Card.Actions>
           </Card>
@@ -282,3 +323,50 @@ export default function BudgetSelection() {
     </KeyboardAvoidingView>
   );
 }
+
+const styles = StyleSheet.create({
+  explanationContainer: {
+    borderRadius: 16,
+    overflow: "hidden",
+    paddingBottom: 8,
+  },
+  header: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 12,
+  },
+  headerTitle: {
+    fontWeight: "bold",
+  },
+  subtitle: {
+    lineHeight: 22,
+    paddingHorizontal: 16,
+  },
+  pageScroll: {
+    paddingBottom: 24,
+    gap: 12,
+  },
+  card: {
+    borderRadius: 12,
+    padding: 12,
+    gap: 6,
+    marginHorizontal: 16,
+  },
+  tipTitle: {
+    fontWeight: "bold",
+  },
+  cardBody: {
+    lineHeight: 18,
+    opacity: 0.9,
+  },
+  divider: {
+    opacity: 0.15,
+    marginVertical: 12,
+    marginHorizontal: 16,
+  },
+  footer: {
+    paddingHorizontal: 16,
+    paddingTop: 6,
+    paddingBottom: 12,
+  },
+});
