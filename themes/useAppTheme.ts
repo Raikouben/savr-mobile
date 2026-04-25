@@ -1,5 +1,6 @@
 import { useTheme } from "react-native-paper";
 
+// custom hook to provide easy access to theme colors and properties throughout the app
 export const useAppTheme = () => {
   const theme = useTheme();
   const colors = theme.colors as any;

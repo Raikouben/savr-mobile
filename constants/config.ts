@@ -1,37 +1,12 @@
 // API Configuration
-// export const API_URL = process.env.EXPO_PUBLIC_RENDER_URL;
 
+// deployment URL - uncomment for production
+// export const API_URL = process.env.EXPO_PUBLIC_RENDER_URL;
+// local development URL - update with your local IP address
 export const API_URL = "http://192.168.1.241:3000/api";
 
-// export const budgetCategories = [
-//   "Housing",
-//   "Utilities",
-//   "Transportation",
-//   "Groceries",
-//   "Eating_Out",
-//   "Shopping",
-//   "Health",
-//   "Entertainment",
-//   "Savings",
-//   "Debt",
-//   "Miscellaneous",
-// ] as const;
 
-// export const categoryIcons: Record<(typeof budgetCategories)[number], string> =
-//   {
-//     Housing: "home-outline",
-//     Utilities: "flash-outline",
-//     Transportation: "car-outline",
-//     Groceries: "basket-outline",
-//     Eating_Out: "restaurant-outline",
-//     Shopping: "cart-outline",
-//     Health: "fitness-outline",
-//     Entertainment: "musical-notes-outline",
-//     Savings: "wallet-outline",
-//     Debt: "card-outline",
-//     Miscellaneous: "ellipsis-horizontal-circle-outline",
-//   };
-
+// configure budget fields to reduce boilerplate and ensure consistency across the app
 export const categoryConfig = {
   housing: {
     color: "#EF4444",
@@ -127,6 +102,7 @@ export const getMerchantCategory = (
   return (merchant?.category as keyof typeof categoryConfig) || "miscellaneous";
 };
 
+// list of merchants and their associated categories for transaction categorisation
 export const merchants = [
   // Groceries
   { name: "Sainsbury's", category: "groceries" },

@@ -39,9 +39,6 @@ export default function profile() {
         Profile
       </Text>
 
-      {/* User info */}
-      {/* <UserDisplay /> */}
-
       {/* Stats */}
       <Card>
         <Card.Title title="Stats" titleStyle={{ fontWeight: "bold" }} />
@@ -107,9 +104,7 @@ export default function profile() {
 
       {/* Budget */}
       <View style={{ gap: 8 }}>
-        {/* <Text style={{ fontSize: 18, fontWeight: "bold", color: textColor }}>
-          Budget
-        </Text> */}
+
         <BudgetDisplay />
         <Button
           mode="contained"
@@ -121,9 +116,7 @@ export default function profile() {
 
       {/* Historical Report */}
       <View style={{ gap: 8 }}>
-        {/* <Text style={{ fontSize: 18, fontWeight: "bold", color: textColor }}>
-          Reports
-        </Text> */}
+
         <HistoricalReport />
       </View>
 

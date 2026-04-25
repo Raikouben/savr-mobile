@@ -29,6 +29,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 const KEY = "savr_selected_theme";
 
+// function to provide theme context with persistence
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [themeName, setThemeName] = useState<ThemeName>("lightTheme");
   const [isLoading, setIsLoading] = useState(true);

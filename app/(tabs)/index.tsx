@@ -19,7 +19,6 @@ import { useTransactionQuery } from "@/hooks/queries/transactionQuery";
 import { useUserQuery } from "@/hooks/queries/authQuery";
 import { useReportQuery } from "@/hooks/queries/reportQuery";
 import ReportModal from "../../components/ReportModal";
-import ReportAccordion from "@/components/ReportAccordion";
 import {
   calculateCategoryBudgetUsage,
   calculateTotalBudgetUsage,
