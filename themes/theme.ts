@@ -5,6 +5,8 @@ import lightTheme from "./lightTheme";
 import valentineTheme from "./valentineTheme";
 import darkTheme from "./darkTheme";
 import purpleTheme from "./purpleTheme";
+// Themes are inspired by DaisyUI themes
+//daisyui.com. (n.d.). daisyUI — Tailwind CSS Components. [online] Available at: https://daisyui.com/.
 
 const coffeeTheme: MD3Theme = {
   ...MD3LightTheme,

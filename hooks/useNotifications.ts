@@ -3,7 +3,7 @@ import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 import { useUserQuery } from "./queries/authQuery";
 import * as SecureStore from "expo-secure-store";
-
+// genAI was employed to assist in undersatnding and implementation of notificaiton.
 export const NOTIFICATIONS_ENABLED_KEY = "savr-notifications-enabled";
 
 Notifications.setNotificationHandler({
