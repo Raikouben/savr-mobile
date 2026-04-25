@@ -1,4 +1,6 @@
 import { budgetCategories, getCategoryColor } from "@/constants/config";
+
+// utility function to aggregate transactions by day/week/month for charting purposes
 export function aggregateByTimeRange(
   transactions: any[],
   range: "week" | "month" | "year",
@@ -8,7 +10,7 @@ export function aggregateByTimeRange(
 ) {
   const now = new Date();
 
-  // STEP 1: Figure out what date range we're looking at
+  // 1) Figure out what date range we're looking at
   let startDate: Date;
   let endDate: Date;
 
@@ -36,7 +38,7 @@ export function aggregateByTimeRange(
     endDate.setHours(23, 59, 59, 999);
   }
 
-  // STEP 2: Group transactions and sum by time period
+  // 2) Group transactions and sum by time period
   const totals: { [key: string]: number } = {};
 
   for (const tx of transactions) {
@@ -73,7 +75,7 @@ export function aggregateByTimeRange(
     totals[label] += Number(tx.amount);
   }
 
-  // STEP 3: Build chart data
+  // 3) Build chart data
   const chartData: Array<{ value: number; label: string }> = [];
 
   if (range === "week") {
@@ -112,6 +114,7 @@ export function aggregateByTimeRange(
   return chartData;
 }
 
+// utility function to format x-axis labels for charts based on time range
 export function formatChartLabel(
   key: string,
   range: "week" | "month" | "year",
@@ -128,6 +131,7 @@ export function formatChartLabel(
   }
 }
 
+// function to neately determine y-axis max and step values for charts
 export function yAxisConfig(maxValue: number) {
   const numberOfSteps = 6;
 
@@ -142,6 +146,7 @@ export function yAxisConfig(maxValue: number) {
   };
 }
 
+// define type that represents a spending category with its total amount, percentage of total spending, and an optional color for charting purposes
 type CategorisedSpending = {
   category: string;
   amount: number;
@@ -149,24 +154,8 @@ type CategorisedSpending = {
   color?: string;
 };
 
-// export function categoriseSpending(transactions: any[]): {
-//   [category: string]: number;
-// } {
-//   const categoryTotals: { [category: string]: number } = {};
 
-//   for (const tx of transactions) {
-//     const capitaliseCategory =
-//       tx.category.charAt(0).toUpperCase() + tx.category.slice(1).toLowerCase();
-
-//     if (!categoryTotals[capitaliseCategory]) {
-//       categoryTotals[capitaliseCategory] = 0;
-//     }
-//     categoryTotals[capitaliseCategory] += Number(tx.amount);
-//   }
-
-//   return categoryTotals;
-// }
-
+// utility function to categorise transactions into spending categories and calculate totals and percentages for each category
 export function categoriseSpending(transactions: any[]): CategorisedSpending[] {
   const categoryTotals: { [category: string]: number } = {};
 
@@ -195,6 +184,7 @@ export function categoriseSpending(transactions: any[]): CategorisedSpending[] {
   }));
 }
 
+// function to get the start and end dates for a given time range (week, month, year)
 export function getDateRange(
   range: "week" | "month" | "year",
   selectedMonthYear?: Date,

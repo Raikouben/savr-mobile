@@ -1,4 +1,6 @@
 import { budgetCategories } from "@/constants/config";
+
+// function to calculate how much of the budget has been used for each category
 export function calculateCategoryBudgetUsage(budget: any, transactions: any[]) {
   const now = new Date();
   const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -39,6 +41,7 @@ export function calculateCategoryBudgetUsage(budget: any, transactions: any[]) {
   return summary;
 }
 
+// function to calculate overall budget usage for the month 
 export function calculateTotalBudgetUsage(
   budget: any,
   transactions: any[],
