@@ -103,6 +103,7 @@ export const getMerchantCategory = (
 };
 
 // list of merchants and their associated categories for transaction categorisation
+// generated with the help of genAI 
 export const merchants = [
   // Groceries
   { name: "Sainsbury's", category: "groceries" },
