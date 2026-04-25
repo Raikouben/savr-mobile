@@ -18,6 +18,7 @@ jest.mock("@/constants/config", () => ({
   getCategoryDisplayName: (cat: string) =>
     cat.charAt(0).toUpperCase() + cat.slice(1),
   getCategoryIcon: (cat: string) => "home-outline",
+  getCategoryColor: (cat: string) => "#000000",
 }));
 
 describe("Category Selectors", () => {

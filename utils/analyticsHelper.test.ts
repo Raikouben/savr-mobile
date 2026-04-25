@@ -19,13 +19,13 @@ describe("aggregateByTimeRange", () => {
     const result = aggregateByTimeRange([], "week", undefined, undefined, WEEK);
     expect(result).toHaveLength(7);
     expect(result.map((d) => d.label)).toEqual([
-      "M",
-      "T",
-      "W",
-      "T",
-      "F",
-      "S",
-      "S",
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat",
+      "Sun",
     ]);
   });
 
@@ -121,7 +121,7 @@ describe("getDateRange", () => {
     expect(startDate.getDate()).toBe(1);
     expect(endDate.getDate()).toBe(31);
   });
-  
+
   it("returns Jan 1 to Dec 31 for year range", () => {
     const { startDate, endDate } = getDateRange("year", undefined, 2024);
     expect(startDate.getMonth()).toBe(0);

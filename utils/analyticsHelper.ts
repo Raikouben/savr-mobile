@@ -50,9 +50,9 @@ export function aggregateByTimeRange(
     let label: string;
     if (range === "week") {
       const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-      label = dayNames[txDate.getUTCDay()];
+      label = dayNames[txDate.getDay()];
     } else if (range === "month") {
-      label = String(txDate.getUTCDate());
+      label = String(txDate.getDate());
     } else {
       const monthNames = [
         "Jan",
@@ -68,7 +68,7 @@ export function aggregateByTimeRange(
         "Nov",
         "Dec",
       ];
-      label = monthNames[txDate.getUTCMonth()];
+      label = monthNames[txDate.getMonth()];
     }
 
     if (!totals[label]) totals[label] = 0;
@@ -84,7 +84,7 @@ export function aggregateByTimeRange(
       chartData.push({ value: totals[day] || 0, label: day });
     }
   } else if (range === "month") {
-    const daysInMonth = endDate.getUTCDate();
+    const daysInMonth = endDate.getDate();
     for (let day = 1; day <= daysInMonth; day++) {
       chartData.push({
         value: totals[String(day)] || 0,
@@ -153,7 +153,6 @@ type CategorisedSpending = {
   percentage: number;
   color?: string;
 };
-
 
 // utility function to categorise transactions into spending categories and calculate totals and percentages for each category
 export function categoriseSpending(transactions: any[]): CategorisedSpending[] {

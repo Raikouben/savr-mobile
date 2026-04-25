@@ -57,6 +57,7 @@ jest.mock("@/constants/config", () => ({
     return names[category] || category;
   },
   getCategoryIcon: (category: string) => "receipt",
+  getCategoryColor: (category: string) => "#000000",
 }));
 
 jest.mock("@/components/AddTransaction", () => "AddTransaction");
