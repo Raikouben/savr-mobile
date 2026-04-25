@@ -1,3 +1,4 @@
+//Clerk. (2026). Expo Quickstart - Getting started | Clerk Docs. [online] Available at: https://clerk.com/docs/expo/getting-started/quickstart.
 import { useSignIn } from "@clerk/clerk-expo";
 import { Link, useRouter } from "expo-router";
 import React from "react";

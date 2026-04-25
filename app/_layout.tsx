@@ -29,14 +29,16 @@ function RootLayoutNav() {
   const { isLoading: userLoading } = useUserQuery();
 
   useNotifications();
-  const { isLoading: budgetLoading } = useBudgetQuery();
+  const { isLoading: budgetLoading, isFetched: budgetFetched } = useBudgetQuery();
   const { isLoading: transactionsLoading } = useTransactionQuery();
   const { isLoading: reportLoading } = useReportQuery();
   const { isLoading: surveyLoading } = useSurveyQuery();
   const { isLoading: subscriptionLoading } = useSubscriptionQuery();
   const { backgroundColor, textColor } = useAppTheme();
 
-  const allLoaded = isLoaded && !(isSignedIn && userLoading);
+  const allLoaded =
+    isLoaded &&
+    !(isSignedIn && (userLoading || budgetLoading || !budgetFetched));
 
   useEffect(() => {
     if (allLoaded) {

@@ -4,33 +4,41 @@ import { useAuth } from "@clerk/clerk-expo";
 
 export const useBudgetQuery = () => {
   const { getBudget, updateBudget, createBudget, getPastBudgets } = useBudget();
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, userId } = useAuth();
   const queryClient = useQueryClient();
 
   const query = useQuery({
-    queryKey: ["budget"],
+    queryKey: ["budget", userId],
     queryFn: getBudget,
-    enabled: !!isSignedIn,
+    enabled: !!isSignedIn && !!userId,
     retry: false, // Don't retry on 404 errors
+    staleTime: 0,
+    refetchOnMount: true,
   });
 
   const createMutation = useMutation({
     mutationFn: createBudget,
-    onSuccess: () => {
+    onSuccess: (data) => {
+      if (userId) {
+        queryClient.setQueryData(["budget", userId], data);
+      }
       queryClient.invalidateQueries({ queryKey: ["budget"] });
     },
   });
 
   const getPastBudgetsQuery = useQuery({
-    queryKey: ["pastBudgets"],
+    queryKey: ["pastBudgets", userId],
     queryFn: getPastBudgets,
-    enabled: !!isSignedIn,
+    enabled: !!isSignedIn && !!userId,
     retry: false, // Don't retry on 404 errors
   });
 
   const updateMutation = useMutation({
     mutationFn: updateBudget,
-    onSuccess: () => {
+    onSuccess: (data) => {
+      if (userId) {
+        queryClient.setQueryData(["budget", userId], data);
+      }
       queryClient.invalidateQueries({ queryKey: ["budget"] });
     },
   });
@@ -38,6 +46,8 @@ export const useBudgetQuery = () => {
   return {
     budget: query.data,
     isLoading: query.isLoading,
+    isFetching: query.isFetching,
+    isFetched: query.isFetched,
     error: query.error,
     refetch: query.refetch,
     createBudget: createMutation.mutateAsync,

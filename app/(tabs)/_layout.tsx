@@ -7,16 +7,42 @@ import { NavigationContainer, CommonActions } from "@react-navigation/native";
 import { Provider, BottomNavigation } from "react-native-paper";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useAppTheme } from "@/themes/useAppTheme";
+import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
+import { ActivityIndicator, Text } from "react-native-paper";
+import { View } from "react-native";
 const Tab = createBottomTabNavigator();
 
 export default function TabLayout() {
   const { isSignedIn, isLoaded } = useAuth();
   const { textColor, textOnPrimary, textOnSecondary } = useAppTheme();
+  const { budget, isLoading: budgetLoading } = useBudgetQuery();
 
   // if (!isLoaded) return null;
 
+  if (!isLoaded) return null;
+
   if (!isSignedIn) {
     return <Redirect href={"/(auth)/sign-in"} />;
+  }
+
+  if (budgetLoading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 12,
+        }}
+      >
+        <ActivityIndicator size="large" animating={true} />
+        <Text>Loading your budget...</Text>
+      </View>
+    );
+  }
+
+  if (!budget) {
+    return <Redirect href={"/(setup)"} />;
   }
 
   return (

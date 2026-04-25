@@ -9,7 +9,6 @@ import {
   StyleSheet,
 } from "react-native";
 import { useRecommender } from "@/hooks/useRecommender";
-import { useBudget } from "@/hooks/useBudget";
 import { useUserQuery } from "@/hooks/queries/authQuery";
 import { useBudgetQuery } from "@/hooks/queries/budgetQuery";
 import { IconButton, MD2Colors } from "react-native-paper";
@@ -57,8 +56,12 @@ export default function BudgetSelection() {
     loading: recommenderLoading,
     getRecommenderExplanation,
   } = useRecommender();
-  const { createBudget, loading: budgetLoading } = useBudget();
-  const { budget, isLoading: budgetQueryLoading } = useBudgetQuery();
+  const {
+    budget,
+    isLoading: budgetQueryLoading,
+    createBudget,
+    isCreating: budgetLoading,
+  } = useBudgetQuery();
   const [viewExplanation, setViewExplanation] = useState(false);
   const { user } = useUserQuery();
   const [explanation, setExplanation] = useState<BudgetOverview | null>(null);
@@ -227,7 +230,10 @@ export default function BudgetSelection() {
             </ScrollView>
 
             <View style={styles.footer}>
-              <Button mode="contained" onPress={() => setViewExplanation(false)}>
+              <Button
+                mode="contained"
+                onPress={() => setViewExplanation(false)}
+              >
                 Back to Budget
               </Button>
             </View>
