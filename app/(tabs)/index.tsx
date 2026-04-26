@@ -37,7 +37,7 @@ import { useAppTheme } from "@/themes/useAppTheme";
 const categoryGroups = {
   "Essential Living": ["housing", "utilities", "groceries"],
   "Out & About": ["transportation", "eating_out"],
-  Lifestyle: ["shopping", "health", "entertainment"],
+  Lifestyle: ["shopping", "health", "entertainment", "miscellaneous"],
   "Financial Management": ["savings", "debt"],
 };
 
