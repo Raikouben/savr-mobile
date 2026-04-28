@@ -57,7 +57,7 @@ describe("Sign In", () => {
       expect(mockSetActive).toHaveBeenCalledWith({
         session: "session_123",
       });
-      expect(mockReplace).toHaveBeenCalledWith("/(setup)");
+      expect(mockReplace).not.toHaveBeenCalled();
     });
   });
 

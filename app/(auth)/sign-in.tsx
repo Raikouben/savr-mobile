@@ -38,7 +38,7 @@ export default function Page() {
       // and redirect the user
       if (signInAttempt.status === "complete") {
         await setActive({ session: signInAttempt.createdSessionId });
-        router.replace("/(setup)");
+        // router.replace("/(setup)");
       } else if (signInAttempt.status === "needs_second_factor") {
         setPendingVerification(true);
         await signIn.prepareSecondFactor({
@@ -72,7 +72,7 @@ export default function Page() {
       });
       if (signInAttempt.status === "complete") {
         await setActive({ session: signInAttempt.createdSessionId });
-        router.replace("/(setup)");
+        // router.replace("/(setup)");
       } else {
         setVerificationError("Sign-in not complete. Please try again.");
       }

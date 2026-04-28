@@ -88,7 +88,7 @@ describe("Sign Up", () => {
         code: "123456",
       });
       expect(mockSetActive).toHaveBeenCalledWith({ session: "session_abc" });
-      expect(mockReplace).toHaveBeenCalledWith("/(setup)");
+      expect(mockReplace).not.toHaveBeenCalled();
     });
   });
 });

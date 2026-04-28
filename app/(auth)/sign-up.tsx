@@ -79,7 +79,7 @@ export default function SignUpScreen() {
         } catch (error) {
           console.error("Error creating user:", error);
         }
-        router.replace("/(setup)");
+        // router.replace("/(setup)");
       } else {
         // If the status is not complete, check why. User may need to
         // complete further steps.
