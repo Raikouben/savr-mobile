@@ -101,7 +101,7 @@ export default function addBulkTransaction({
       <Dialog
         visible={visible}
         onDismiss={onClose}
-        style={{ maxHeight: "85%" }}
+        style={{ maxHeight: "70%" }}
       >
         <View
           style={{
@@ -166,18 +166,6 @@ export default function addBulkTransaction({
                       />
                     </View>
 
-                    <View style={{ marginBottom: 12 }}>
-                      <CategoryPicker
-                        selectedCategory={tx.category}
-                        onCategoryChange={(newCategory) =>
-                          updateDraftTransaction(index, {
-                            ...tx,
-                            category: newCategory,
-                          })
-                        }
-                      />
-                    </View>
-
                     <View style={{ flexDirection: "row", gap: 12 }}>
                       <View style={{ flex: 1 }}>
                         <TextInput
@@ -206,6 +194,17 @@ export default function addBulkTransaction({
                           }
                         />
                       </View>
+                    </View>
+                    <View style={{ marginBottom: 12 }}>
+                      <CategoryPicker
+                        selectedCategory={tx.category}
+                        onCategoryChange={(newCategory) =>
+                          updateDraftTransaction(index, {
+                            ...tx,
+                            category: newCategory,
+                          })
+                        }
+                      />
                     </View>
                   </View>
                 </Card.Content>
