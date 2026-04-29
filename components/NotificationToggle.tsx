@@ -1,8 +1,8 @@
-import {
-  cancelDailyReminder,
-  scheduleDailyReminder,
-  NOTIFICATIONS_ENABLED_KEY,
-} from "@/hooks/useNotifications";
+// import {
+//   cancelDailyReminder,
+//   scheduleDailyReminder,
+//   NOTIFICATIONS_ENABLED_KEY,
+// } from "@/hooks/useNotifications";
 import { useUserQuery } from "@/hooks/queries/authQuery";
 import { Switch, List } from "react-native-paper";
 import { useAppTheme } from "@/themes/useAppTheme";
@@ -14,19 +14,23 @@ export default function NotificationToggle() {
   const { user } = useUserQuery();
   const [enabled, setEnabled] = useState(true);
 
-  useEffect(() => {
-    SecureStore.getItemAsync(NOTIFICATIONS_ENABLED_KEY).then((val) => {
-      if (val !== null) setEnabled(val === "true");
-    });
-  }, []);
+  // useEffect(() => {
+  //   SecureStore.getItemAsync(NOTIFICATIONS_ENABLED_KEY).then((val) => {
+  //     if (val !== null) setEnabled(val === "true");
+  //   });
+  // }, []);
 
-  const handleToggle = async (value: boolean) => {
-    await SecureStore.setItemAsync(NOTIFICATIONS_ENABLED_KEY, String(value));
-    if (value) {
-      await scheduleDailyReminder(user?.streak ?? 0);
-    } else {
-      await cancelDailyReminder();
-    }
+  // const handleToggle = async (value: boolean) => {
+  //   await SecureStore.setItemAsync(NOTIFICATIONS_ENABLED_KEY, String(value));
+  //   if (value) {
+  //     await scheduleDailyReminder(user?.streak ?? 0);
+  //   } else {
+  //     await cancelDailyReminder();
+  //   }
+  //   setEnabled(value);
+  // };
+  const mockToggle = (value: boolean) => {
+    console.log("Toggled notifications:", value);
     setEnabled(value);
   };
 
@@ -37,7 +41,7 @@ export default function NotificationToggle() {
       left={(props) => (
         <List.Icon {...props} icon="bell-outline" color={textColor} />
       )}
-      right={() => <Switch value={enabled} onValueChange={handleToggle} />}
+      right={() => <Switch value={enabled} onValueChange={mockToggle} />}
     />
   );
 }

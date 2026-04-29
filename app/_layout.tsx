@@ -13,7 +13,7 @@ import { PaperProvider } from "react-native-paper";
 import { enGB, registerTranslation } from "react-native-paper-dates";
 import { ThemeProvider, useThemeContext } from "@/contexts/ThemeContext";
 import { useReportQuery } from "@/hooks/queries/reportQuery";
-import { useNotifications } from "@/hooks/useNotifications";
+// import { useNotifications } from "@/hooks/useNotifications";
 import { useSurveyQuery } from "@/hooks/queries/surveyQuery";
 import { useSubscriptionQuery } from "@/hooks/queries/subscriptionQuery";
 import { Text, ActivityIndicator } from "react-native-paper";
@@ -28,7 +28,7 @@ function RootLayoutNav() {
   const { isLoaded, isSignedIn } = useAuth();
   const { isLoading: userLoading } = useUserQuery();
 
-  useNotifications();
+  // useNotifications();
   const { isLoading: budgetLoading, isFetched: budgetFetched } = useBudgetQuery();
   const { isLoading: transactionsLoading } = useTransactionQuery();
   const { isLoading: reportLoading } = useReportQuery();
