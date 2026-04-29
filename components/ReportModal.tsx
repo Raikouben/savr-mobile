@@ -80,15 +80,10 @@ export default function ReportModal({
   const income = report?.income;
   const start = report?.start_date.split("T")[0].slice(5);
   const end = report?.end_date.split("T")[0].slice(5);
-  const {
-    backgroundColor,
-    surfaceVariant,
-    secondaryColor,
-    textColor,
-  } = useAppTheme();
+  const { backgroundColor, surfaceVariant, secondaryColor, textColor } =
+    useAppTheme();
 
   const [currentPage, setCurrentPage] = useState(0);
-  const pagerRef = useRef(null);
   const screenHeight = Dimensions.get("window").height;
 
   useEffect(() => {
@@ -155,7 +150,6 @@ export default function ReportModal({
             </View>
 
             <PagerView
-              ref={pagerRef}
               initialPage={0}
               onPageSelected={(e) => setCurrentPage(e.nativeEvent.position)}
               style={{ height: screenHeight * 0.48 }}
@@ -274,10 +268,29 @@ export default function ReportModal({
                         <View
                           style={[
                             styles.chip,
-                            { backgroundColor: "#f43f5e20" },
+                            {
+                              backgroundColor:
+                                action.priority === "high"
+                                  ? "#f43f5e20"
+                                  : action.priority === "medium"
+                                    ? "#f59f0b3a"
+                                    : "#eab20849",
+                            },
                           ]}
                         >
-                          <Text style={[styles.chipText, { color: "#f43f5e" }]}>
+                          <Text
+                            style={[
+                              styles.chipText,
+                              {
+                                color:
+                                  action.priority === "high"
+                                    ? "#f43f5e"
+                                    : action.priority === "medium"
+                                      ? "#f59f0b"
+                                      : "#eab308",
+                              },
+                            ]}
+                          >
                             {action.priority}
                           </Text>
                         </View>
