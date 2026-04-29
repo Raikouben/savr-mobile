@@ -82,20 +82,9 @@ export default function ReportModal({
   const end = report?.end_date.split("T")[0].slice(5);
   const {
     backgroundColor,
-    surfaceColor,
     surfaceVariant,
-    primaryColor,
     secondaryColor,
-    accentColor,
-    successColor,
-    warningColor,
-    errorColor,
-    infoColor,
     textColor,
-    textSecondaryColor,
-    textOnPrimary,
-    textOnSecondary,
-    backdrop,
   } = useAppTheme();
 
   const [currentPage, setCurrentPage] = useState(0);
