@@ -78,6 +78,8 @@ export default function ReportModal({
   const insights: ReportInsights | null = report?.insights;
   const period = report?.period;
   const income = report?.income;
+  const start = report?.start_date.split("T")[0].slice(5);
+  const end = report?.end_date.split("T")[0].slice(5);
   const {
     backgroundColor,
     surfaceColor,
@@ -145,6 +147,9 @@ export default function ReportModal({
             <View style={styles.header}>
               <Text variant="titleLarge" style={styles.headerTitle}>
                 {period}
+              </Text>
+              <Text variant="titleMedium">
+                {start} to {end}
               </Text>
               <Text variant="bodySmall" style={styles.mutedText}>
                 Income: £{income}
