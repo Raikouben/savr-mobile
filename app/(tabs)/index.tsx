@@ -51,7 +51,7 @@ export default function Page() {
   const { user, updateUserLoggedInfo } = useUserQuery();
 
   const [adviceModalVisible, setAdviceModalVisible] = useState(false);
-  const [reportAccordionVisible, setReportAccordionVisible] = useState(true);
+  const [ReportModalVisible, setReportModalVisible] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<{
     category: string;
     budgetAmount: number;
@@ -88,15 +88,15 @@ export default function Page() {
     }
   }, [user, transactions, transactionsLoading, updateUserLoggedInfo]);
 
-  // useEffect(() => {
-  //   if (reports && reports.length > 0) {
-  //     const unviewedReport = reports.find((report: any) => !report.viewed);
-  //     if (unviewedReport) {
-  //       setSelectedReportId(unviewedReport.id);
-  //       setReportModalVisible(true);
-  //     }
-  //   }
-  // }, [reports]);
+  useEffect(() => {
+    if (reports && reports.length > 0) {
+      const unviewedReport = reports.find((report: any) => !report.viewed);
+      if (unviewedReport) {
+        setSelectedReportId(unviewedReport.id);
+        setReportModalVisible(true);
+      }
+    }
+  }, [reports]);
 
   const loading = budgetLoading || transactionsLoading;
 
@@ -438,24 +438,24 @@ export default function Page() {
               actualSpent={selectedCategory.actualSpent}
             />
           )}
-          {/* {selectedReportId && ( */}
-          {/* <ReportAccordion
-            visible={reportAccordionVisible}
-            onClose={() => {
-              setReportAccordionVisible(false);
-              setSelectedReportId(null);
-            }}
-            reportId={selectedReportId || 1}
-          /> */}
           {/* <ReportModal
             visible={reportAccordionVisible}
             onClose={() => {
               setReportAccordionVisible(false);
               setSelectedReportId(null);
             }}
-            reportId={selectedReportId || 79}
+            reportId={79}
           /> */}
-          {/* )} */}
+          {selectedReportId && (
+            <ReportModal
+              visible={ReportModalVisible}
+              onClose={() => {
+                setReportModalVisible(false);
+                setSelectedReportId(null);
+              }}
+              reportId={selectedReportId}
+            />
+          )}
         </View>
       )}
     </ScrollView>

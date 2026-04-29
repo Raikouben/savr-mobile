@@ -58,9 +58,9 @@ export interface ReportInsights {
 
 const TOTAL_PAGES = 4;
 const PAGE_LABELS = [
-  "How am I doing?",
-  "Where to next?",
-  "Where am I going?",
+  "Your Progress This Month",
+  "Your Action Plan",
+  "Your Financial Goals",
   "Budget",
 ];
 
@@ -142,7 +142,6 @@ export default function ReportModal({
           </View>
         ) : insights ? (
           <View>
-            {/* Header */}
             <View style={styles.header}>
               <Text variant="titleLarge" style={styles.headerTitle}>
                 {period}
@@ -152,7 +151,6 @@ export default function ReportModal({
               </Text>
             </View>
 
-            {/* Current page label */}
             <View style={styles.pageLabelRow}>
               <Text variant="titleSmall" style={{ fontWeight: "700" }}>
                 {PAGE_LABELS[currentPage]}
@@ -162,14 +160,13 @@ export default function ReportModal({
               </Text>
             </View>
 
-            {/* PagerView */}
             <PagerView
               ref={pagerRef}
               initialPage={0}
               onPageSelected={(e) => setCurrentPage(e.nativeEvent.position)}
               style={{ height: screenHeight * 0.48 }}
             >
-              {/* Page 1 — How am I going */}
+              {/*Your Progress This Month */}
               <View key="1" collapsable={false}>
                 <ScrollView
                   showsVerticalScrollIndicator={false}
@@ -193,31 +190,18 @@ export default function ReportModal({
                       }}
                     >
                       <View style={styles.rowBetween}>
-                        <View
-                          style={[
-                            styles.chip,
-                            { backgroundColor: "#24a2522f" },
-                          ]}
-                        >
-                          <Text style={[styles.chipText, { color: "#24a252" }]}>
-                            {win.category}
-                          </Text>
-                        </View>
-                        <Text style={[styles.amountText, { color: "#24a252" }]}>
+                        <Text style={[styles.chipText, { color: textColor }]}>
+                          {win.category}
+                        </Text>
+                        {/* </View> */}
+                        <Text style={[styles.amountText, { color: "#2abb5f" }]}>
                           £{win.savingsAmount} saved
                         </Text>
                       </View>
                       <Text variant="bodySmall" style={styles.cardBody}>
                         Achievement: {win.achievement}
                       </Text>
-                      {/* <ProgressBar
-                        progress={Math.min(win.savingsPercentage / 100, 1)}
-                        color="#4ade80"
-                        style={styles.progressBar}
-                      /> */}
-                      {/* <Text variant="bodySmall" style={styles.mutedText}>
-                        {win.savingsPercentage}% under budget
-                      </Text> */}
+
                       <Text variant="bodySmall" style={styles.cardBody}>
                         Strength Demonstrated: {win.strengthDemonstrated}
                       </Text>
@@ -240,16 +224,9 @@ export default function ReportModal({
                       }}
                     >
                       <View style={styles.rowBetween}>
-                        <View
-                          style={[
-                            styles.chip,
-                            { backgroundColor: "#bf901839" },
-                          ]}
-                        >
-                          <Text style={[styles.chipText, { color: "#bf9018" }]}>
-                            {opp.category}
-                          </Text>
-                        </View>
+                        <Text style={[styles.chipText, { color: textColor }]}>
+                          {opp.category}
+                        </Text>
                       </View>
                       <Text variant="bodySmall" style={styles.cardBody}>
                         Observation: {opp.observation}
@@ -276,7 +253,7 @@ export default function ReportModal({
                 </ScrollView>
               </View>
 
-              {/* Page 2 — Where to next */}
+              {/* Your Action Plan */}
               <View key="2" collapsable={false}>
                 <ScrollView
                   showsVerticalScrollIndicator={false}
@@ -296,16 +273,10 @@ export default function ReportModal({
                       }}
                     >
                       <View style={styles.rowBetween}>
-                        <View
-                          style={[
-                            styles.chip,
-                            { backgroundColor: "#162cd231" },
-                          ]}
-                        >
-                          <Text style={[styles.chipText, { color: "#818cf8" }]}>
-                            {action.category}
-                          </Text>
-                        </View>
+                        <Text style={[styles.chipText, { color: textColor }]}>
+                          {action.category}
+                        </Text>
+                        {/* </View> */}
                         <View
                           style={[
                             styles.chip,
@@ -354,7 +325,7 @@ export default function ReportModal({
                 </ScrollView>
               </View>
 
-              {/* Page 3 — Where am I going */}
+              {/*Your Financial Goals*/}
               <View key="3" collapsable={false}>
                 <ScrollView
                   showsVerticalScrollIndicator={false}
@@ -401,7 +372,7 @@ export default function ReportModal({
                 </ScrollView>
               </View>
 
-              {/* Page 4 — Budget Adjustments */}
+              {/* Budget Adjustments */}
               <View key="4" collapsable={false}>
                 <ScrollView
                   showsVerticalScrollIndicator={false}
@@ -416,7 +387,7 @@ export default function ReportModal({
                     const isIncrease = rec.recommendation
                       .toLowerCase()
                       .includes("increase");
-                    const accentColor = isIncrease ? "#bf9018" : "#24a252";
+                    const accentColor = isIncrease ? "#2abb5f" : "#eb2424";
                     return (
                       <View
                         key={i}
@@ -427,18 +398,12 @@ export default function ReportModal({
                         }}
                       >
                         <View style={styles.rowBetween}>
-                          <View
-                            style={[
-                              styles.chip,
-                              { backgroundColor: accentColor + "20" },
-                            ]}
+                          <Text
+                            style={[styles.chipText, { color: accentColor }]}
                           >
-                            <Text
-                              style={[styles.chipText, { color: accentColor }]}
-                            >
-                              {rec.category}
-                            </Text>
-                          </View>
+                            {rec.category}
+                          </Text>
+                          {/* </View> */}
                           <Text
                             style={[styles.amountText, { color: accentColor }]}
                           >
@@ -455,7 +420,6 @@ export default function ReportModal({
               </View>
             </PagerView>
 
-            {/* Dots + close */}
             <View style={styles.footer}>
               <View style={styles.dotsRow}>
                 {Array.from({ length: TOTAL_PAGES }).map((_, i) => (
@@ -478,7 +442,7 @@ export default function ReportModal({
             </View>
           </View>
         ) : (
-          <View>
+          <View style={{ padding: 20, alignItems: "center", gap: 12 }}>
             <Text variant="bodyLarge">No insights available.</Text>
             <Button onPress={onClose} mode="outlined">
               Close
