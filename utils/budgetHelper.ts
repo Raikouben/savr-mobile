@@ -3,9 +3,8 @@ import { budgetCategories } from "@/constants/config";
 // function to calculate how much of the budget has been used for each category
 export function calculateCategoryBudgetUsage(budget: any, transactions: any[]) {
   // calculate the date range for the current month (or selected month if implementing month selector in analytics) to filter transactions
-  const now = new Date();
-  const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-  const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const startDate = new Date(budget.start_date);
+  const endDate = new Date(budget.end_date);
   endDate.setHours(23, 59, 59, 999);
   const summary: any = {};
 
@@ -42,14 +41,10 @@ export function calculateCategoryBudgetUsage(budget: any, transactions: any[]) {
   return summary;
 }
 
-// function to calculate overall budget usage for the month 
-export function calculateTotalBudgetUsage(
-  budget: any,
-  transactions: any[],
-) {
-  const now = new Date();
-  const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-  const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+// function to calculate overall budget usage for the month
+export function calculateTotalBudgetUsage(budget: any, transactions: any[]) {
+  const startDate = new Date(budget.start_date);
+  const endDate = new Date(budget.end_date);
   endDate.setHours(23, 59, 59, 999);
   // Get total budget (should be stored in budget.total_budget)
   const totalBudget = Number(budget.total_budget) || 0;
@@ -76,4 +71,3 @@ export function calculateTotalBudgetUsage(
     percentageUsed,
   };
 }
-
