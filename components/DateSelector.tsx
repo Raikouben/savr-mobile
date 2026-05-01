@@ -20,6 +20,8 @@ export default function DateSelector({
 }: DateSelectorProps) {
   const [showPicker, setShowPicker] = useState(false);
   const { backgroundColor, textOnPrimary } = useAppTheme();
+  // if mode is input, show the inline date picker, otherwise show a button that opens a modal date picker
+  
   if (mode === "input") {
     return (
       <DatePickerInput

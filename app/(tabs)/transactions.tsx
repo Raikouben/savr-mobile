@@ -59,6 +59,7 @@ export default function transactions() {
     setCategory("");
   };
 
+  // filter transactions based on selected date and category filters, also sort by most recent
   const filteredTransactions = useMemo(() => {
     if (!transactions) return [];
 

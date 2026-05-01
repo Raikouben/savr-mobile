@@ -195,6 +195,7 @@ export function getDateRange(
   let endDate: Date;
 
   if (range === "week") {
+    // calculate the Monday of the selected week and then set the end date to the following Sunday
     const targetWeek = selectedWeek || now;
     const dayOfWeek = targetWeek.getDay();
     const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
@@ -207,11 +208,13 @@ export function getDateRange(
     endDate.setDate(startDate.getDate() + 6);
     endDate.setHours(23, 59, 59, 999);
   } else if (range === "month") {
+    // calculate the first and last day of the selected month and set the end date to the end of the day
     const targetDate = selectedMonthYear || now;
     startDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), 1);
     endDate = new Date(targetDate.getFullYear(), targetDate.getMonth() + 1, 0);
     endDate.setHours(23, 59, 59, 999);
   } else {
+    // calculate the first and last day of the selected year and set the end date to the end of the day
     const targetYear = selectedYear || now.getFullYear();
     startDate = new Date(targetYear, 0, 1);
     endDate = new Date(targetYear, 11, 31);

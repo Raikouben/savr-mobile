@@ -2,6 +2,7 @@ import { budgetCategories } from "@/constants/config";
 
 // function to calculate how much of the budget has been used for each category
 export function calculateCategoryBudgetUsage(budget: any, transactions: any[]) {
+  // calculate the date range for the current month (or selected month if implementing month selector in analytics) to filter transactions
   const now = new Date();
   const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
   const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
@@ -13,7 +14,7 @@ export function calculateCategoryBudgetUsage(budget: any, transactions: any[]) {
     const budgetAmount = Number(budget[categoryKey]) || 0;
 
     let actualSpent = 0;
-
+    // sum up transactions in the category that fall within the date range
     for (const t of transactions) {
       const matchesCategory =
         t.category?.toLowerCase() === category.toLowerCase();

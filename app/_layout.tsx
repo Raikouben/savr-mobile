@@ -22,6 +22,7 @@ registerTranslation("en-GB", enGB);
 
 const queryClient = new QueryClient();
 
+// Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
 function RootLayoutNav() {
@@ -36,6 +37,7 @@ function RootLayoutNav() {
   const { isLoading: subscriptionLoading } = useSubscriptionQuery();
   const { backgroundColor, textColor } = useAppTheme();
 
+  // Determine if all necessary data is loaded before rendering the app
   const allLoaded =
     isLoaded &&
     !(isSignedIn && (userLoading || budgetLoading || !budgetFetched));
@@ -71,6 +73,7 @@ function RootLayoutNav() {
   );
 }
 
+// Implemnting a theme provider to wrap the entire app so that we can use the theme in the splash screen and avoid any flashes of default theme before the app loads
 function ThemedApp() {
   const { currentTheme } = useThemeContext();
 

@@ -76,10 +76,12 @@ export const categoryConfig = {
   },
 };
 
+// export budget categories as an array of keys from the category config for easy iteration and type safety
 export const budgetCategories = Object.keys(categoryConfig) as Array<
   keyof typeof categoryConfig
 >;
 
+// helper functions to get category properties for consistent use across the app
 export const getCategoryColor = (category: string): string => {
   const key = category.toLowerCase() as keyof typeof categoryConfig;
   return categoryConfig[key]?.color;

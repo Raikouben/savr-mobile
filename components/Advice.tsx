@@ -39,6 +39,7 @@ export const AdviceModal = ({
   const [loading, setLoading] = useState(false);
   const { backgroundColor, textColor, surfaceVariant } = useAppTheme();
 
+  // fetch advice when modal opens and category or amounts change
   useEffect(() => {
     const fetchAdvice = async () => {
       setLoading(true);

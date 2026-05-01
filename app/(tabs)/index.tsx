@@ -34,6 +34,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { AdviceModal } from "../../components/Advice";
 import { useAppTheme } from "@/themes/useAppTheme";
 
+// Define category groups for grouped display
 const categoryGroups = {
   "Essential Living": ["housing", "utilities", "groceries"],
   "Out & About": ["transportation", "eating_out"],
@@ -49,7 +50,6 @@ export default function Page() {
     useTransactionQuery();
   const { reports } = useReportQuery();
   const { user, updateUserLoggedInfo } = useUserQuery();
-
   const [adviceModalVisible, setAdviceModalVisible] = useState(false);
   const [ReportModalVisible, setReportModalVisible] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<{
@@ -60,6 +60,7 @@ export default function Page() {
   const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
   const [testing, setTesting] = useState(true);
 
+  // check if user has logged a transaction today and update streak and days logged
   useEffect(() => {
     if (!user || !transactions || transactionsLoading) return;
 
@@ -88,6 +89,7 @@ export default function Page() {
     }
   }, [user, transactions, transactionsLoading, updateUserLoggedInfo]);
 
+  // display report modal for first unviewed report when reports data changes
   useEffect(() => {
     if (reports && reports.length > 0) {
       const unviewedReport = reports.find((report: any) => !report.viewed);

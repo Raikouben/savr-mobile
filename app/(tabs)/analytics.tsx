@@ -123,6 +123,7 @@ export default function analytics() {
   //   return transactions;
   // }, [transactions]);
 
+  // Generate formatted chart data for all charts based on selected time range and category filter
   const chartData = useMemo(() => {
     const data = aggregateByTimeRange(
       lineChartTransactions,
@@ -141,7 +142,7 @@ export default function analytics() {
     selectedWeek,
   ]);
 
-  // Comparison chart data
+  // Generate comparison chart data based on selected comparison time range and category filter
   const compareChartData = useMemo(() => {
     if (!comparisonMode) return undefined;
     const data = aggregateByTimeRange(
@@ -162,7 +163,7 @@ export default function analytics() {
     compareWeek,
   ]);
 
-  //CREATE A HELPER FUNCTIION THAT CAN BEU SED NI AGGREGATEbyTIMERANGE AND THIS ONE
+  // Categorise transactions for category breakdown charts
   const categoryData = useMemo(() => {
     if (!transactions) return [];
 
@@ -181,6 +182,7 @@ export default function analytics() {
     return categoriseSpending(filteredTransactions);
   }, [transactions, timeRange, selectedMonthYear, selectedYear, selectedWeek]);
 
+  // format and assign values for pie and bar charts based on category data
   const pieChartData = useMemo(() => {
     return categoryData.map((item) => ({
       value: item.percentage,
@@ -197,6 +199,7 @@ export default function analytics() {
     }));
   }, [categoryData]);
 
+  // configuration for line chart
   const lineChartYAxisSettings = useMemo(() => {
     const maxValue1 =
       chartData.length > 0
@@ -221,6 +224,7 @@ export default function analytics() {
     return yAxisConfig(maxValue);
   }, [barChartData]);
 
+  // function to generate dynamic labels for line chart based on time range and comparison mode
   const getTimeRangeLabel = (isComparison = false) => {
     const week = isComparison ? compareWeek : selectedWeek;
     const monthYear = isComparison ? compareMonthYear : selectedMonthYear;
@@ -325,6 +329,7 @@ export default function analytics() {
     return { totalSpent, transactionCount, averageTransaction, topCategory };
   }, [comparisonMode, compareStatisticsTransactions]);
 
+  // functionst to handling navigation of time range in main and comparison charts with checks to prevent navigating into future dates
   const navigatePrevious = () => {
     if (timeRange === "week") {
       const newDate = new Date(selectedWeek);
@@ -450,6 +455,7 @@ export default function analytics() {
     compareYear,
   ]);
 
+  // Reset filters when screen is focused
   useFocusEffect(
     React.useCallback(() => {
       setTimeRange("week");

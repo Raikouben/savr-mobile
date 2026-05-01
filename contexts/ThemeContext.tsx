@@ -62,6 +62,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const currentTheme = themes[themeName];
 
   return (
+    // wrap children in ThemeContext provider with current theme and setter function
     <ThemeContext.Provider value={{ currentTheme, themeName, setTheme }}>
       {children}
     </ThemeContext.Provider>

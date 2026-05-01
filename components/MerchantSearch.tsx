@@ -56,6 +56,7 @@ export default function MerchantSearch({
   }
 
   return (
+    // zIndex is needed to ensure the results dropdown appears above other components causes some conflicts though
     <View style={{ zIndex: 10 }}>
       <TextInput
         // style={{ marginBottom: 8 }}
