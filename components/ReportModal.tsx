@@ -82,7 +82,8 @@ export default function ReportModal({
   const end = report?.end_date.split("T")[0].slice(5);
   const { backgroundColor, surfaceVariant, secondaryColor, textColor } =
     useAppTheme();
-
+  const hasBudgetAdjustments =
+    (insights?.budgetAdjustmentRecommendations ?? []).length > 0;
   const [currentPage, setCurrentPage] = useState(0);
   const screenHeight = Dimensions.get("window").height;
 
@@ -381,49 +382,80 @@ export default function ReportModal({
 
               {/* Budget Adjustments */}
               <View key="4" collapsable={false}>
-                <ScrollView
-                  showsVerticalScrollIndicator={false}
-                  contentContainerStyle={styles.pageScroll}
-                >
-                  <Text variant="bodySmall" style={styles.cardBody}>
-                    Based on this month's spending, here are some suggested
-                    budget tweaks.
-                  </Text>
+                {hasBudgetAdjustments ? (
+                  <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={styles.pageScroll}
+                  >
+                    <Text variant="bodySmall" style={styles.cardBody}>
+                      Based on this month's spending, here are some suggested
+                      budget tweaks.
+                    </Text>
 
-                  {insights.budgetAdjustmentRecommendations.map((rec, i) => {
-                    const isIncrease = rec.recommendation
-                      .toLowerCase()
-                      .includes("increase");
-                    const accentColor = isIncrease ? "#2abb5f" : "#eb2424";
-                    return (
-                      <View
-                        key={i}
-                        style={{
-                          borderRadius: 20,
-                          padding: 12,
-                          backgroundColor: surfaceVariant,
-                        }}
-                      >
-                        <View style={styles.rowBetween}>
-                          <Text
-                            style={[styles.chipText, { color: accentColor }]}
+                    {(insights.budgetAdjustmentRecommendations ?? []).map(
+                      (rec, i) => {
+                        const isIncrease = rec.recommendation
+                          .toLowerCase()
+                          .includes("increase");
+                        const accentColor = isIncrease ? "#2abb5f" : "#eb2424";
+                        return (
+                          <View
+                            key={i}
+                            style={{
+                              borderRadius: 20,
+                              padding: 12,
+                              backgroundColor: surfaceVariant,
+                            }}
                           >
-                            {rec.category}
-                          </Text>
-                          {/* </View> */}
-                          <Text
-                            style={[styles.amountText, { color: accentColor }]}
-                          >
-                            {isIncrease ? "↑ Increase" : "↓ Reduce"}
-                          </Text>
-                        </View>
-                        <Text variant="bodySmall" style={styles.cardBody}>
-                          {rec.recommendation}
-                        </Text>
-                      </View>
-                    );
-                  })}
-                </ScrollView>
+                            <View style={styles.rowBetween}>
+                              <Text
+                                style={[
+                                  styles.chipText,
+                                  { color: accentColor },
+                                ]}
+                              >
+                                {rec.category}
+                              </Text>
+                              {/* </View> */}
+                              <Text
+                                style={[
+                                  styles.amountText,
+                                  { color: accentColor },
+                                ]}
+                              >
+                                {isIncrease ? "↑ Increase" : "↓ Reduce"}
+                              </Text>
+                            </View>
+                            <Text variant="bodySmall" style={styles.cardBody}>
+                              {rec.recommendation}
+                            </Text>
+                          </View>
+                        );
+                      },
+                    )}
+                  </ScrollView>
+                ) : (
+                  <View
+                    style={{
+                      flex: 1,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: 24,
+                      gap: 8,
+                    }}
+                  >
+                    <Text variant="titleSmall" style={{ textAlign: "center" }}>
+                      No budget recommendations yet
+                    </Text>
+                    <Text
+                      variant="bodySmall"
+                      style={[styles.mutedText, { textAlign: "center" }]}
+                    >
+                      Keep tracking your spending and expect personalised budget
+                      recommendations this time next month.
+                    </Text>
+                  </View>
+                )}
               </View>
             </PagerView>
 
