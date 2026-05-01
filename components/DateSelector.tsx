@@ -21,14 +21,23 @@ export default function DateSelector({
   const [showPicker, setShowPicker] = useState(false);
   const { backgroundColor, textOnPrimary } = useAppTheme();
   // if mode is input, show the inline date picker, otherwise show a button that opens a modal date picker
-  
   if (mode === "input") {
     return (
       <DatePickerInput
         locale="en-GB"
         label={label}
         value={date || undefined}
-        onChange={(d) => onDateChange(d || null)}
+        onChange={(d) => {
+          if (d) {
+            const normalised = new Date(
+              Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), 12, 0, 0),
+            );
+            console.log("Selected date:", normalised);
+            onDateChange(normalised);
+          } else {
+            onDateChange(null);
+          }
+        }}
         inputMode="start"
         mode="outlined"
       />
@@ -55,7 +64,22 @@ export default function DateSelector({
         date={date || new Date()}
         onConfirm={(params) => {
           setShowPicker(false);
-          onDateChange(params.date || null);
+          if (params.date) {
+            const normalised = new Date(
+              Date.UTC(
+                params.date.getFullYear(),
+                params.date.getMonth(),
+                params.date.getDate(),
+                12,
+                0,
+                0,
+              ),
+            );
+            console.log("Selected date:", normalised);
+            onDateChange(normalised);
+          } else {
+            onDateChange(null);
+          }
         }}
       />
     </View>
